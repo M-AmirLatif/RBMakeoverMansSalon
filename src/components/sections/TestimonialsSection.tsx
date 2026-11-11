@@ -18,7 +18,7 @@ export function TestimonialsSection() {
     <section
       id="reviews"
       aria-label="Voices of Our Happy Clients"
-      className="relative py-20 sm:py-28 bg-[#090D0B] border-b border-white/[0.06] overflow-hidden"
+      className="relative py-12 sm:py-20 lg:py-28 bg-[#090D0B] border-b border-white/[0.06] overflow-hidden"
     >
       {/* Background ambient lighting */}
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[500px] bg-[#C59B46]/5 rounded-full blur-[160px] pointer-events-none" />
@@ -26,16 +26,18 @@ export function TestimonialsSection() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         
         {/* Section Heading: Voices of Our Happy Client (Noir & Blade style) */}
-        <SectionHeading
-          eyebrow="Testimonials"
-          titleCream="Voices of"
-          titleGold="Our Happy"
-          titleSuffix="Clients"
-          description="Genuine Google customer reviews from clients in Park View City, Lahore."
-        />
+        <AnimatedReveal direction="up" delay={0.05} amount={0.05}>
+          <SectionHeading
+            eyebrow="Testimonials"
+            titleCream="Voices of"
+            titleGold="Our Happy"
+            titleSuffix="Clients"
+            description="Genuine Google customer reviews from clients in Park View City, Lahore."
+          />
+        </AnimatedReveal>
 
         {/* Rating Summary Pill Strip */}
-        <div className="max-w-xl mx-auto mb-14 flex items-center justify-between p-3.5 sm:p-4 rounded-full bg-[#111614] border border-white/[0.08] shadow-lg">
+        <AnimatedReveal direction="up" delay={0.1} amount={0.05} className="max-w-xl mx-auto mb-10 sm:mb-14 flex items-center justify-between p-3.5 sm:p-4 rounded-full bg-[#111614] border border-white/[0.08] shadow-lg">
           <div className="flex items-center gap-3">
             <div className="flex items-center justify-center w-9 h-9 rounded-full bg-white/5 border border-white/10 shrink-0">
               <GoogleGIcon className="w-4 h-4" />
@@ -64,13 +66,13 @@ export function TestimonialsSection() {
             <ShieldCheck className="w-3.5 h-3.5" />
             <span>Google Verified</span>
           </div>
-        </div>
+        </AnimatedReveal>
 
         {/* DESKTOP 3-COLUMN COMPOSITION: Left Cards | Center Vintage Barber Chair | Right Cards (Noir & Blade exact layout) */}
         <div className="hidden lg:grid grid-cols-12 gap-6 xl:gap-8 items-center mb-12">
           
           {/* Left Column: 2 Testimonial Cards */}
-          <AnimatedReveal direction="left" delay={0.1} className="col-span-4 flex flex-col gap-6">
+          <AnimatedReveal direction="left" delay={0.1} amount={0.05} className="col-span-4 flex flex-col gap-6">
             {leftReviews.map((rev) => (
               <div
                 key={rev.id}
@@ -105,9 +107,15 @@ export function TestimonialsSection() {
             ))}
           </AnimatedReveal>
 
-          {/* Center Column: Luxury Vintage Barber Chair (Noir & Blade Signature Centerpiece) */}
-          <AnimatedReveal direction="scale" delay={0.15} className="col-span-4 flex flex-col items-center justify-center">
-            <div className="relative w-full max-w-[320px] aspect-square rounded-3xl overflow-hidden border border-[#C59B46]/30 shadow-[0_20px_60px_rgba(0,0,0,0.85)] bg-[#111614] p-4 flex items-center justify-center group">
+          {/* Center Column: Luxury Vintage Barber Chair (Smooth blurred edges, no hard border) */}
+          <AnimatedReveal direction="scale" delay={0.15} amount={0.05} className="col-span-4 flex flex-col items-center justify-center">
+            <div
+              className="relative w-full max-w-[320px] aspect-square rounded-3xl overflow-hidden shadow-[0_20px_60px_rgba(0,0,0,0.85)] bg-[#111614] p-4 flex items-center justify-center group"
+              style={{
+                WebkitMaskImage: 'radial-gradient(ellipse 92% 92% at 50% 50%, black 65%, transparent 100%)',
+                maskImage: 'radial-gradient(ellipse 92% 92% at 50% 50%, black 65%, transparent 100%)'
+              }}
+            >
               <Image
                 src="/images/vintage-barber-chair.webp"
                 alt="Classic luxury hydraulic leather barber chair at R.B Makeover"

@@ -16,48 +16,60 @@ async function capture() {
     args: ['--no-sandbox', '--disable-setuid-sandbox']
   });
 
+  // 1. Desktop captures
   const page = await browser.newPage();
   await page.setViewport({ width: 1440, height: 1000, deviceScaleFactor: 2 });
   await page.goto('http://localhost:3000', { waitUntil: 'networkidle0' });
   await new Promise(r => setTimeout(r, 1500));
 
-  const targets = [
-    { id: '#spotlight-executive-crop', name: 'spotlight_1_executive_crop.png' },
-    { id: '#precision', name: 'precision_center_cutout.png' },
-    { id: '#spotlight-scalp', name: 'spotlight_7_scalp_therapy.png' },
-    { id: '#spotlight-keratin', name: 'spotlight_9_keratin_silk.png' },
-    { id: '#spotlight-razor-lineup', name: 'spotlight_11_razor_lineup.png' },
-    { id: '#spotlight-executive-finish', name: 'spotlight_12_executive_finish.png' }
+  const desktopTargets = [
+    { id: '#precision', name: 'verify_precision_blurred_edges.png' },
+    { id: '#about', name: 'verify_about_blurred_edges.png' },
+    { id: '#services', name: 'verify_services_blurred_edges.png' }
   ];
 
-  for (const t of targets) {
+  for (const t of desktopTargets) {
     const el = await page.$(t.id);
     if (el) {
       await page.evaluate(targetEl => {
         targetEl.scrollIntoView({ behavior: 'instant', block: 'center' });
       }, el);
-      
-      // Wait for image within element to load
-      await page.evaluate(async (selector) => {
-        const container = document.querySelector(selector);
-        if (!container) return;
-        const img = container.querySelector('img');
-        if (img && !img.complete) {
-          await new Promise((resolve) => {
-            img.onload = resolve;
-            img.onerror = resolve;
-            setTimeout(resolve, 2000);
-          });
-        }
-      }, t.id);
-
-      await new Promise(r => setTimeout(r, 600));
-
+      await new Promise(r => setTimeout(r, 800));
       await el.screenshot({
         path: path.join(screenshotsDir, t.name)
       });
-      console.log(`Captured ${t.name}`);
+      console.log(`Captured desktop: ${t.name}`);
     }
+  }
+
+  // 2. Mobile capture
+  const mobilePage = await browser.newPage();
+  await mobilePage.setViewport({ width: 390, height: 844, deviceScaleFactor: 2, isMobile: true });
+  await mobilePage.goto('http://localhost:3000', { waitUntil: 'networkidle0' });
+  await new Promise(r => setTimeout(r, 1500));
+
+  const mobilePrecision = await mobilePage.$('#precision');
+  if (mobilePrecision) {
+    await mobilePage.evaluate(targetEl => {
+      targetEl.scrollIntoView({ behavior: 'instant', block: 'center' });
+    }, mobilePrecision);
+    await new Promise(r => setTimeout(r, 800));
+    await mobilePrecision.screenshot({
+      path: path.join(screenshotsDir, 'verify_mobile_precision.png')
+    });
+    console.log('Captured mobile: verify_mobile_precision.png');
+  }
+
+  const mobileSpotlight = await mobilePage.$('#spotlight-executive-crop');
+  if (mobileSpotlight) {
+    await mobilePage.evaluate(targetEl => {
+      targetEl.scrollIntoView({ behavior: 'instant', block: 'center' });
+    }, mobileSpotlight);
+    await new Promise(r => setTimeout(r, 800));
+    await mobileSpotlight.screenshot({
+      path: path.join(screenshotsDir, 'verify_mobile_spotlight_tight_space.png')
+    });
+    console.log('Captured mobile: verify_mobile_spotlight_tight_space.png');
   }
 
   await browser.close();

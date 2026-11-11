@@ -65,17 +65,19 @@ export function FacilitiesSection() {
     <section
       id="facilities"
       aria-label="Salon Facilities"
-      className="relative py-20 sm:py-28 bg-[#0B0F0D] border-b border-white/[0.06] overflow-hidden"
+      className="relative py-12 sm:py-20 lg:py-28 bg-[#0B0F0D] border-b border-white/[0.06] overflow-hidden"
     >
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         
         {/* Section Heading */}
-        <SectionHeading
-          eyebrow="Facilities"
-          titleCream="Salon"
-          titleGold="Amenities"
-          description="What you will find at our Rose Commercial salon."
-        />
+        <AnimatedReveal direction="up" delay={0.05} amount={0.05}>
+          <SectionHeading
+            eyebrow="Facilities"
+            titleCream="Salon"
+            titleGold="Amenities"
+            description="What you will find at our Rose Commercial salon."
+          />
+        </AnimatedReveal>
 
         {/* ONE Bento Panel: 2x3 Grid with hairline dividers, zero empty slots */}
         <AnimatedReveal direction="up" delay={0.1} amount={0.15}>

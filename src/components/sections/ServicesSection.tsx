@@ -60,17 +60,19 @@ export function ServicesSection() {
     <section
       id="services"
       aria-label="Services Menu"
-      className="relative py-20 sm:py-28 bg-[#0B0F0D] border-b border-white/[0.06] overflow-hidden"
+      className="relative py-12 sm:py-20 lg:py-28 bg-[#0B0F0D] border-b border-white/[0.06] overflow-hidden"
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
         {/* Section Heading: The Grooming Menu (Noir & Blade style) */}
-        <SectionHeading
-          eyebrow="The Grooming Menu"
-          titleCream="The Grooming"
-          titleGold="Menu"
-          description="Precision grooming, beard styling, and skincare treatments crafted for gentlemen in Park View City, Lahore."
-        />
+        <AnimatedReveal direction="up" delay={0.05} amount={0.05}>
+          <SectionHeading
+            eyebrow="The Grooming Menu"
+            titleCream="The Grooming"
+            titleGold="Menu"
+            description="Precision grooming, beard styling, and skincare treatments crafted for gentlemen in Park View City, Lahore."
+          />
+        </AnimatedReveal>
 
         {/* 2x2 Grid of Featured Menu Items (Noir & Blade signature layout) */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-5 sm:gap-6 mb-16 sm:mb-20">
@@ -133,7 +135,7 @@ export function ServicesSection() {
         </div>
 
         {/* Catalog Subheading */}
-        <div className="border-t border-white/[0.08] pt-12 mb-8 text-center">
+        <AnimatedReveal direction="up" delay={0.05} amount={0.05} className="border-t border-white/[0.08] pt-10 sm:pt-12 mb-6 sm:mb-8 text-center">
           <div className="inline-flex items-center gap-2 mb-2 text-xs font-bold uppercase tracking-[0.25em] text-[#A8A193]">
             <span className="w-4 h-[1px] bg-[#C59B46]" />
             <span>Complete Salon Catalog</span>
@@ -142,10 +144,10 @@ export function ServicesSection() {
           <h3 className="font-['Playfair_Display',Georgia,serif] text-2xl sm:text-3xl font-medium text-[#F5EFEB]">
             Explore All 23 Services by Category
           </h3>
-        </div>
+        </AnimatedReveal>
 
         {/* Category Tabs / Segmented Control */}
-        <div className="flex items-center justify-start sm:justify-center overflow-x-auto no-scrollbar gap-2 pb-4 mb-10 -mx-4 px-4 sm:mx-0 sm:px-0">
+        <AnimatedReveal direction="up" delay={0.1} amount={0.05} className="flex items-center justify-start sm:justify-center overflow-x-auto no-scrollbar gap-2 pb-4 mb-8 sm:mb-10 -mx-4 px-4 sm:mx-0 sm:px-0">
           <div className="inline-flex p-1.5 rounded-full bg-[#141C18] border border-white/10 shrink-0">
             {serviceCategories.map((category) => {
               const isActive = activeCategoryKey === category.key;
@@ -176,14 +178,20 @@ export function ServicesSection() {
               );
             })}
           </div>
-        </div>
+        </AnimatedReveal>
 
         {/* Two-Column Category Display: Left Real Photo Card (45%), Right Editorial List (55%) */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 items-start">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-10 items-start">
           
-          {/* Left Column: Category Feature Photo Card */}
-          <div className="lg:col-span-5 relative z-10">
-            <div className="relative rounded-2xl overflow-hidden border border-white/10 bg-[#121815] shadow-2xl w-full h-[280px] sm:h-[360px] lg:h-[560px]">
+          {/* Left Column: Category Feature Photo Card (Smooth blurred edges, no card border) */}
+          <AnimatedReveal direction="left" delay={0.15} amount={0.05} className="lg:col-span-5 relative z-10">
+            <div
+              className="relative rounded-2xl overflow-hidden bg-[#121815] shadow-2xl w-full h-[260px] sm:h-[340px] lg:h-[560px]"
+              style={{
+                WebkitMaskImage: 'radial-gradient(ellipse 92% 92% at 50% 50%, black 65%, transparent 100%)',
+                maskImage: 'radial-gradient(ellipse 92% 92% at 50% 50%, black 65%, transparent 100%)'
+              }}
+            >
               <Image
                 key={currentCategory.key}
                 src={currentCategory.image.webp}
@@ -212,10 +220,10 @@ export function ServicesSection() {
                 </div>
               </div>
             </div>
-          </div>
+          </AnimatedReveal>
 
           {/* Right Column: Clean Editorial Name-Only Rows (Reference A style) */}
-          <div className="lg:col-span-7 bg-[#121815]/80 rounded-2xl border border-white/[0.08] p-4 sm:p-6 divide-y divide-white/[0.08] relative z-0">
+          <AnimatedReveal direction="right" delay={0.2} amount={0.05} className="lg:col-span-7 bg-[#121815]/80 rounded-2xl border border-white/[0.08] p-4 sm:p-6 divide-y divide-white/[0.08] relative z-0">
             <div className="pb-3 flex items-center justify-between text-xs font-semibold uppercase tracking-wider text-[#7A756B]">
               <span>Service</span>
               <span>Inquire</span>
@@ -250,7 +258,7 @@ export function ServicesSection() {
                 </div>
               );
             })}
-          </div>
+          </AnimatedReveal>
 
         </div>
 

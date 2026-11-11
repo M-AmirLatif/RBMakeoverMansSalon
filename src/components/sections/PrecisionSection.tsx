@@ -76,24 +76,26 @@ export function PrecisionSection() {
     <section
       id="precision"
       aria-label="Precision in Every Cut"
-      className="py-16 sm:py-24 bg-[#090D0B] relative overflow-hidden border-t border-white/[0.05]"
+      className="py-10 sm:py-20 lg:py-24 bg-[#090D0B] relative overflow-hidden border-t border-white/[0.05]"
     >
       {/* Background glow */}
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[400px] bg-[#C59B46]/5 rounded-full blur-[140px] pointer-events-none" />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-        <SectionHeading
-          eyebrow="Precision Craft"
-          titleCream="Precision in"
-          titleGold="Every Cut"
-          description="Comprehensive grooming solutions tailored for gentlemen in Park View City, Lahore."
-        />
+        <AnimatedReveal direction="up" delay={0.05} amount={0.05}>
+          <SectionHeading
+            eyebrow="Precision Craft"
+            titleCream="Precision in"
+            titleGold="Every Cut"
+            description="Comprehensive grooming solutions tailored for gentlemen in Park View City, Lahore."
+          />
+        </AnimatedReveal>
 
         {/* 3-Column Layout matching Noir & Blade */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 xl:gap-8 items-center mt-10">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 sm:gap-6 xl:gap-8 items-center mt-8 sm:mt-10">
           
           {/* Left Column (3 cards) */}
-          <AnimatedReveal direction="left" delay={0.1} className="lg:col-span-4 order-2 lg:order-1">
+          <AnimatedReveal direction="left" delay={0.1} amount={0.05} className="lg:col-span-4 order-2 lg:order-1">
             <div className="flex flex-col gap-4 sm:gap-5">
               {leftCards.map((card) => (
                 <a
@@ -127,25 +129,29 @@ export function PrecisionSection() {
           </AnimatedReveal>
 
           {/* Center Column: Tall Seamless Cutout Portrait (Zero Cropped Edges, Big on PC) */}
-          <AnimatedReveal direction="scale" delay={0.15} className="lg:col-span-4 order-1 lg:order-2 flex justify-center">
-            <div className="relative w-full max-w-[340px] sm:max-w-[420px] lg:max-w-none mx-auto h-[480px] sm:h-[560px] lg:h-[640px] group flex flex-col justify-end">
+          <AnimatedReveal direction="scale" delay={0.15} amount={0.05} className="lg:col-span-4 order-1 lg:order-2 flex justify-center">
+            <div className="relative w-full max-w-[320px] sm:max-w-[400px] lg:max-w-none mx-auto h-[320px] sm:h-[460px] lg:h-[620px] group flex flex-col justify-end">
               <Image
                 src="/images/cutout-precision-taper.webp"
                 alt="Executive gentleman profile with precision fade and groomed beard at R.B Makeover Man's Salon"
                 fill
                 sizes="(max-width: 1024px) 420px, 460px"
                 className="object-contain object-bottom group-hover:scale-105 transition-transform duration-700 ease-out select-none"
+                style={{
+                  WebkitMaskImage: 'radial-gradient(ellipse 80% 80% at 50% 45%, black 45%, transparent 100%)',
+                  maskImage: 'radial-gradient(ellipse 80% 80% at 50% 45%, black 45%, transparent 100%)'
+                }}
               />
 
               {/* Scrim gradient blending into the dark section background */}
-              <div className="absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-[#090D0B] via-[#090D0B]/40 to-transparent pointer-events-none" />
+              <div className="absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-[#090D0B] via-[#090D0B]/40 to-transparent pointer-events-none" />
 
               {/* Floating Modern Editorial Caption on Center Portrait */}
-              <div className="relative z-10 mx-2 sm:mx-4 mb-4 p-4 rounded-2xl bg-[#0B0F0D]/90 backdrop-blur-md border border-[#C59B46]/30 text-center shadow-2xl select-none">
+              <div className="relative z-10 mx-2 sm:mx-4 mb-2 sm:mb-4 p-3 sm:p-4 rounded-2xl bg-[#0B0F0D]/90 backdrop-blur-md border border-[#C59B46]/30 text-center shadow-2xl select-none">
                 <span className="text-[10px] sm:text-[11px] font-mono tracking-widest uppercase text-[#C59B46] font-bold block mb-1">
                   ✦ EXECUTIVE TAPER FADE • BESPOKE BEARD CONTOURS
                 </span>
-                <p className="font-['Playfair_Display',Georgia,serif] text-sm sm:text-base text-[#F5EFEB] font-normal leading-snug">
+                <p className="font-['Playfair_Display',Georgia,serif] text-xs sm:text-base text-[#F5EFEB] font-normal leading-snug">
                   Precision scissor discipline and razor contours sculpted to enhance jawline symmetry.
                 </p>
               </div>
@@ -153,7 +159,7 @@ export function PrecisionSection() {
           </AnimatedReveal>
 
           {/* Right Column (3 cards) */}
-          <AnimatedReveal direction="right" delay={0.2} className="lg:col-span-4 order-3">
+          <AnimatedReveal direction="right" delay={0.2} amount={0.05} className="lg:col-span-4 order-3">
             <div className="flex flex-col gap-4 sm:gap-5">
               {rightCards.map((card) => (
                 <a
@@ -189,7 +195,7 @@ export function PrecisionSection() {
         </div>
 
         {/* Action Button underneath */}
-        <div className="mt-12 text-center">
+        <AnimatedReveal direction="up" delay={0.25} amount={0.05} className="mt-8 sm:mt-12 text-center">
           <Button
             href="#services"
             variant="gold"
@@ -198,7 +204,7 @@ export function PrecisionSection() {
           >
             Explore Full Grooming Menu & Rates
           </Button>
-        </div>
+        </AnimatedReveal>
 
       </div>
     </section>

@@ -10,14 +10,20 @@ export function AboutSection() {
     <section
       id="about"
       aria-label="About R.B Makeover Man's Salon"
-      className="relative py-20 sm:py-28 bg-[#090D0B] border-b border-white/[0.06] overflow-hidden"
+      className="relative py-12 sm:py-20 lg:py-28 bg-[#090D0B] border-b border-white/[0.06] overflow-hidden"
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-16 items-center">
           
-          {/* Left Column: Arched Window Salon Photo (Noir & Blade signature shape) */}
-          <AnimatedReveal direction="left" delay={0.1} className="lg:col-span-5 relative">
-            <div className="relative rounded-t-[180px] rounded-b-[32px] overflow-hidden border border-[#C59B46]/35 shadow-[0_25px_60px_rgba(0,0,0,0.8)] aspect-[3/4] max-w-md mx-auto lg:max-w-none group bg-[#121815]">
+          {/* Left Column: Arched Window Salon Photo (Noir & Blade signature shape, smooth blurred edges) */}
+          <AnimatedReveal direction="left" delay={0.1} amount={0.05} className="lg:col-span-5 relative">
+            <div
+              className="relative rounded-t-[180px] rounded-b-[32px] overflow-hidden shadow-[0_25px_60px_rgba(0,0,0,0.8)] aspect-[3/4] max-w-md mx-auto lg:max-w-none group bg-[#121815]"
+              style={{
+                WebkitMaskImage: 'radial-gradient(ellipse 90% 90% at 50% 50%, black 65%, transparent 100%)',
+                maskImage: 'radial-gradient(ellipse 90% 90% at 50% 50%, black 65%, transparent 100%)'
+              }}
+            >
               <Image
                 src="/images/about-interior-floor.webp"
                 alt="Our salon interior at Rose Commercial, Park View City"

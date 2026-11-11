@@ -11,20 +11,22 @@ export function LocationSection() {
     <section
       id="location"
       aria-label="Location"
-      className="relative py-20 sm:py-28 bg-[#0B0F0D] border-b border-white/[0.06] overflow-hidden"
+      className="relative py-12 sm:py-20 lg:py-28 bg-[#0B0F0D] border-b border-white/[0.06] overflow-hidden"
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <SectionHeading
-          eyebrow="Location"
-          titleCream="Rose Commercial,"
-          titleGold="Park View City"
-          description="Find us along Main Boulevard in Park View City, Lahore. Parking is available right outside."
-        />
+        <AnimatedReveal direction="up" delay={0.05} amount={0.05}>
+          <SectionHeading
+            eyebrow="Location"
+            titleCream="Rose Commercial,"
+            titleGold="Park View City"
+            description="Find us along Main Boulevard in Park View City, Lahore. Parking is available right outside."
+          />
+        </AnimatedReveal>
 
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 items-stretch">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-10 items-stretch">
           
           {/* Left Column: Location Details & Storefront Photo (5 cols) */}
-          <AnimatedReveal direction="left" delay={0.1} amount={0.15} className="lg:col-span-5 h-full">
+          <AnimatedReveal direction="left" delay={0.1} amount={0.05} className="lg:col-span-5 h-full">
             <div className="h-full flex flex-col justify-between space-y-6 bg-[#141C18] p-6 sm:p-8 rounded-2xl border border-white/[0.08] shadow-xl">
               <div className="space-y-4">
                 <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold uppercase tracking-wider text-[#C59B46] bg-[#C59B46]/10 border border-[#C59B46]/20">

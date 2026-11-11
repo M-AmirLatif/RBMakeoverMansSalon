@@ -18,10 +18,10 @@ export function AnimatedReveal({
   children,
   direction = "up",
   delay = 0,
-  duration = 0.55,
+  duration = 0.65,
   className = "",
-  amount = 0.15,
-  margin = "0px 0px -60px 0px",
+  amount = 0.05,
+  margin = "0px 0px -20px 0px",
 }: AnimatedRevealProps) {
   const shouldReduceMotion = useReducedMotion();
 
@@ -33,34 +33,34 @@ export function AnimatedReveal({
     switch (direction) {
       case "up":
         return {
-          hidden: { opacity: 0, y: 28 },
+          hidden: { opacity: 0, y: 40 },
           visible: { opacity: 1, y: 0 },
         };
       case "down":
         return {
-          hidden: { opacity: 0, y: -28 },
+          hidden: { opacity: 0, y: -40 },
           visible: { opacity: 1, y: 0 },
         };
       case "left":
         return {
-          hidden: { opacity: 0, x: -32 },
+          hidden: { opacity: 0, x: -45 },
           visible: { opacity: 1, x: 0 },
         };
       case "right":
         return {
-          hidden: { opacity: 0, x: 32 },
+          hidden: { opacity: 0, x: 45 },
           visible: { opacity: 1, x: 0 },
         };
       case "scale":
         return {
-          hidden: { opacity: 0, scale: 0.94 },
+          hidden: { opacity: 0, scale: 0.90 },
           visible: { opacity: 1, scale: 1 },
         };
       case "fade":
       default:
         return {
-          hidden: { opacity: 0 },
-          visible: { opacity: 1 },
+          hidden: { opacity: 0, filter: "blur(4px)" },
+          visible: { opacity: 1, filter: "blur(0px)" },
         };
     }
   };
@@ -74,7 +74,7 @@ export function AnimatedReveal({
       transition={{
         duration,
         delay,
-        ease: [0.25, 0.1, 0.25, 1],
+        ease: [0.16, 1, 0.3, 1], // Smooth luxury deceleration curve
       }}
       className={className}
     >

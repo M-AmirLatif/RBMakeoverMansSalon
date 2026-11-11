@@ -37,14 +37,14 @@ export function HeroSection() {
     <section
       id="hero"
       aria-label="Welcome to R.B Makeover Man's Salon"
-      className="relative min-h-[100svh] bg-black pt-24 sm:pt-28 pb-12 sm:pb-16 flex flex-col justify-between overflow-x-clip"
+      className="relative min-h-[100svh] bg-black pt-20 sm:pt-28 pb-8 sm:pb-16 flex flex-col justify-between overflow-x-clip"
     >
       {/* Subtle ambient lighting placed away from the portrait so black stays pure #000000 */}
       <div className="absolute top-24 right-1/4 w-[500px] h-[350px] bg-[#C59B46]/5 rounded-full blur-[160px] pointer-events-none animate-pulse-subtle" />
       <div className="absolute bottom-20 left-10 w-[450px] h-[350px] bg-[#141C18]/60 rounded-full blur-[140px] pointer-events-none" />
 
       {/* Main Container */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full relative z-10 space-y-8 sm:space-y-12">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full relative z-10 space-y-6 sm:space-y-12">
         
         {/* ============================================================ */}
         {/* PART 1: THE GENTLEMAN'S CLUB MASTER CENTERPIECE (FRONT HERO)  */}
@@ -209,7 +209,7 @@ export function HeroSection() {
         {/* ============================================================ */}
         {/* STAT STRIP (Connecting the two editorial hero showcases)       */}
         {/* ============================================================ */}
-        <div className="w-full">
+        <AnimatedReveal direction="up" delay={0.05} amount={0.05} className="w-full">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-2 sm:gap-4 p-3 sm:p-5 rounded-2xl bg-[#111614]/90 backdrop-blur-md border border-white/[0.08] shadow-[0_10px_30px_rgba(0,0,0,0.6)]">
             {/* Stat 1: Google Rating */}
             <div className="flex items-center gap-2.5 sm:gap-3.5 p-1 sm:p-2 border-r border-white/5 pb-2 sm:pb-2 border-b sm:border-b-0">
@@ -271,7 +271,7 @@ export function HeroSection() {
               </div>
             </div>
           </div>
-        </div>
+        </AnimatedReveal>
 
         {/* ============================================================ */}
         {/* PART 2: NOIR & BLADE SHOWCASE (PUSHED DOWN AS REQUESTED)      */}
@@ -323,8 +323,14 @@ export function HeroSection() {
           </AnimatedReveal>
 
           {/* Right Column: Master Barber Image + Circular Badge + Socials */}
-          <AnimatedReveal direction="right" delay={0.15} amount={0.15} className="col-span-5 relative">
-            <div className="relative w-full h-[min(75svh,580px)] rounded-[32px] overflow-hidden border border-[#C59B46]/35 shadow-[0_30px_70px_rgba(0,0,0,0.9)] bg-[#121815] group">
+          <AnimatedReveal direction="right" delay={0.15} amount={0.05} className="col-span-5 relative">
+            <div
+              className="relative w-full h-[min(75svh,580px)] rounded-[32px] overflow-hidden shadow-[0_30px_70px_rgba(0,0,0,0.9)] bg-black group"
+              style={{
+                WebkitMaskImage: 'radial-gradient(ellipse 92% 92% at 50% 50%, black 60%, transparent 100%)',
+                maskImage: 'radial-gradient(ellipse 92% 92% at 50% 50%, black 60%, transparent 100%)'
+              }}
+            >
               <Image
                 src="/images/hero-barber-craft.webp"
                 alt="Master barber in black uniform styling client hair at R.B Makeover Man's Salon"
@@ -334,7 +340,7 @@ export function HeroSection() {
               />
 
               {/* Scrim: subtle dark gradient at bottom edge */}
-              <div className="absolute inset-0 bg-gradient-to-t from-[#0A0E0C]/95 via-[#0A0E0C]/20 to-transparent pointer-events-none" />
+              <div className="absolute inset-0 bg-gradient-to-t from-black via-black/25 to-transparent pointer-events-none" />
 
               {/* Rotating Circular Stamp Badge (Noir & Blade signature element) */}
               <div className="absolute top-6 right-6 w-24 h-24 rounded-full border border-[#C59B46]/40 bg-[#0B0F0D]/85 backdrop-blur-md flex items-center justify-center shadow-xl p-1 select-none">
@@ -422,18 +428,24 @@ export function HeroSection() {
             </h2>
           </div>
 
-          {/* Hero Image for Mobile */}
-          <div className="relative w-full max-w-[360px] sm:max-w-[420px] mx-auto h-[44svh] max-h-[380px] rounded-3xl overflow-hidden border border-[#C59B46]/30 shadow-2xl bg-[#121815]">
+          {/* Hero Image for Mobile: Blurred smooth edges, no card border, compact height */}
+          <div
+            className="relative w-full max-w-[340px] sm:max-w-[400px] mx-auto h-[30svh] max-h-[260px] rounded-3xl overflow-hidden shadow-2xl bg-black"
+            style={{
+              WebkitMaskImage: 'radial-gradient(ellipse 90% 90% at 50% 50%, black 55%, transparent 100%)',
+              maskImage: 'radial-gradient(ellipse 90% 90% at 50% 50%, black 55%, transparent 100%)'
+            }}
+          >
             <Image
               src="/images/hero-barber-craft.webp"
               alt="Master barber cutting hair at R.B Makeover Man's Salon"
               fill
-              sizes="(max-width: 640px) 92vw, 420px"
+              sizes="(max-width: 640px) 92vw, 400px"
               className="object-cover object-[50%_35%]"
             />
 
             {/* Gradient scrim */}
-            <div className="absolute inset-0 bg-gradient-to-t from-[#0A0E0C]/95 via-[#0A0E0C]/20 to-transparent pointer-events-none" />
+            <div className="absolute inset-0 bg-gradient-to-t from-black via-black/25 to-transparent pointer-events-none" />
 
             {/* Rating Chip */}
             <div className="absolute bottom-3.5 left-3.5 px-3 py-1.5 rounded-full bg-[#0D1311]/90 border border-[#C59B46]/40 backdrop-blur-md shadow-lg flex items-center gap-1.5">

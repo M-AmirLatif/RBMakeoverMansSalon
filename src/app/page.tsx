@@ -18,6 +18,7 @@ import { LocationSection } from "@/components/sections/LocationSection";
 import { ContactSection } from "@/components/sections/ContactSection";
 import { MarqueeTicker } from "@/components/ui/MarqueeTicker";
 import { ServiceSpotlightBand } from "@/components/ui/ServiceSpotlightBand";
+import { AnimatedReveal } from "@/components/ui/AnimatedReveal";
 import { serviceSpotlights } from "@/data/serviceSpotlights";
 
 export default function Home() {
@@ -36,21 +37,23 @@ export default function Home() {
         <HeroSection />
 
         {/* Editorial Text Strap 1: Gold Foil Forward Ticker */}
-        <MarqueeTicker
-          direction="forward"
-          variant="gold-foil"
-          iconType="scissors"
-          items={[
-            "R.B MAKEOVER MAN'S SALON",
-            "PARK VIEW CITY LAHORE",
-            "4.9 ★ RATED ON GOOGLE (36 REVIEWS)",
-            "10 MASTER BARBERS ON DECK",
-            "PRECISION IN EVERY CUT",
-            "HOT TOWEL ROYAL SHAVING",
-            "BEARD SCULPTING & LINEUPS",
-            "VIP GROOMING PACKAGES",
-          ]}
-        />
+        <AnimatedReveal direction="fade" delay={0.05} amount={0.05}>
+          <MarqueeTicker
+            direction="forward"
+            variant="gold-foil"
+            iconType="scissors"
+            items={[
+              "R.B MAKEOVER MAN'S SALON",
+              "PARK VIEW CITY LAHORE",
+              "4.9 ★ RATED ON GOOGLE (36 REVIEWS)",
+              "10 MASTER BARBERS ON DECK",
+              "PRECISION IN EVERY CUT",
+              "HOT TOWEL ROYAL SHAVING",
+              "BEARD SCULPTING & LINEUPS",
+              "VIP GROOMING PACKAGES",
+            ]}
+          />
+        </AnimatedReveal>
 
         {/* Service Spotlight 1: Modern Textured European Crop */}
         <ServiceSpotlightBand {...serviceSpotlights.executiveCrop} />
@@ -86,19 +89,21 @@ export default function Home() {
         <ServiceSpotlightBand {...serviceSpotlights.facialSkincare} />
 
         {/* Editorial Text Strap 2: Dark Glass Reverse Ticker */}
-        <MarqueeTicker
-          direction="reverse"
-          variant="dark-glass"
-          iconType="star"
-          items={[
-            "MASTER HAIRCUTS & SKIN FADES",
-            "BEARD SCULPTING & CLEAN LINEUPS",
-            "CHARCOAL FACIALS & DEEP CLEANSING",
-            "HOT TOWEL STRAIGHT RAZOR SHAVE",
-            "HAIR STEAM & SCALP THERAPY",
-            "TAILORED GROOMING COMBOS",
-          ]}
-        />
+        <AnimatedReveal direction="fade" delay={0.05} amount={0.05}>
+          <MarqueeTicker
+            direction="reverse"
+            variant="dark-glass"
+            iconType="star"
+            items={[
+              "MASTER HAIRCUTS & SKIN FADES",
+              "BEARD SCULPTING & CLEAN LINEUPS",
+              "CHARCOAL FACIALS & DEEP CLEANSING",
+              "HOT TOWEL STRAIGHT RAZOR SHAVE",
+              "HAIR STEAM & SCALP THERAPY",
+              "TAILORED GROOMING COMBOS",
+            ]}
+          />
+        </AnimatedReveal>
 
         {/* 7. Salon Interior Panorama */}
         <InteriorPhotoBand />
@@ -113,19 +118,21 @@ export default function Home() {
         <ServiceSpotlightBand {...serviceSpotlights.classicCut} />
 
         {/* Editorial Text Strap 3: Subtle Gold Accent Ticker */}
-        <MarqueeTicker
-          direction="forward"
-          variant="subtle"
-          iconType="sparkles"
-          items={[
-            "OPEN MON - SAT 10:00 AM - 11:00 PM",
-            "SUNDAY OFF-DAY",
-            "ROSE COMMERCIAL, MAIN BOULEVARD",
-            "PARK VIEW CITY, LAHORE",
-            "WHATSAPP: 0326 9326566",
-            "WALK-INS & APPOINTMENTS WELCOME",
-          ]}
-        />
+        <AnimatedReveal direction="fade" delay={0.05} amount={0.05}>
+          <MarqueeTicker
+            direction="forward"
+            variant="subtle"
+            iconType="sparkles"
+            items={[
+              "OPEN MON - SAT 10:00 AM - 11:00 PM",
+              "SUNDAY OFF-DAY",
+              "ROSE COMMERCIAL, MAIN BOULEVARD",
+              "PARK VIEW CITY, LAHORE",
+              "WHATSAPP: 0326 9326566",
+              "WALK-INS & APPOINTMENTS WELCOME",
+            ]}
+          />
+        </AnimatedReveal>
 
         {/* 9. Gallery with Lightbox */}
         <GallerySection onLightboxToggle={setLightboxOpen} />

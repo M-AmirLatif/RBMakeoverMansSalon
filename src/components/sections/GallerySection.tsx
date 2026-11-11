@@ -36,17 +36,19 @@ export function GallerySection({
     <section
       id="gallery"
       aria-label="Gallery of Salon and Work"
-      className="relative py-20 sm:py-28 bg-[#0B0F0D] border-b border-white/[0.06] overflow-hidden"
+      className="relative py-12 sm:py-20 lg:py-28 bg-[#0B0F0D] border-b border-white/[0.06] overflow-hidden"
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
         {/* Section Heading */}
-        <SectionHeading
-          eyebrow="Gallery"
-          titleCream="Salon Space &"
-          titleGold="Work"
-          description="Photographs of our styling stations, interior setup, and storefront at Rose Commercial, Park View City."
-        />
+        <AnimatedReveal direction="up" delay={0.05} amount={0.05}>
+          <SectionHeading
+            eyebrow="Gallery"
+            titleCream="Salon Space &"
+            titleGold="Work"
+            description="Photographs of our styling stations, interior setup, and storefront at Rose Commercial, Park View City."
+          />
+        </AnimatedReveal>
 
         {/* Flush CSS Grid: 2 columns on mobile, 3 columns on desktop, all rows end flush */}
         <div className="grid grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 mt-12 grid-flow-dense">

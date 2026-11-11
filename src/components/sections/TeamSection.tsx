@@ -77,18 +77,20 @@ export function TeamSection({
     <section
       id="team"
       aria-label="Salon Staff and Barbers"
-      className="relative py-20 sm:py-28 bg-[#121815] border-b border-white/[0.06] overflow-hidden"
+      className="relative py-12 sm:py-20 lg:py-28 bg-[#121815] border-b border-white/[0.06] overflow-hidden"
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
         {/* Section Heading: The Hands Behind The Craft (Noir & Blade exact title) */}
-        <SectionHeading
-          eyebrow="Our Team"
-          titleCream="The Hands"
-          titleGold="Behind The"
-          titleSuffix="Craft"
-          description="R.B Makeover has 10 barbers on shop. Compare their rates, experience, and book directly with your preferred stylist."
-        />
+        <AnimatedReveal direction="up" delay={0.05} amount={0.05}>
+          <SectionHeading
+            eyebrow="Our Team"
+            titleCream="The Hands"
+            titleGold="Behind The"
+            titleSuffix="Craft"
+            description="R.B Makeover has 10 barbers on shop. Compare their rates, experience, and book directly with your preferred stylist."
+          />
+        </AnimatedReveal>
 
         {/* Interactive Controls Bar: Category Filters & Service Rate Selector */}
         <AnimatedReveal direction="up" delay={0.05} amount={0.2} className="mt-10 mb-8 space-y-4">

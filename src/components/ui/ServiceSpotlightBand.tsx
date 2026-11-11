@@ -50,7 +50,7 @@ export function ServiceSpotlightBand({
     <section
       id={id}
       aria-label={`${serviceName} Spotlight`}
-      className={`relative py-16 sm:py-24 ${bgClass} border-y border-white/[0.06] overflow-hidden`}
+      className={`relative py-8 sm:py-16 lg:py-24 ${bgClass} border-y border-white/[0.06] overflow-hidden`}
     >
       {/* Background ambient lighting */}
       <div
@@ -60,35 +60,39 @@ export function ServiceSpotlightBand({
       />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-14 items-center">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 sm:gap-8 lg:gap-14 items-center">
           
           {/* Image Column (6 cols): Large on PC, Zero Cropped Edges, Seamless Background */}
           <AnimatedReveal
             direction={isImageRight ? "right" : "left"}
             delay={0.05}
-            amount={0}
+            amount={0.05}
             className={`lg:col-span-6 flex justify-center ${
               isImageRight ? "order-2" : "order-2 lg:order-1"
             }`}
           >
-            <div className="relative w-full max-w-[440px] sm:max-w-[500px] lg:max-w-none h-[420px] sm:h-[500px] lg:h-[600px] group flex flex-col justify-end">
+            <div className="relative w-full max-w-[400px] sm:max-w-[480px] lg:max-w-none h-[280px] sm:h-[380px] lg:h-[560px] group flex flex-col justify-end">
               <Image
                 src={image}
                 alt={imageAlt}
                 fill
                 sizes="(max-width: 1024px) 100vw, 50vw"
                 className="object-contain object-bottom group-hover:scale-105 transition-transform duration-700 ease-out select-none"
+                style={{
+                  WebkitMaskImage: 'radial-gradient(ellipse 80% 80% at 50% 50%, black 55%, transparent 100%)',
+                  maskImage: 'radial-gradient(ellipse 80% 80% at 50% 50%, black 55%, transparent 100%)'
+                }}
               />
 
               {/* Bottom Scrim blending seamlessly into dark background */}
-              <div className={`absolute inset-x-0 bottom-0 h-32 pointer-events-none ${
+              <div className={`absolute inset-x-0 bottom-0 h-28 pointer-events-none ${
                 bgDarkTone === "black"
                   ? "bg-gradient-to-t from-black via-black/40 to-transparent"
                   : "bg-gradient-to-t from-[#080C0A] via-[#080C0A]/40 to-transparent"
               }`} />
 
               {/* Floating Modern Editorial Caption Band */}
-              <div className="relative z-10 mx-2 sm:mx-6 mb-4 p-3.5 sm:p-4 rounded-2xl bg-[#0E1411]/90 backdrop-blur-md border border-[#C59B46]/30 text-center shadow-2xl select-none">
+              <div className="relative z-10 mx-2 sm:mx-6 mb-2 sm:mb-4 p-3 sm:p-4 rounded-2xl bg-[#0E1411]/90 backdrop-blur-md border border-[#C59B46]/30 text-center shadow-2xl select-none">
                 <span className="text-[10px] sm:text-[11px] font-mono tracking-widest uppercase text-[#C59B46] font-bold block mb-0.5">
                   ✦ {captionTag}
                 </span>

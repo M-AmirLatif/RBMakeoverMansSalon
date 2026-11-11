@@ -206,22 +206,24 @@ export function ContactSection({
     <section
       id="contact"
       aria-label="Contact and Appointment Inquiry"
-      className="relative py-16 sm:py-24 bg-[#0E1411] border-b border-white/[0.06] overflow-hidden"
+      className="relative py-12 sm:py-20 lg:py-24 bg-[#0E1411] border-b border-white/[0.06] overflow-hidden"
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
         {/* Section Heading */}
-        <SectionHeading
-          eyebrow="Contact & Booking"
-          titleCream="Make an"
-          titleGold="Appointment"
-          description="Send your appointment request to our salon on WhatsApp with your preferred barber and service."
-        />
+        <AnimatedReveal direction="up" delay={0.05} amount={0.05}>
+          <SectionHeading
+            eyebrow="Contact & Booking"
+            titleCream="Make an"
+            titleGold="Appointment"
+            description="Send your appointment request to our salon on WhatsApp with your preferred barber and service."
+          />
+        </AnimatedReveal>
 
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-start mt-10">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-start mt-8 sm:mt-10">
           
           {/* Left Column: Direct Contact Details + Storefront Photo (5 cols) */}
-          <AnimatedReveal direction="left" delay={0.1} amount={0.15} className="lg:col-span-5 space-y-5">
+          <AnimatedReveal direction="left" delay={0.1} amount={0.05} className="lg:col-span-5 space-y-5">
             
             {/* Channels Card */}
             <div className="p-5 sm:p-7 rounded-2xl bg-[#141C18] border border-white/[0.08] shadow-xl space-y-5">
@@ -376,7 +378,7 @@ export function ContactSection({
           </AnimatedReveal>
 
           {/* Right Column: Appointment Form (7 cols) */}
-          <AnimatedReveal direction="right" delay={0.15} amount={0.15} className="lg:col-span-7 bg-[#141C18] p-5 sm:p-7 lg:p-8 rounded-2xl border border-white/[0.08] shadow-2xl relative">
+          <AnimatedReveal direction="right" delay={0.15} amount={0.05} className="lg:col-span-7 bg-[#141C18] p-5 sm:p-7 lg:p-8 rounded-2xl border border-white/[0.08] shadow-2xl relative">
             {submittedPayload ? (
               /* Success State */
               <div className="space-y-5 py-2">

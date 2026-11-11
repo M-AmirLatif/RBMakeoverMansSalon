@@ -57,17 +57,19 @@ export function WhyChooseUsSection() {
     <section
       id="why-us"
       aria-label="Why Choose R.B Makeover"
-      className="relative py-20 sm:py-28 bg-[#121815] border-b border-white/[0.06] overflow-hidden"
+      className="relative py-12 sm:py-20 lg:py-28 bg-[#121815] border-b border-white/[0.06] overflow-hidden"
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
         {/* Section Heading */}
-        <SectionHeading
-          eyebrow="Why Choose Us"
-          titleCream="Why Customers"
-          titleGold="Choose R.B Makeover"
-          description="Customer feedback and details from our Rose Commercial salon in Park View City."
-        />
+        <AnimatedReveal direction="up" delay={0.05} amount={0.05}>
+          <SectionHeading
+            eyebrow="Why Choose Us"
+            titleCream="Why Customers"
+            titleGold="Choose R.B Makeover"
+            description="Customer feedback and details from our Rose Commercial salon in Park View City."
+          />
+        </AnimatedReveal>
 
         {/* Editorial Numbered List: 2 Columns Desktop, Large Condensed Numerals, Hairline Dividers, NO BOXES */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-x-14 gap-y-10 mt-12">
