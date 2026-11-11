@@ -18,6 +18,7 @@ import { LocationSection } from "@/components/sections/LocationSection";
 import { ContactSection } from "@/components/sections/ContactSection";
 import { MarqueeTicker } from "@/components/ui/MarqueeTicker";
 import { ServiceSpotlightBand } from "@/components/ui/ServiceSpotlightBand";
+import { CutoutFeatureBand } from "@/components/ui/CutoutFeatureBand";
 import { AnimatedReveal } from "@/components/ui/AnimatedReveal";
 import { serviceSpotlights } from "@/data/serviceSpotlights";
 
@@ -54,6 +55,15 @@ export default function Home() {
             ]}
           />
         </AnimatedReveal>
+
+        {/* Editorial Feature Cutout between Ticker and Spotlight (matching user screenshot 12) */}
+        <CutoutFeatureBand
+          image="/images/cutout-combover-razor.webp"
+          alt="Executive comb-over fade and razor part line at R.B Makeover"
+          tag="EXECUTIVE COMB-OVER"
+          title="Razor Part Discipline"
+          maxHeight="h-[240px] sm:h-[320px] lg:h-[420px]"
+        />
 
         {/* Service Spotlight 1: Modern Textured European Crop */}
         <ServiceSpotlightBand {...serviceSpotlights.executiveCrop} />

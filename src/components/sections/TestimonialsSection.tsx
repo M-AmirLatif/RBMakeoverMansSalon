@@ -5,6 +5,7 @@ import Image from "next/image";
 import { reviews, reviewsSummary } from "@/data/reviews";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { AnimatedReveal } from "@/components/ui/AnimatedReveal";
+import { CutoutFeatureBand } from "@/components/ui/CutoutFeatureBand";
 import { Star, ShieldCheck } from "lucide-react";
 import { GoogleGIcon } from "@/components/ui/Icons";
 
@@ -203,6 +204,15 @@ export function TestimonialsSection() {
             </div>
           ))}
         </div>
+
+        {/* Editorial Feature Cutout (matching user screenshot 7) */}
+        <CutoutFeatureBand
+          image="/images/cutout-curly-taper.webp"
+          alt="Modern curly textured crop and skin fade at R.B Makeover"
+          tag="CLIENT APPROVED"
+          title="Modern Curly Crop"
+          maxHeight="h-[240px] sm:h-[320px] lg:h-[400px]"
+        />
 
       </div>
     </section>

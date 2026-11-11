@@ -5,6 +5,7 @@ import Image from "next/image";
 import { serviceCategories, ServiceCategoryKey } from "@/data/services";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { AnimatedReveal } from "@/components/ui/AnimatedReveal";
+import { CutoutFeatureBand } from "@/components/ui/CutoutFeatureBand";
 import { WhatsAppIcon } from "@/components/ui/Icons";
 import { buildServiceInquiryWhatsAppUrl } from "@/lib/whatsapp";
 import { ArrowUpRight, ArrowRight } from "lucide-react";
@@ -186,10 +187,10 @@ export function ServicesSection() {
           {/* Left Column: Category Feature Photo Card (Smooth blurred edges, no card border) */}
           <AnimatedReveal direction="left" delay={0.15} amount={0.05} className="lg:col-span-5 relative z-10">
             <div
-              className="relative rounded-2xl overflow-hidden bg-[#121815] shadow-2xl w-full h-[260px] sm:h-[340px] lg:h-[560px]"
+              className="relative overflow-hidden w-full h-[260px] sm:h-[340px] lg:h-[560px] flex items-center justify-center select-none"
               style={{
-                WebkitMaskImage: 'radial-gradient(ellipse 92% 92% at 50% 50%, black 65%, transparent 100%)',
-                maskImage: 'radial-gradient(ellipse 92% 92% at 50% 50%, black 65%, transparent 100%)'
+                WebkitMaskImage: 'radial-gradient(ellipse 80% 80% at 50% 50%, black 35%, transparent 92%)',
+                maskImage: 'radial-gradient(ellipse 80% 80% at 50% 50%, black 35%, transparent 92%)'
               }}
             >
               <Image
@@ -266,6 +267,15 @@ export function ServicesSection() {
         <p className="mt-8 text-center text-xs text-[#7A756B]">
           Message us on WhatsApp for pricing and availability.
         </p>
+
+        {/* Editorial Feature Cutout (matching user screenshot 10) */}
+        <CutoutFeatureBand
+          image="/images/cutout-styling-arched.webp"
+          alt="Master salon styling and hair treatment at R.B Makeover"
+          tag="FULL MENU DISCIPLINE"
+          title="Bespoke Grooming & Skincare"
+          maxHeight="h-[240px] sm:h-[320px] lg:h-[400px]"
+        />
 
       </div>
     </section>

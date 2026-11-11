@@ -5,6 +5,7 @@ import Image from "next/image";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { Button } from "@/components/ui/Button";
 import { AnimatedReveal } from "@/components/ui/AnimatedReveal";
+import { CutoutFeatureBand } from "@/components/ui/CutoutFeatureBand";
 import {
   Scissors,
   Sparkles,
@@ -193,6 +194,15 @@ export function PrecisionSection() {
           </AnimatedReveal>
 
         </div>
+
+        {/* Editorial Feature Cutout above Menu Button (matching user screenshot 5 & 11) */}
+        <CutoutFeatureBand
+          image="/images/cutout-razor-dropfade.webp"
+          alt="Precision razor line-up and skin drop fade at R.B Makeover"
+          tag="DROP FADE & LINE-UP"
+          title="Jawline Symmetry"
+          maxHeight="h-[240px] sm:h-[320px] lg:h-[400px]"
+        />
 
         {/* Action Button underneath */}
         <AnimatedReveal direction="up" delay={0.25} amount={0.05} className="mt-8 sm:mt-12 text-center">

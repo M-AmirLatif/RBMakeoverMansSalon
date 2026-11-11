@@ -3,6 +3,7 @@ import Image from "next/image";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { Button } from "@/components/ui/Button";
 import { AnimatedReveal } from "@/components/ui/AnimatedReveal";
+import { CutoutFeatureBand } from "@/components/ui/CutoutFeatureBand";
 import { ArrowRight, UserCheck, Star, Clock, MapPin, Sparkles } from "lucide-react";
 
 export function AboutSection() {
@@ -157,6 +158,16 @@ export function AboutSection() {
           </AnimatedReveal>
 
         </div>
+
+        {/* Editorial Feature Cutout (matching user screenshot 9) */}
+        <CutoutFeatureBand
+          image="/images/cutout-vip-grooming.webp"
+          alt="VIP Grooming experience and gentleman styling at R.B Makeover"
+          tag="PARK VIEW CITY SANCTUARY"
+          title="Bespoke Gentleman Lounge"
+          maxHeight="h-[240px] sm:h-[320px] lg:h-[400px]"
+        />
+
       </div>
     </section>
   );
