@@ -6,7 +6,6 @@ import { siteConfig } from "@/data/siteConfig";
 import { Button } from "@/components/ui/Button";
 import { WhatsAppIcon, FacebookIcon } from "@/components/ui/Icons";
 import { AnimatedReveal } from "@/components/ui/AnimatedReveal";
-import { CutoutFeatureBand } from "@/components/ui/CutoutFeatureBand";
 import {
   Star,
   MapPin,
@@ -206,15 +205,6 @@ export function HeroSection() {
               </span>
             </div>
         </div>
-
-        {/* Editorial Feature Cutout below Hero Strap (matching user screenshot 4) */}
-        <CutoutFeatureBand
-          image="/images/cutout-quiff-taper.webp"
-          alt="Modern textured quiff and skin taper fade at R.B Makeover"
-          tag="SIGNATURE QUIFF"
-          title="Precision Skin Taper"
-          maxHeight="h-[240px] sm:h-[320px] lg:h-[400px]"
-        />
 
         {/* ============================================================ */}
         {/* STAT STRIP (Connecting the two editorial hero showcases)       */}

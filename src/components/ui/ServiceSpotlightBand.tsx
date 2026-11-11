@@ -71,17 +71,13 @@ export function ServiceSpotlightBand({
               isImageRight ? "order-2" : "order-2 lg:order-1"
             }`}
           >
-            <div className="relative w-full max-w-[400px] sm:max-w-[480px] lg:max-w-none h-[280px] sm:h-[380px] lg:h-[560px] group flex flex-col justify-end">
+            <div className="relative w-full max-w-[420px] sm:max-w-[480px] lg:max-w-none h-[380px] sm:h-[460px] lg:h-[580px] group flex flex-col justify-end">
               <Image
                 src={image}
                 alt={imageAlt}
                 fill
                 sizes="(max-width: 1024px) 100vw, 50vw"
                 className="object-contain object-bottom group-hover:scale-105 transition-transform duration-700 ease-out select-none"
-                style={{
-                  WebkitMaskImage: 'radial-gradient(ellipse 80% 80% at 50% 50%, black 55%, transparent 100%)',
-                  maskImage: 'radial-gradient(ellipse 80% 80% at 50% 50%, black 55%, transparent 100%)'
-                }}
               />
 
               {/* Bottom Scrim blending seamlessly into dark background */}

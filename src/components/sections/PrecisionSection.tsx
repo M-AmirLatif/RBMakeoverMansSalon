@@ -5,7 +5,6 @@ import Image from "next/image";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { Button } from "@/components/ui/Button";
 import { AnimatedReveal } from "@/components/ui/AnimatedReveal";
-import { CutoutFeatureBand } from "@/components/ui/CutoutFeatureBand";
 import {
   Scissors,
   Sparkles,
@@ -131,17 +130,13 @@ export function PrecisionSection() {
 
           {/* Center Column: Tall Seamless Cutout Portrait (Zero Cropped Edges, Big on PC) */}
           <AnimatedReveal direction="scale" delay={0.15} amount={0.05} className="lg:col-span-4 order-1 lg:order-2 flex justify-center">
-            <div className="relative w-full max-w-[320px] sm:max-w-[400px] lg:max-w-none mx-auto h-[320px] sm:h-[460px] lg:h-[620px] group flex flex-col justify-end">
+            <div className="relative w-full max-w-[340px] sm:max-w-[420px] lg:max-w-none mx-auto h-[380px] sm:h-[480px] lg:h-[620px] group flex flex-col justify-end">
               <Image
                 src="/images/cutout-precision-taper.webp"
                 alt="Executive gentleman profile with precision fade and groomed beard at R.B Makeover Man's Salon"
                 fill
                 sizes="(max-width: 1024px) 420px, 460px"
                 className="object-contain object-bottom group-hover:scale-105 transition-transform duration-700 ease-out select-none"
-                style={{
-                  WebkitMaskImage: 'radial-gradient(ellipse 80% 80% at 50% 45%, black 45%, transparent 100%)',
-                  maskImage: 'radial-gradient(ellipse 80% 80% at 50% 45%, black 45%, transparent 100%)'
-                }}
               />
 
               {/* Scrim gradient blending into the dark section background */}
@@ -194,15 +189,6 @@ export function PrecisionSection() {
           </AnimatedReveal>
 
         </div>
-
-        {/* Editorial Feature Cutout above Menu Button (matching user screenshot 5 & 11) */}
-        <CutoutFeatureBand
-          image="/images/cutout-razor-dropfade.webp"
-          alt="Precision razor line-up and skin drop fade at R.B Makeover"
-          tag="DROP FADE & LINE-UP"
-          title="Jawline Symmetry"
-          maxHeight="h-[240px] sm:h-[320px] lg:h-[400px]"
-        />
 
         {/* Action Button underneath */}
         <AnimatedReveal direction="up" delay={0.25} amount={0.05} className="mt-8 sm:mt-12 text-center">

@@ -4,7 +4,6 @@ import React, { useState } from "react";
 import { staffBarbers, BarberStaff } from "@/data/team";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { AnimatedReveal } from "@/components/ui/AnimatedReveal";
-import { CutoutFeatureBand } from "@/components/ui/CutoutFeatureBand";
 import { WhatsAppIcon } from "@/components/ui/Icons";
 import { buildBarberBookingWhatsAppUrl } from "@/lib/whatsapp";
 import {
@@ -311,15 +310,6 @@ export function TeamSection({
           );
           })}
         </div>
-
-        {/* Editorial Feature Cutout (matching user screenshot 8) */}
-        <CutoutFeatureBand
-          image="/images/cutout-mature-classic.webp"
-          alt="Distinguished mature gentleman with classic scissor cut and beard grooming at R.B Makeover"
-          tag="HERITAGE SCISSOR WORK"
-          title="14+ Years Craftsmanship"
-          maxHeight="h-[240px] sm:h-[320px] lg:h-[400px]"
-        />
 
         {/* Bottom Note */}
         <div className="mt-10 p-4 rounded-xl bg-white/[0.02] border border-white/[0.06] flex items-center justify-center gap-3 text-center text-xs text-[#A8A193]">

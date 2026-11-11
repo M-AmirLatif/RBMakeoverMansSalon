@@ -4,7 +4,6 @@ import React from "react";
 import Image from "next/image";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { AnimatedReveal } from "@/components/ui/AnimatedReveal";
-import { CutoutFeatureBand } from "@/components/ui/CutoutFeatureBand";
 import { Sparkles, Scissors } from "lucide-react";
 
 interface WhyChooseItem {
@@ -101,15 +100,6 @@ export function WhyChooseUsSection() {
             </AnimatedReveal>
           ))}
         </div>
-
-        {/* Editorial Feature Cutout (matching user screenshot 6) */}
-        <CutoutFeatureBand
-          image="/images/cutout-pompadour-sculpt.webp"
-          alt="Bespoke beard sculpting and pompadour hairstyle at R.B Makeover"
-          tag="ROYAL SCULPT"
-          title="Park View City Standard"
-          maxHeight="h-[240px] sm:h-[320px] lg:h-[400px]"
-        />
 
       </div>
     </section>

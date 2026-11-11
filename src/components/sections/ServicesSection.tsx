@@ -5,7 +5,6 @@ import Image from "next/image";
 import { serviceCategories, ServiceCategoryKey } from "@/data/services";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { AnimatedReveal } from "@/components/ui/AnimatedReveal";
-import { CutoutFeatureBand } from "@/components/ui/CutoutFeatureBand";
 import { WhatsAppIcon } from "@/components/ui/Icons";
 import { buildServiceInquiryWhatsAppUrl } from "@/lib/whatsapp";
 import { ArrowUpRight, ArrowRight } from "lucide-react";
@@ -267,15 +266,6 @@ export function ServicesSection() {
         <p className="mt-8 text-center text-xs text-[#7A756B]">
           Message us on WhatsApp for pricing and availability.
         </p>
-
-        {/* Editorial Feature Cutout (matching user screenshot 10) */}
-        <CutoutFeatureBand
-          image="/images/cutout-styling-arched.webp"
-          alt="Master salon styling and hair treatment at R.B Makeover"
-          tag="FULL MENU DISCIPLINE"
-          title="Bespoke Grooming & Skincare"
-          maxHeight="h-[240px] sm:h-[320px] lg:h-[400px]"
-        />
 
       </div>
     </section>
