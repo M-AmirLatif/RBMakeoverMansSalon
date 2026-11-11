@@ -78,8 +78,8 @@ export function PrecisionSection() {
       aria-label="Precision in Every Cut"
       className="py-10 sm:py-20 lg:py-24 bg-[#090D0B] relative overflow-hidden border-t border-white/[0.05]"
     >
-      {/* Background glow */}
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[400px] bg-[#C59B46]/5 rounded-full blur-[140px] pointer-events-none" />
+      {/* Background glow (GPU texture gradient without heavy blur filter) */}
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[400px] bg-[radial-gradient(ellipse_at_center,rgba(197,155,70,0.08)_0%,transparent_70%)] pointer-events-none" />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         <AnimatedReveal direction="up" delay={0.05} amount={0.05}>
@@ -198,7 +198,7 @@ export function PrecisionSection() {
             size="md"
             icon={<ArrowRight className="w-4 h-4" />}
           >
-            Explore Full Grooming Menu & Rates
+            Explore Grooming Menu & Rates
           </Button>
         </AnimatedReveal>
 

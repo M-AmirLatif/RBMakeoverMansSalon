@@ -52,11 +52,11 @@ export function ServiceSpotlightBand({
       aria-label={`${serviceName} Spotlight`}
       className={`relative py-8 sm:py-16 lg:py-24 ${bgClass} border-y border-white/[0.06] overflow-hidden`}
     >
-      {/* Background ambient lighting */}
+      {/* Background ambient lighting (GPU texture gradient without heavy blur filter) */}
       <div
         className={`absolute top-1/2 ${
           isImageRight ? "right-1/4" : "left-1/4"
-        } -translate-y-1/2 w-[500px] h-[350px] bg-[#C59B46]/5 rounded-full blur-[160px] pointer-events-none`}
+        } -translate-y-1/2 w-[500px] h-[350px] bg-[radial-gradient(ellipse_at_center,rgba(197,155,70,0.08)_0%,transparent_70%)] pointer-events-none`}
       />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
@@ -143,11 +143,11 @@ export function ServiceSpotlightBand({
               <Button
                 href={waUrl}
                 variant="gold"
-                size="lg"
+                size="md"
                 icon={<ArrowRight className="w-4 h-4" />}
                 className="w-full sm:w-auto"
               >
-                Book {serviceName} ({price}) on WhatsApp
+                Book via WhatsApp • {price}
               </Button>
             </div>
           </AnimatedReveal>

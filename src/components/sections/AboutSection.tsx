@@ -136,12 +136,13 @@ export function AboutSection() {
               </div>
             </div>
 
-            <div className="pt-2 flex items-center gap-4">
+            <div className="pt-2 flex flex-col sm:flex-row items-stretch sm:items-center gap-3 sm:gap-4">
               <Button
                 href="#contact"
                 variant="gold"
                 size="md"
                 icon={<ArrowRight className="w-4 h-4" />}
+                className="w-full sm:w-auto"
               >
                 Book Your Visit
               </Button>
@@ -150,6 +151,7 @@ export function AboutSection() {
                 href="#services"
                 variant="outline"
                 size="md"
+                className="w-full sm:w-auto"
               >
                 Explore Services
               </Button>

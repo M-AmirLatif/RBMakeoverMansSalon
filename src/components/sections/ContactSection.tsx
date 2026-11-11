@@ -746,8 +746,9 @@ export function ContactSection({
                     fullWidth
                     disabled={isSubmitting}
                     icon={<WhatsAppIcon className="w-5 h-5 text-[#0B0F0D]" />}
+                    iconPosition="left"
                   >
-                    {isSubmitting ? "Generating WhatsApp..." : "Send Request on WhatsApp"}
+                    {isSubmitting ? "Generating WhatsApp..." : "Book via WhatsApp"}
                   </Button>
                 </div>
 

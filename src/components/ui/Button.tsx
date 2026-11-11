@@ -26,12 +26,12 @@ export function Button({
   ...props
 }: ButtonProps) {
   const baseStyles =
-    "inline-flex items-center justify-center text-center leading-none font-medium rounded-full transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C59B46] focus-visible:ring-offset-2 focus-visible:ring-offset-[#0B0F0D] disabled:opacity-50 disabled:pointer-events-none active:scale-[0.98] select-none";
+    "inline-flex items-center justify-center text-center font-semibold rounded-full transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C59B46] focus-visible:ring-offset-2 focus-visible:ring-offset-[#0B0F0D] disabled:opacity-50 disabled:pointer-events-none active:scale-[0.98] select-none whitespace-nowrap leading-none";
 
   const sizeStyles = {
-    sm: "text-xs tracking-wider uppercase px-4 py-2 min-h-[40px] gap-2 font-semibold",
-    md: "text-sm tracking-wide px-6 py-3 min-h-[48px] gap-2.5 font-semibold",
-    lg: "text-base tracking-wide px-8 py-4 min-h-[54px] gap-3 font-semibold",
+    sm: "text-xs tracking-wider uppercase px-4 py-2 min-h-[38px] gap-2",
+    md: "text-xs sm:text-sm tracking-wide px-5 sm:px-6 py-2.5 sm:py-3 min-h-[44px] gap-2 sm:gap-2.5",
+    lg: "text-sm sm:text-base tracking-wide px-6 sm:px-8 py-3 sm:py-3.5 min-h-[48px] sm:min-h-[52px] gap-2.5 sm:gap-3",
   }[size];
 
   const variantStyles = {
@@ -48,7 +48,7 @@ export function Button({
   const combinedClasses = `${baseStyles} ${sizeStyles} ${variantStyles} ${widthStyle} ${className}`;
 
   const content = (
-    <>
+    <span className="inline-flex items-center justify-center gap-2 sm:gap-2.5 leading-none">
       {icon && iconPosition === "left" && (
         <span className="inline-flex items-center justify-center shrink-0 leading-none">
           {icon}
@@ -62,7 +62,7 @@ export function Button({
           {icon}
         </span>
       )}
-    </>
+    </span>
   );
 
   if (href) {

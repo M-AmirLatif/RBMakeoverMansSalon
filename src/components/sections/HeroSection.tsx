@@ -41,9 +41,9 @@ export function HeroSection() {
       aria-label="Welcome to R.B Makeover Man's Salon"
       className="relative min-h-[100svh] bg-black pt-20 sm:pt-28 pb-8 sm:pb-16 flex flex-col justify-between overflow-x-clip"
     >
-      {/* Subtle ambient lighting placed away from the portrait so black stays pure #000000 */}
-      <div className="absolute top-24 right-1/4 w-[500px] h-[350px] bg-[#C59B46]/5 rounded-full blur-[160px] pointer-events-none animate-pulse-subtle" />
-      <div className="absolute bottom-20 left-10 w-[450px] h-[350px] bg-[#141C18]/60 rounded-full blur-[140px] pointer-events-none" />
+      {/* Subtle ambient lighting with zero expensive blur filter overhead */}
+      <div className="absolute top-24 right-1/4 w-[500px] h-[350px] bg-[radial-gradient(ellipse_at_center,rgba(197,155,70,0.08)_0%,transparent_70%)] pointer-events-none" />
+      <div className="absolute bottom-20 left-10 w-[450px] h-[350px] bg-[radial-gradient(ellipse_at_center,rgba(20,28,24,0.6)_0%,transparent_70%)] pointer-events-none" />
 
       {/* Main Container */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full relative z-10 space-y-6 sm:space-y-12">

@@ -18,10 +18,10 @@ export function AnimatedReveal({
   children,
   direction = "up",
   delay = 0,
-  duration = 0.65,
+  duration = 0.4,
   className = "",
   amount = 0.05,
-  margin = "0px 0px -20px 0px",
+  margin = "0px 0px 60px 0px",
 }: AnimatedRevealProps) {
   const shouldReduceMotion = useReducedMotion();
 
@@ -33,34 +33,34 @@ export function AnimatedReveal({
     switch (direction) {
       case "up":
         return {
-          hidden: { opacity: 0, y: 40 },
+          hidden: { opacity: 0, y: 18 },
           visible: { opacity: 1, y: 0 },
         };
       case "down":
         return {
-          hidden: { opacity: 0, y: -40 },
+          hidden: { opacity: 0, y: -18 },
           visible: { opacity: 1, y: 0 },
         };
       case "left":
         return {
-          hidden: { opacity: 0, x: -45 },
+          hidden: { opacity: 0, x: -20 },
           visible: { opacity: 1, x: 0 },
         };
       case "right":
         return {
-          hidden: { opacity: 0, x: 45 },
+          hidden: { opacity: 0, x: 20 },
           visible: { opacity: 1, x: 0 },
         };
       case "scale":
         return {
-          hidden: { opacity: 0, scale: 0.90 },
+          hidden: { opacity: 0, scale: 0.96 },
           visible: { opacity: 1, scale: 1 },
         };
       case "fade":
       default:
         return {
-          hidden: { opacity: 0, filter: "blur(4px)" },
-          visible: { opacity: 1, filter: "blur(0px)" },
+          hidden: { opacity: 0 },
+          visible: { opacity: 1 },
         };
     }
   };
@@ -74,8 +74,9 @@ export function AnimatedReveal({
       transition={{
         duration,
         delay,
-        ease: [0.16, 1, 0.3, 1], // Smooth luxury deceleration curve
+        ease: [0.22, 1, 0.36, 1], // Buttery smooth spring-like cubic bezier
       }}
+      style={{ willChange: "opacity, transform" }}
       className={className}
     >
       {children}
