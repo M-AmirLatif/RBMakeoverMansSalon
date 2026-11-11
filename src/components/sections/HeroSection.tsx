@@ -51,15 +51,16 @@ export function HeroSection() {
         {/* ============================================================ */}
         <AnimatedReveal direction="fade" delay={0.05} amount={0} margin="0px" className="w-full">
           
-          {/* Headline Line 1: Shop Name across the top, crisp & grand */}
+          {/* Headline Line 1: Shop Name across top (Mobile has MAN'S, Desktop has R.B MAKEOVER) */}
           <div className="w-full mb-1 sm:mb-3 select-none">
-            <h1 className="font-['Bebas_Neue',sans-serif] text-5xl sm:text-7xl md:text-8xl lg:text-[7rem] xl:text-[8.8rem] tracking-tight text-[#F5EFEB] uppercase leading-[0.88] text-left">
-              R.B MAKEOVER <span className="text-[#DFC074]">MAN&apos;S</span>
+            <h1 className="font-['Bebas_Neue',sans-serif] text-5xl sm:text-7xl md:text-8xl lg:text-[7.5rem] xl:text-[9.5rem] tracking-tight text-[#F5EFEB] uppercase leading-[0.88] text-left">
+              <span className="lg:hidden">R.B MAKEOVER <span className="text-[#DFC074]">MAN&apos;S</span></span>
+              <span className="hidden lg:inline">R.B MAKEOVER</span>
             </h1>
           </div>
 
-          {/* Center Split: Exact Borderless Gentleman Profile (Left) & SALON + Services List (Right) */}
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 items-center">
+          {/* Center Split: Exact Borderless Gentleman Profile (Left) & MAN'S SALON + Services List (Right) */}
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-10 items-center">
             
             {/* Left Column (5 cols): Exact real man photo without borders, seamless black */}
             <div className="lg:col-span-5 flex justify-center lg:justify-start">
@@ -73,22 +74,22 @@ export function HeroSection() {
                   className="w-full h-auto object-contain select-none"
                 />
                 
-                {/* Mobile only: SALON merged into the img on face side of person */}
-                <div className="lg:hidden absolute right-1 sm:right-4 top-[38%] -translate-y-1/2 select-none pointer-events-none z-10 text-right">
-                  <span className="font-['Bebas_Neue',sans-serif] text-6xl sm:text-7xl md:text-8xl text-[#C59B46] tracking-wider uppercase leading-none drop-shadow-[0_6px_24px_rgba(0,0,0,0.98)] block">
+                {/* Mobile only: SALON sized down to fit neatly in front of head on the upper-right corner */}
+                <div className="lg:hidden absolute right-2 sm:right-4 top-5 sm:top-8 select-none pointer-events-none z-10 text-right">
+                  <span className="font-['Bebas_Neue',sans-serif] text-2xl sm:text-3xl text-[#C59B46] tracking-[0.25em] uppercase leading-none drop-shadow-[0_4px_16px_rgba(0,0,0,0.98)] block">
                     SALON
                   </span>
                 </div>
               </div>
             </div>
 
-            {/* Right Column (7 cols): SALON word on face side + Hairline Service Rail */}
+            {/* Right Column (7 cols): Desktop Title Part 2 "MAN'S SALON" + Hairline Service Rail */}
             <div className="lg:col-span-7 flex flex-col justify-center space-y-4 sm:space-y-5 lg:pl-2">
               
-              {/* Desktop only: Title Part 2 "SALON" merged into the face side of the image */}
-              <div className="hidden lg:block select-none -ml-12 lg:-ml-20 xl:-ml-28 z-20 relative pointer-events-none">
-                <h2 className="font-['Bebas_Neue',sans-serif] text-7xl md:text-8xl lg:text-[7.5rem] xl:text-[9rem] tracking-wider text-[#C59B46] uppercase leading-none drop-shadow-[0_8px_30px_rgba(0,0,0,0.95)]">
-                  SALON
+              {/* Desktop only: Title Part 2 "MAN'S SALON" above the services card (Previous Desktop Layout) */}
+              <div className="hidden lg:block select-none">
+                <h2 className="font-['Bebas_Neue',sans-serif] text-5xl lg:text-7xl xl:text-8xl tracking-wider text-[#F5EFEB] uppercase leading-none">
+                  MAN&apos;S <span className="text-[#C59B46]">SALON</span>
                 </h2>
               </div>
 

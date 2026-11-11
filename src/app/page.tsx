@@ -7,6 +7,7 @@ import { MobileActionBar } from "@/components/layout/MobileActionBar";
 import { HeroSection } from "@/components/sections/HeroSection";
 import { PrecisionSection } from "@/components/sections/PrecisionSection";
 import { ServicesSection } from "@/components/sections/ServicesSection";
+import { SignatureLooksSection } from "@/components/sections/SignatureLooksSection";
 import { AboutSection } from "@/components/sections/AboutSection";
 import { TeamSection } from "@/components/sections/TeamSection";
 import { TestimonialsSection } from "@/components/sections/TestimonialsSection";
@@ -55,6 +56,9 @@ export default function Home() {
 
         {/* 3. The Grooming Menu: 2x2 featured cards with thumbnails + complete catalog */}
         <ServicesSection />
+
+        {/* Newly Added HD Editorial Signature Looks Showcase */}
+        <SignatureLooksSection />
 
         {/* 4. About Us: Arched window salon photo, owner quote & hours */}
         <AboutSection />
