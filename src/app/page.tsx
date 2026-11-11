@@ -7,9 +7,10 @@ import { MobileActionBar } from "@/components/layout/MobileActionBar";
 import { HeroSection } from "@/components/sections/HeroSection";
 import { PrecisionSection } from "@/components/sections/PrecisionSection";
 import { ServicesSection } from "@/components/sections/ServicesSection";
-import { SignatureLooksSection } from "@/components/sections/SignatureLooksSection";
+import { RoyalBeardFeature } from "@/components/sections/RoyalBeardFeature";
 import { AboutSection } from "@/components/sections/AboutSection";
 import { TeamSection } from "@/components/sections/TeamSection";
+import { ExecutiveLookFeature } from "@/components/sections/ExecutiveLookFeature";
 import { TestimonialsSection } from "@/components/sections/TestimonialsSection";
 import { InteriorPhotoBand } from "@/components/sections/InteriorPhotoBand";
 import { WhyChooseUsSection } from "@/components/sections/WhyChooseUsSection";
@@ -57,14 +58,17 @@ export default function Home() {
         {/* 3. The Grooming Menu: 2x2 featured cards with thumbnails + complete catalog */}
         <ServicesSection />
 
-        {/* Newly Added HD Editorial Signature Looks Showcase */}
-        <SignatureLooksSection />
+        {/* Distributed Placement A: Royal Beard Architecture Feature (Borderless HD Cutout) */}
+        <RoyalBeardFeature />
 
         {/* 4. About Us: Arched window salon photo, owner quote & hours */}
         <AboutSection />
 
         {/* 5. The Hands Behind The Craft: 10 barbers roster with rate switcher */}
         <TeamSection onSelectBarber={setSelectedBarberId} />
+
+        {/* Distributed Placement B: Executive Grooming Synergy Feature (Borderless HD Cutout) */}
+        <ExecutiveLookFeature />
 
         {/* 6. Voices of Our Happy Client: Vintage barber chair centerpiece & Google reviews */}
         <TestimonialsSection />

@@ -102,27 +102,27 @@ export function WhyChooseUsSection() {
         {/* ============================================================ */}
         {/* NEWLY ADDED HD EDITORIAL VISUAL BAND (BORDERLESS DARK LUXURY) */}
         {/* ============================================================ */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mt-16 pt-12 border-t border-white/[0.08]">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 mt-16 pt-12 border-t border-white/[0.08]">
           
-          {/* Visual 1: Vintage Hydraulic Barber Chair */}
-          <AnimatedReveal direction="up" delay={0.1} className="group relative rounded-3xl overflow-hidden bg-black border border-white/[0.08] hover:border-[#C59B46]/40 transition-all duration-500 shadow-2xl">
-            <div className="relative w-full aspect-[16/10] overflow-hidden">
+          {/* Visual 1: Vintage Hydraulic Barber Chair (Large on PC, Seamless) */}
+          <AnimatedReveal direction="up" delay={0.1} className="group relative rounded-3xl overflow-hidden bg-black/60 shadow-[0_20px_50px_rgba(0,0,0,0.8)]">
+            <div className="relative w-full h-[320px] sm:h-[380px] lg:h-[440px] overflow-hidden">
               <Image
                 src="/images/vintage-barber-chair.webp"
                 alt="Handcrafted leather reclining hydraulic barber chair at R.B Makeover Man's Salon"
                 fill
-                sizes="(max-width: 768px) 100vw, 50vw"
+                sizes="(max-width: 1024px) 100vw, 50vw"
                 className="object-cover object-center group-hover:scale-105 transition-transform duration-700 ease-out select-none"
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-black via-black/30 to-transparent pointer-events-none" />
+              <div className="absolute inset-0 bg-gradient-to-t from-black via-black/20 to-transparent pointer-events-none" />
               
               {/* Top Tag */}
               <div className="absolute top-4 left-4 px-3 py-1.5 rounded-full bg-black/85 backdrop-blur-md border border-[#C59B46]/30 text-[10px] font-bold tracking-widest text-[#DFC074] uppercase">
-                ✦ CRAFT & COMFORT
+                ✦ CRAFT &amp; COMFORT
               </div>
 
               {/* Bottom Modern HD Caption */}
-              <div className="absolute bottom-4 left-4 right-4 p-3.5 rounded-2xl bg-black/85 backdrop-blur-md border border-white/10 space-y-1">
+              <div className="absolute bottom-4 left-4 right-4 p-4 rounded-2xl bg-[#0C110F]/90 backdrop-blur-md border border-[#C59B46]/20 space-y-1 shadow-2xl">
                 <span className="text-[10px] sm:text-[11px] font-mono tracking-wider uppercase text-[#C59B46] font-semibold block">
                   VINTAGE RECLINING BARBER CHAIRS • ERGONOMIC RELAXATION
                 </span>
@@ -133,17 +133,17 @@ export function WhyChooseUsSection() {
             </div>
           </AnimatedReveal>
 
-          {/* Visual 2: Artisanal Grooming Tools & Vanity */}
-          <AnimatedReveal direction="up" delay={0.2} className="group relative rounded-3xl overflow-hidden bg-black border border-white/[0.08] hover:border-[#C59B46]/40 transition-all duration-500 shadow-2xl">
-            <div className="relative w-full aspect-[16/10] overflow-hidden">
+          {/* Visual 2: Artisanal Grooming Tools & Vanity (Large on PC, Seamless) */}
+          <AnimatedReveal direction="up" delay={0.2} className="group relative rounded-3xl overflow-hidden bg-black/60 shadow-[0_20px_50px_rgba(0,0,0,0.8)]">
+            <div className="relative w-full h-[320px] sm:h-[380px] lg:h-[440px] overflow-hidden">
               <Image
                 src="/images/tools-styling-vanity.webp"
                 alt="Artisanal shears, straight razors, and grooming vanity at R.B Makeover Man's Salon"
                 fill
-                sizes="(max-width: 768px) 100vw, 50vw"
+                sizes="(max-width: 1024px) 100vw, 50vw"
                 className="object-cover object-center group-hover:scale-105 transition-transform duration-700 ease-out select-none"
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-black via-black/30 to-transparent pointer-events-none" />
+              <div className="absolute inset-0 bg-gradient-to-t from-black via-black/20 to-transparent pointer-events-none" />
               
               {/* Top Tag */}
               <div className="absolute top-4 left-4 px-3 py-1.5 rounded-full bg-black/85 backdrop-blur-md border border-[#C59B46]/30 text-[10px] font-bold tracking-widest text-[#DFC074] uppercase">
@@ -151,9 +151,9 @@ export function WhyChooseUsSection() {
               </div>
 
               {/* Bottom Modern HD Caption */}
-              <div className="absolute bottom-4 left-4 right-4 p-3.5 rounded-2xl bg-black/85 backdrop-blur-md border border-white/10 space-y-1">
+              <div className="absolute bottom-4 left-4 right-4 p-4 rounded-2xl bg-[#0C110F]/90 backdrop-blur-md border border-[#C59B46]/20 space-y-1 shadow-2xl">
                 <span className="text-[10px] sm:text-[11px] font-mono tracking-wider uppercase text-[#C59B46] font-semibold block">
-                  JAPANESE STEEL SHEARS & STERILIZED BARBER TOOLS
+                  JAPANESE STEEL SHEARS &amp; STERILIZED BARBER TOOLS
                 </span>
                 <p className="font-['Playfair_Display',Georgia,serif] text-sm sm:text-base text-[#F5EFEB] leading-snug">
                   Every blade, clipper guard, and scissor is professionally sanitized between every client.

@@ -126,27 +126,27 @@ export function PrecisionSection() {
             </div>
           </AnimatedReveal>
 
-          {/* Center Column: Tall Portrait of Gentleman (matching Noir & Blade centerpiece) */}
-          <AnimatedReveal direction="scale" delay={0.15} className="lg:col-span-4 order-1 lg:order-2">
-            <div className="relative w-full max-w-[340px] sm:max-w-[380px] lg:max-w-none mx-auto h-[460px] sm:h-[520px] rounded-3xl overflow-hidden border border-[#C59B46]/35 shadow-[0_20px_50px_rgba(0,0,0,0.8)] group">
+          {/* Center Column: Tall Seamless Cutout Portrait (Zero Cropped Edges, Big on PC) */}
+          <AnimatedReveal direction="scale" delay={0.15} className="lg:col-span-4 order-1 lg:order-2 flex justify-center">
+            <div className="relative w-full max-w-[340px] sm:max-w-[420px] lg:max-w-none mx-auto h-[480px] sm:h-[560px] lg:h-[640px] group flex flex-col justify-end">
               <Image
-                src="/images/hero-gentleman-profile.webp"
+                src="/images/cutout-skin-fade.webp"
                 alt="Gentleman profile with precision fade and groomed beard at R.B Makeover Man's Salon"
                 fill
-                sizes="(max-width: 1024px) 380px, 400px"
-                className="object-cover object-center group-hover:scale-105 transition-transform duration-700 ease-out"
+                sizes="(max-width: 1024px) 420px, 460px"
+                className="object-contain object-bottom group-hover:scale-105 transition-transform duration-700 ease-out select-none"
               />
 
-              {/* Scrim gradient */}
-              <div className="absolute inset-0 bg-gradient-to-t from-[#0A0E0C]/90 via-transparent to-transparent pointer-events-none" />
+              {/* Scrim gradient blending into the dark section background */}
+              <div className="absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-[#090D0B] via-[#090D0B]/40 to-transparent pointer-events-none" />
 
-              {/* Badge overlay on center portrait */}
-              <div className="absolute bottom-6 left-6 right-6 p-4 rounded-2xl bg-[#0B0F0D]/85 backdrop-blur-md border border-white/10 text-center shadow-xl">
-                <span className="text-[10px] uppercase font-bold tracking-[0.25em] text-[#C59B46] block mb-0.5">
-                  The Gentleman Look
+              {/* Floating Modern Editorial Caption on Center Portrait */}
+              <div className="relative z-10 mx-2 sm:mx-4 mb-4 p-4 rounded-2xl bg-[#0B0F0D]/90 backdrop-blur-md border border-[#C59B46]/30 text-center shadow-2xl select-none">
+                <span className="text-[10px] sm:text-[11px] font-mono tracking-widest uppercase text-[#C59B46] font-bold block mb-1">
+                  ✦ SIGNATURE LOW-DROP SKIN FADE • PRECISION SCISSOR TEXTURE
                 </span>
-                <p className="font-['Playfair_Display',Georgia,serif] text-base text-[#F5EFEB]">
-                  Tailored styling for every face shape
+                <p className="font-['Playfair_Display',Georgia,serif] text-sm sm:text-base text-[#F5EFEB] font-normal leading-snug">
+                  Zero-gap taper fade tailored to highlight jawline angles &amp; facial symmetry.
                 </p>
               </div>
             </div>

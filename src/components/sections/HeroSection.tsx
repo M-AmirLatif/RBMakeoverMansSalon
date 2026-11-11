@@ -51,46 +51,48 @@ export function HeroSection() {
         {/* ============================================================ */}
         <AnimatedReveal direction="fade" delay={0.05} amount={0} margin="0px" className="w-full">
           
-          {/* Headline Line 1: Shop Name across top (Mobile has MAN'S, Desktop has R.B MAKEOVER) */}
-          <div className="w-full mb-1 sm:mb-3 select-none">
-            <h1 className="font-['Bebas_Neue',sans-serif] text-5xl sm:text-7xl md:text-8xl lg:text-[7.5rem] xl:text-[9.5rem] tracking-tight text-[#F5EFEB] uppercase leading-[0.88] text-left">
-              <span className="lg:hidden">R.B MAKEOVER <span className="text-[#DFC074]">MAN&apos;S</span></span>
-              <span className="hidden lg:inline">R.B MAKEOVER</span>
+          {/* Headline: Desktop in ONE LINE across the top, Mobile in clean bold stack */}
+          <div className="w-full mb-3 sm:mb-6 select-none">
+            {/* Desktop: Exactly in one single line */}
+            <h1 className="hidden lg:block font-['Bebas_Neue',sans-serif] text-5xl md:text-6xl lg:text-[5.5rem] xl:text-[6.8rem] 2xl:text-[7.8rem] tracking-tight text-[#F5EFEB] uppercase leading-none text-left whitespace-nowrap">
+              R.B MAKEOVER <span className="text-[#C59B46]">MAN&apos;S SALON</span>
             </h1>
+
+            {/* Mobile: Clean, bold, highly professional two-line title */}
+            <div className="lg:hidden text-center space-y-1">
+              <h1 className="font-['Bebas_Neue',sans-serif] text-5xl sm:text-7xl tracking-tight text-[#F5EFEB] uppercase leading-none">
+                R.B MAKEOVER
+              </h1>
+              <div className="font-['Bebas_Neue',sans-serif] text-4xl sm:text-5xl tracking-widest text-[#C59B46] uppercase leading-none">
+                MAN&apos;S SALON
+              </div>
+            </div>
           </div>
 
-          {/* Center Split: Exact Borderless Gentleman Profile (Left) & MAN'S SALON + Services List (Right) */}
+          {/* Center Split: Transparent Cutout Gentleman Profile (Left) & Rates Table (Right) */}
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-10 items-center">
             
-            {/* Left Column (5 cols): Exact real man photo without borders, seamless black */}
+            {/* Left Column (5 cols): Transparent Cutout with Seamless Background Integration */}
             <div className="lg:col-span-5 flex justify-center lg:justify-start">
               <div className="relative w-full max-w-[340px] sm:max-w-[420px] lg:max-w-[480px]">
                 <Image
-                  src="/images/gentleman-hero-profile.jpg"
+                  src="/images/gentleman-hero-cutout.webp"
                   alt="R.B Makeover Man's Salon Signature Gentleman"
                   width={640}
                   height={640}
                   priority
                   className="w-full h-auto object-contain select-none"
                 />
-                
-                {/* Mobile only: SALON sized down to fit neatly in front of head on the upper-right corner */}
-                <div className="lg:hidden absolute right-2 sm:right-4 top-5 sm:top-8 select-none pointer-events-none z-10 text-right">
-                  <span className="font-['Bebas_Neue',sans-serif] text-2xl sm:text-3xl text-[#C59B46] tracking-[0.25em] uppercase leading-none drop-shadow-[0_4px_16px_rgba(0,0,0,0.98)] block">
-                    SALON
-                  </span>
-                </div>
               </div>
             </div>
 
-            {/* Right Column (7 cols): Desktop Title Part 2 "MAN'S SALON" + Hairline Service Rail */}
+            {/* Right Column (7 cols): Rates & Appointments Rail */}
             <div className="lg:col-span-7 flex flex-col justify-center space-y-4 sm:space-y-5 lg:pl-2">
               
-              {/* Desktop only: Title Part 2 "MAN'S SALON" above the services card (Previous Desktop Layout) */}
-              <div className="hidden lg:block select-none">
-                <h2 className="font-['Bebas_Neue',sans-serif] text-5xl lg:text-7xl xl:text-8xl tracking-wider text-[#F5EFEB] uppercase leading-none">
-                  MAN&apos;S <span className="text-[#C59B46]">SALON</span>
-                </h2>
+              {/* Desktop Eyebrow */}
+              <div className="hidden lg:flex items-center gap-3 text-xs font-bold tracking-[0.25em] uppercase text-[#C59B46] pb-0.5">
+                <span className="w-8 h-[2px] bg-[#C59B46]" />
+                <span>Featured Services &amp; Direct Booking</span>
               </div>
 
               {/* Service List with Rates & BOOK buttons from Reference A */}
@@ -283,18 +285,15 @@ export function HeroSection() {
           <AnimatedReveal direction="left" delay={0.1} amount={0.15} className="col-span-7 flex flex-col justify-center space-y-6">
             
             {/* Brand Title + Grand Two-Tone Headline */}
-            <div className="space-y-2 select-none">
-              <div className="flex items-center gap-2 text-xs font-bold tracking-[0.25em] uppercase text-[#A8A193]">
-                <span className="w-6 h-[1px] bg-[#C59B46]" />
+            <div className="space-y-3 select-none">
+              <div className="flex items-center gap-2.5 text-xs font-bold tracking-[0.25em] uppercase text-[#A8A193]">
+                <span className="w-8 h-[2px] bg-[#C59B46]" />
                 <span>R.B Makeover Man&apos;s Salon</span>
               </div>
 
-              <h2 className="font-['Playfair_Display',Georgia,serif] text-5xl xl:text-6xl font-normal text-[#F5EFEB] leading-[1.08] tracking-tight">
-                <span>Beauty Beholds </span>
-                <span className="italic text-[#C59B46] font-normal block xl:inline">
-                  Beneath the{" "}
-                </span>
-                <span>Cuts</span>
+              <h2 className="font-['Playfair_Display',Georgia,serif] text-4xl sm:text-5xl xl:text-6xl font-normal text-[#F5EFEB] leading-[1.12] tracking-tight">
+                <span className="block">Beauty Beholds</span>
+                <span className="italic text-[#C59B46] font-normal">Beneath the Cuts</span>
               </h2>
             </div>
 
@@ -413,15 +412,15 @@ export function HeroSection() {
         <AnimatedReveal direction="up" delay={0.1} amount={0.15} className="block lg:hidden text-center space-y-6 pt-4">
           
           {/* Brand & Headline */}
-          <div className="space-y-1.5">
-            <div className="text-[10px] font-bold tracking-[0.25em] uppercase text-[#A8A193]">
-              R.B Makeover Man&apos;s Salon
+          <div className="space-y-2 text-center max-w-md mx-auto">
+            <div className="text-[10px] font-bold tracking-[0.25em] uppercase text-[#A8A193] flex items-center justify-center gap-2">
+              <span className="w-5 h-[1.5px] bg-[#C59B46]" />
+              <span>R.B Makeover Man&apos;s Salon</span>
+              <span className="w-5 h-[1.5px] bg-[#C59B46]" />
             </div>
-            <h2 className="font-['Playfair_Display',Georgia,serif] text-3xl sm:text-4xl font-normal text-[#F5EFEB] leading-[1.2] max-w-sm mx-auto text-center">
+            <h2 className="font-['Playfair_Display',Georgia,serif] text-3xl sm:text-4xl font-normal text-[#F5EFEB] leading-[1.2]">
               <span>Beauty Beholds</span>
-              <br />
-              <span className="italic text-[#C59B46]">Beneath the</span>{" "}
-              <span>Cuts</span>
+              <span className="italic text-[#C59B46] block mt-0.5">Beneath the Cuts</span>
             </h2>
           </div>
 
