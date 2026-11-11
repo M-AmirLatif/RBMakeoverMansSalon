@@ -113,15 +113,15 @@ export function HeroSection() {
                     key={svc.name}
                     className="py-2.5 px-3 flex items-center justify-between gap-4 group hover:bg-white/[0.02] rounded-lg transition-colors"
                   >
-                    <div className="flex items-center gap-2.5">
-                      <span className="w-1.5 h-1.5 rounded-full bg-[#C59B46]/60 group-hover:bg-[#C59B46] transition-colors" />
-                      <span className="font-['Playfair_Display',Georgia,serif] text-sm xl:text-base font-normal text-[#F5EFEB] group-hover:text-[#DFC074] transition-colors">
+                    <div className="flex items-center gap-2.5 min-w-0">
+                      <span className="w-1.5 h-1.5 rounded-full bg-[#C59B46]/60 group-hover:bg-[#C59B46] transition-colors shrink-0" />
+                      <span className="font-['Playfair_Display',Georgia,serif] text-sm xl:text-base font-normal text-[#F5EFEB] group-hover:text-[#DFC074] transition-colors truncate">
                         {svc.name}
                       </span>
                     </div>
 
-                    <div className="flex items-center gap-3 shrink-0">
-                      <span className="text-xs font-semibold text-[#A8A193] font-mono">
+                    <div className="flex items-center gap-3 shrink-0 ml-auto">
+                      <span className="text-xs font-semibold text-[#A8A193] font-mono whitespace-nowrap">
                         {svc.price}
                       </span>
 
@@ -129,11 +129,11 @@ export function HeroSection() {
                         href={waUrl}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="px-3.5 py-1 rounded-full text-xs font-bold tracking-wider uppercase bg-[#C58A3E] hover:bg-[#DFA04E] text-[#0B0F0D] shadow-md transition-all inline-flex items-center gap-1 shrink-0"
+                        className="px-3.5 py-1.5 rounded-full text-xs font-bold tracking-wider uppercase bg-[#C58A3E] hover:bg-[#DFA04E] text-[#0B0F0D] shadow-md transition-all inline-flex items-center justify-center gap-1.5 shrink-0 leading-none text-center"
                         aria-label={`Book ${svc.name} on WhatsApp`}
                       >
                         <span>BOOK</span>
-                        <ArrowRight className="w-3 h-3" />
+                        <ArrowRight className="w-3 h-3 shrink-0" />
                       </a>
                     </div>
                   </div>
@@ -243,11 +243,10 @@ export function HeroSection() {
             <div className="text-[10px] font-bold tracking-[0.25em] uppercase text-[#A8A193]">
               R.B Makeover Man&apos;s Salon
             </div>
-            <h1 className="font-['Playfair_Display',Georgia,serif] text-3xl sm:text-4xl md:text-5xl font-normal text-[#F5EFEB] leading-[1.14]">
-              <span>Beauty Beholds </span>
-              <span className="italic text-[#C59B46] block sm:inline">
-                Beneath the
-              </span>{" "}
+            <h1 className="font-['Playfair_Display',Georgia,serif] text-3xl sm:text-4xl md:text-5xl font-normal text-[#F5EFEB] leading-[1.2] max-w-sm mx-auto text-center">
+              <span>Beauty Beholds</span>
+              <br />
+              <span className="italic text-[#C59B46]">Beneath the</span>{" "}
               <span>Cuts</span>
             </h1>
           </div>
@@ -308,27 +307,37 @@ export function HeroSection() {
           </div>
 
           {/* Compact Service List for Mobile */}
-          <div className="bg-[#111614]/80 rounded-xl border border-white/[0.08] p-3 divide-y divide-white/[0.08] max-w-md mx-auto text-left shadow-lg">
+          <div className="bg-[#111614]/90 rounded-2xl border border-white/[0.08] p-3 divide-y divide-white/[0.08] max-w-md mx-auto text-left shadow-xl">
+            <div className="pb-2 px-2 flex items-center justify-between text-[10px] font-semibold uppercase tracking-wider text-[#7A756B]">
+              <span>Featured Services</span>
+              <span>Rates / Booking</span>
+            </div>
             {heroServices.slice(0, 4).map((svc) => {
               const waUrl = buildServiceInquiryWhatsAppUrl(svc.name, svc.category);
               return (
                 <div
                   key={svc.name}
-                  className="py-2 px-2 flex items-center justify-between gap-3"
+                  className="py-2.5 px-2 flex items-center justify-between gap-2"
                 >
-                  <span className="font-['Playfair_Display',Georgia,serif] text-sm text-[#F5EFEB]">
-                    {svc.name}
-                  </span>
-                  <div className="flex items-center gap-2">
-                    <span className="text-xs text-[#A8A193] font-mono">{svc.price}</span>
+                  <div className="flex items-center gap-2 min-w-0 pr-1">
+                    <span className="w-1.5 h-1.5 rounded-full bg-[#C59B46]/70 shrink-0" />
+                    <span className="font-['Playfair_Display',Georgia,serif] text-xs sm:text-sm text-[#F5EFEB] truncate">
+                      {svc.name}
+                    </span>
+                  </div>
+                  <div className="flex items-center gap-2.5 shrink-0 ml-auto">
+                    <span className="text-xs font-semibold text-[#A8A193] font-mono whitespace-nowrap">
+                      {svc.price}
+                    </span>
                     <a
                       href={waUrl}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-[#C58A3E] hover:bg-[#DFA04E] text-[#0B0F0D] shadow-sm inline-flex items-center gap-0.5 shrink-0"
+                      className="px-3 py-1 rounded-full text-[10px] sm:text-xs font-bold uppercase tracking-wider bg-[#C58A3E] hover:bg-[#DFA04E] text-[#0B0F0D] shadow-sm inline-flex items-center justify-center gap-1 shrink-0 leading-none text-center"
+                      aria-label={`Book ${svc.name} on WhatsApp`}
                     >
                       <span>BOOK</span>
-                      <ArrowRight className="w-2.5 h-2.5" />
+                      <ArrowRight className="w-2.5 h-2.5 shrink-0" />
                     </a>
                   </div>
                 </div>

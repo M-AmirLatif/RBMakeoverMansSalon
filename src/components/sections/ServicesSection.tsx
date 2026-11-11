@@ -235,12 +235,12 @@ export function ServicesSection() {
                     href={inquiryUrl}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold text-[#F5EFEB] hover:text-[#C59B46] bg-white/5 hover:bg-white/10 border border-white/10 hover:border-[#C59B46]/50 transition-colors shrink-0"
+                    className="inline-flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold leading-none text-center text-[#F5EFEB] hover:text-[#C59B46] bg-white/5 hover:bg-white/10 border border-white/10 hover:border-[#C59B46]/50 transition-colors shrink-0 select-none"
                     aria-label={`Inquire about ${service.name} on WhatsApp`}
                   >
-                    <WhatsAppIcon className="w-3.5 h-3.5 text-[#25D366]" />
-                    <span>Inquire</span>
-                    <ArrowUpRight className="w-3 h-3 text-[#A8A193]" />
+                    <WhatsAppIcon className="w-3.5 h-3.5 text-[#25D366] shrink-0" />
+                    <span className="leading-none text-center">Inquire</span>
+                    <ArrowUpRight className="w-3 h-3 text-[#A8A193] shrink-0" />
                   </a>
                 </div>
               );

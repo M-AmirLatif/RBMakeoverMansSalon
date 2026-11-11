@@ -76,10 +76,22 @@ export function Navbar({ onMenuToggle }: { onMenuToggle?: (isOpen: boolean) => v
     return () => observer.disconnect();
   }, []);
 
-  // Lock body scroll and handle keyboard accessibility when mobile menu is open
+  // Lock body scroll reliably on mobile and handle keyboard accessibility when mobile menu is open
   useEffect(() => {
     if (mobileMenuOpen) {
+      const scrollY = window.scrollY;
+      const originalBodyPosition = document.body.style.position;
+      const originalBodyTop = document.body.style.top;
+      const originalBodyWidth = document.body.style.width;
+      const originalBodyOverflow = document.body.style.overflow;
+      const originalHtmlOverflow = document.documentElement.style.overflow;
+
+      document.body.style.position = "fixed";
+      document.body.style.top = `-${scrollY}px`;
+      document.body.style.width = "100%";
       document.body.style.overflow = "hidden";
+      document.documentElement.style.overflow = "hidden";
+
       closeButtonRef.current?.focus();
 
       const handleKeyDown = (e: KeyboardEvent) => {
@@ -89,20 +101,25 @@ export function Navbar({ onMenuToggle }: { onMenuToggle?: (isOpen: boolean) => v
       };
       window.addEventListener("keydown", handleKeyDown);
       return () => {
-        document.body.style.overflow = "";
+        document.body.style.position = originalBodyPosition;
+        document.body.style.top = originalBodyTop;
+        document.body.style.width = originalBodyWidth;
+        document.body.style.overflow = originalBodyOverflow;
+        document.documentElement.style.overflow = originalHtmlOverflow;
+        window.scrollTo(0, scrollY);
         window.removeEventListener("keydown", handleKeyDown);
       };
-    } else {
-      document.body.style.overflow = "";
     }
   }, [mobileMenuOpen]);
 
   const handleNavClick = (href: string) => {
     setMobileMenuOpen(false);
-    const target = document.querySelector(href);
-    if (target) {
-      target.scrollIntoView({ behavior: "smooth" });
-    }
+    setTimeout(() => {
+      const target = document.querySelector(href);
+      if (target) {
+        target.scrollIntoView({ behavior: "smooth" });
+      }
+    }, 50);
   };
 
   return (
@@ -198,24 +215,24 @@ export function Navbar({ onMenuToggle }: { onMenuToggle?: (isOpen: boolean) => v
           role="dialog"
           aria-modal="true"
           aria-label="Navigation Menu"
-          className="fixed inset-0 z-50 bg-[#0B0F0D]/98 backdrop-blur-xl flex flex-col justify-between p-6 sm:p-8 animate-in fade-in duration-200"
+          className="fixed inset-0 z-50 bg-[#0B0F0D]/98 backdrop-blur-xl flex flex-col justify-between p-4 sm:p-6 overflow-y-auto overscroll-contain animate-in fade-in duration-200"
         >
           {/* Top Bar with Logo and Close */}
-          <div className="flex items-center justify-between border-b border-white/10 pb-5">
+          <div className="flex items-center justify-between border-b border-white/10 pb-3 shrink-0">
             <BrandLogo onClick={() => setMobileMenuOpen(false)} />
             <button
               ref={closeButtonRef}
               type="button"
               onClick={() => setMobileMenuOpen(false)}
-              className="p-3 rounded-full bg-white/5 text-[#F5EFEB] hover:bg-white/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C59B46]"
+              className="p-2.5 rounded-full bg-white/5 text-[#F5EFEB] hover:bg-white/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C59B46]"
               aria-label="Close navigation menu"
             >
-              <X className="w-6 h-6" />
+              <X className="w-5 h-5" />
             </button>
           </div>
 
           {/* Navigation Links */}
-          <nav className="flex flex-col gap-3 py-6 my-auto">
+          <nav className="flex flex-col gap-1 py-3 my-auto shrink-0">
             {navItems.map((item, idx) => {
               const isActive = activeSection === item.href.substring(1);
               return (
@@ -226,7 +243,7 @@ export function Navbar({ onMenuToggle }: { onMenuToggle?: (isOpen: boolean) => v
                     e.preventDefault();
                     handleNavClick(item.href);
                   }}
-                  className={`group flex items-center justify-between text-2xl sm:text-3xl font-['Bebas_Neue',sans-serif] tracking-wider py-2 transition-colors ${
+                  className={`group flex items-center justify-between text-xl sm:text-2xl font-['Bebas_Neue',sans-serif] tracking-wider py-1.5 transition-colors ${
                     isActive ? "text-[#C59B46]" : "text-[#F5EFEB] hover:text-[#DFC074]"
                   }`}
                 >
@@ -236,32 +253,32 @@ export function Navbar({ onMenuToggle }: { onMenuToggle?: (isOpen: boolean) => v
                     </span>
                     {item.label}
                   </span>
-                  <ArrowUpRight className="w-5 h-5 opacity-40 group-hover:opacity-100 group-hover:translate-x-1 group-hover:-translate-y-1 transition-all" />
+                  <ArrowUpRight className="w-4 h-4 opacity-40 group-hover:opacity-100 group-hover:translate-x-1 group-hover:-translate-y-1 transition-all" />
                 </a>
               );
             })}
           </nav>
 
           {/* Mobile Bottom Conversion Block */}
-          <div className="space-y-3 pt-6 border-t border-white/10">
+          <div className="space-y-2.5 pt-3 border-t border-white/10 shrink-0">
             <Button
               href="#contact"
               variant="gold"
-              size="lg"
+              size="md"
               fullWidth
               onClick={() => setMobileMenuOpen(false)}
             >
               Book an Appointment
             </Button>
 
-            <div className="grid grid-cols-2 gap-3 pt-1">
+            <div className="grid grid-cols-2 gap-2.5">
               <Button
                 href={`tel:${siteConfig.contact.primaryPhoneRaw}`}
                 external
                 variant="secondary"
-                size="md"
+                size="sm"
                 fullWidth
-                icon={<Phone className="w-4 h-4 text-[#C59B46]" />}
+                icon={<Phone className="w-3.5 h-3.5 text-[#C59B46]" />}
                 iconPosition="left"
               >
                 Call Salon
@@ -271,16 +288,16 @@ export function Navbar({ onMenuToggle }: { onMenuToggle?: (isOpen: boolean) => v
                 href={siteConfig.contact.whatsappUrl}
                 external
                 variant="outline"
-                size="md"
+                size="sm"
                 fullWidth
-                icon={<WhatsAppIcon className="w-4 h-4 text-[#25D366]" />}
+                icon={<WhatsAppIcon className="w-3.5 h-3.5 text-[#25D366]" />}
                 iconPosition="left"
               >
                 WhatsApp
               </Button>
             </div>
 
-            <p className="text-center text-xs text-[#7A756B] pt-2">
+            <p className="text-center text-[11px] text-[#7A756B] pt-0.5 leading-tight">
               {siteConfig.contact.address.formatted}
             </p>
           </div>

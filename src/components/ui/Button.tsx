@@ -26,7 +26,7 @@ export function Button({
   ...props
 }: ButtonProps) {
   const baseStyles =
-    "inline-flex items-center justify-center font-medium rounded-full transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C59B46] focus-visible:ring-offset-2 focus-visible:ring-offset-[#0B0F0D] disabled:opacity-50 disabled:pointer-events-none active:scale-[0.98]";
+    "inline-flex items-center justify-center text-center leading-none font-medium rounded-full transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C59B46] focus-visible:ring-offset-2 focus-visible:ring-offset-[#0B0F0D] disabled:opacity-50 disabled:pointer-events-none active:scale-[0.98] select-none";
 
   const sizeStyles = {
     sm: "text-xs tracking-wider uppercase px-4 py-2 min-h-[40px] gap-2 font-semibold",
@@ -49,9 +49,19 @@ export function Button({
 
   const content = (
     <>
-      {icon && iconPosition === "left" && <span className="shrink-0">{icon}</span>}
-      <span>{children}</span>
-      {icon && iconPosition === "right" && <span className="shrink-0">{icon}</span>}
+      {icon && iconPosition === "left" && (
+        <span className="inline-flex items-center justify-center shrink-0 leading-none">
+          {icon}
+        </span>
+      )}
+      <span className="inline-flex items-center justify-center leading-none text-center">
+        {children}
+      </span>
+      {icon && iconPosition === "right" && (
+        <span className="inline-flex items-center justify-center shrink-0 leading-none">
+          {icon}
+        </span>
+      )}
     </>
   );
 

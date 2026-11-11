@@ -279,21 +279,21 @@ export function TeamSection({
                   <button
                     type="button"
                     onClick={() => handleBookBarber(barber)}
-                    className="w-full inline-flex items-center justify-center gap-1.5 py-2 px-2.5 rounded-xl text-xs font-bold bg-[#C59B46] hover:bg-[#DFC074] active:bg-[#9A752B] text-[#0B0F0D] transition-colors shadow-md cursor-pointer"
+                    className="w-full inline-flex items-center justify-center gap-1.5 py-2.5 px-2.5 rounded-xl text-xs font-bold leading-none text-center bg-[#C59B46] hover:bg-[#DFC074] active:bg-[#9A752B] text-[#0B0F0D] transition-colors shadow-md cursor-pointer select-none"
                   >
-                    <Calendar className="w-3.5 h-3.5" />
-                    <span>Select Barber</span>
+                    <Calendar className="w-3.5 h-3.5 shrink-0" />
+                    <span className="leading-none text-center">Select Barber</span>
                   </button>
 
                   <a
                     href={waBookingUrl}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="w-full inline-flex items-center justify-center gap-1.5 py-2 px-2 rounded-xl text-xs font-semibold bg-white/5 hover:bg-[#25D366]/20 border border-white/10 hover:border-[#25D366]/40 text-[#F5EFEB] hover:text-[#25D366] transition-colors"
+                    className="w-full inline-flex items-center justify-center gap-1.5 py-2.5 px-2 rounded-xl text-xs font-semibold leading-none text-center bg-white/5 hover:bg-[#25D366]/20 border border-white/10 hover:border-[#25D366]/40 text-[#F5EFEB] hover:text-[#25D366] transition-colors select-none"
                     aria-label={`Direct WhatsApp with ${barber.name}`}
                   >
-                    <WhatsAppIcon className="w-3.5 h-3.5 text-[#25D366]" />
-                    <span>WhatsApp</span>
+                    <WhatsAppIcon className="w-3.5 h-3.5 text-[#25D366] shrink-0" />
+                    <span className="leading-none text-center">WhatsApp</span>
                   </a>
                 </div>
               </div>
