@@ -7,6 +7,7 @@ import { allServices } from "@/data/services";
 import { staffBarbers, BarberStaff } from "@/data/team";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { Button } from "@/components/ui/Button";
+import { AnimatedReveal } from "@/components/ui/AnimatedReveal";
 import { WhatsAppIcon, FacebookIcon } from "@/components/ui/Icons";
 import {
   buildAppointmentWhatsAppUrl,
@@ -220,7 +221,7 @@ export function ContactSection({
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-start mt-10">
           
           {/* Left Column: Direct Contact Details + Storefront Photo (5 cols) */}
-          <div className="lg:col-span-5 space-y-5">
+          <AnimatedReveal direction="left" delay={0.1} amount={0.15} className="lg:col-span-5 space-y-5">
             
             {/* Channels Card */}
             <div className="p-5 sm:p-7 rounded-2xl bg-[#141C18] border border-white/[0.08] shadow-xl space-y-5">
@@ -372,10 +373,10 @@ export function ContactSection({
                 The salon will confirm your appointment and slot availability.
               </p>
             </div>
-          </div>
+          </AnimatedReveal>
 
           {/* Right Column: Appointment Form (7 cols) */}
-          <div className="lg:col-span-7 bg-[#141C18] p-5 sm:p-7 lg:p-8 rounded-2xl border border-white/[0.08] shadow-2xl relative">
+          <AnimatedReveal direction="right" delay={0.15} amount={0.15} className="lg:col-span-7 bg-[#141C18] p-5 sm:p-7 lg:p-8 rounded-2xl border border-white/[0.08] shadow-2xl relative">
             {submittedPayload ? (
               /* Success State */
               <div className="space-y-5 py-2">
@@ -730,7 +731,7 @@ export function ContactSection({
                 </p>
               </form>
             )}
-          </div>
+          </AnimatedReveal>
 
         </div>
 

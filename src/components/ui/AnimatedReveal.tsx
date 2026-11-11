@@ -10,6 +10,8 @@ interface AnimatedRevealProps {
   duration?: number;
   className?: string;
   threshold?: number;
+  amount?: number | "some" | "all";
+  margin?: string;
 }
 
 export function AnimatedReveal({
@@ -18,6 +20,8 @@ export function AnimatedReveal({
   delay = 0,
   duration = 0.55,
   className = "",
+  amount = 0.15,
+  margin = "0px 0px -60px 0px",
 }: AnimatedRevealProps) {
   const shouldReduceMotion = useReducedMotion();
 
@@ -29,22 +33,22 @@ export function AnimatedReveal({
     switch (direction) {
       case "up":
         return {
-          hidden: { opacity: 0, y: 24 },
+          hidden: { opacity: 0, y: 28 },
           visible: { opacity: 1, y: 0 },
         };
       case "down":
         return {
-          hidden: { opacity: 0, y: -24 },
+          hidden: { opacity: 0, y: -28 },
           visible: { opacity: 1, y: 0 },
         };
       case "left":
         return {
-          hidden: { opacity: 0, x: -28 },
+          hidden: { opacity: 0, x: -32 },
           visible: { opacity: 1, x: 0 },
         };
       case "right":
         return {
-          hidden: { opacity: 0, x: 28 },
+          hidden: { opacity: 0, x: 32 },
           visible: { opacity: 1, x: 0 },
         };
       case "scale":
@@ -65,7 +69,7 @@ export function AnimatedReveal({
     <motion.div
       initial="hidden"
       whileInView="visible"
-      viewport={{ once: true, margin: "-40px" }}
+      viewport={{ once: true, amount, margin }}
       variants={getVariants()}
       transition={{
         duration,

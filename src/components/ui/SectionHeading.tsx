@@ -1,4 +1,5 @@
 import React from "react";
+import { AnimatedReveal } from "@/components/ui/AnimatedReveal";
 
 interface SectionHeadingProps {
   eyebrow?: string;
@@ -24,7 +25,10 @@ export function SectionHeading({
   const isCenter = align === "center";
 
   return (
-    <div
+    <AnimatedReveal
+      direction="up"
+      duration={0.6}
+      amount={0.2}
       className={`max-w-3xl ${isCenter ? "mx-auto text-center" : "text-left"} mb-10 sm:mb-14 ${className}`}
     >
       {eyebrow && (
@@ -50,6 +54,6 @@ export function SectionHeading({
           {description}
         </p>
       )}
-    </div>
+    </AnimatedReveal>
   );
 }

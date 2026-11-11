@@ -3,6 +3,7 @@
 import React, { useState } from "react";
 import { staffBarbers, BarberStaff } from "@/data/team";
 import { SectionHeading } from "@/components/ui/SectionHeading";
+import { AnimatedReveal } from "@/components/ui/AnimatedReveal";
 import { WhatsAppIcon } from "@/components/ui/Icons";
 import { buildBarberBookingWhatsAppUrl } from "@/lib/whatsapp";
 import {
@@ -90,7 +91,7 @@ export function TeamSection({
         />
 
         {/* Interactive Controls Bar: Category Filters & Service Rate Selector */}
-        <div className="mt-10 mb-8 space-y-4">
+        <AnimatedReveal direction="up" delay={0.05} amount={0.2} className="mt-10 mb-8 space-y-4">
           
           {/* Top Row: Service Rate Switcher */}
           <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 p-3.5 sm:p-4 rounded-2xl bg-[#141C18] border border-white/[0.08]">
@@ -149,11 +150,11 @@ export function TeamSection({
             })}
           </div>
 
-        </div>
+        </AnimatedReveal>
 
         {/* 10 Barbers Grid: 1 col on mobile, 2 cols on tablet, 3 cols on desktop */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-6">
-          {filteredBarbers.map((barber) => {
+          {filteredBarbers.map((barber, idx) => {
             const currentRate = barber.rates[activeTier];
             const isExpanded = expandedRatesId === barber.id;
             const waBookingUrl = buildBarberBookingWhatsAppUrl(
@@ -163,11 +164,17 @@ export function TeamSection({
             );
 
             return (
-              <div
+              <AnimatedReveal
                 key={barber.id}
-                data-barber-card
-                className="relative rounded-2xl bg-[#141C18] border border-white/[0.08] hover:border-[#C59B46]/60 p-5 sm:p-6 shadow-xl transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_16px_36px_rgba(0,0,0,0.85)] flex flex-col justify-between group"
+                direction="up"
+                delay={(idx % 3) * 0.08}
+                amount={0.15}
+                className="h-full"
               >
+                <div
+                  data-barber-card
+                  className="h-full relative rounded-2xl bg-[#141C18] border border-white/[0.08] hover:border-[#C59B46]/60 p-5 sm:p-6 shadow-xl transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_16px_36px_rgba(0,0,0,0.85)] flex flex-col justify-between group"
+                >
                 {/* Popular Badge */}
                 {barber.isPopular && (
                   <div className="absolute top-4 right-4 inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-[#C59B46]/15 text-[#C59B46] border border-[#C59B46]/30">
@@ -297,7 +304,8 @@ export function TeamSection({
                   </a>
                 </div>
               </div>
-            );
+            </AnimatedReveal>
+          );
           })}
         </div>
 

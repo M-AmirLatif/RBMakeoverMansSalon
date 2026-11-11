@@ -51,7 +51,7 @@ export function HeroSection() {
         <div className="hidden lg:grid grid-cols-12 gap-8 xl:gap-12 items-center">
           
           {/* Left Column (7 cols): Brand, Two-Tone Headline, CTAs, Hairline Services Rail */}
-          <AnimatedReveal direction="left" delay={0.05} className="col-span-7 flex flex-col justify-center space-y-6">
+          <AnimatedReveal direction="left" delay={0.05} amount={0} margin="0px" className="col-span-7 flex flex-col justify-center space-y-6">
             
             {/* Top Badges (Location + Dynamic Typing Animation) */}
             <div className="flex flex-wrap items-center gap-3">
@@ -152,7 +152,7 @@ export function HeroSection() {
           </AnimatedReveal>
 
           {/* Right Column (5 cols): Master Barber Image + Circular Badge + Socials */}
-          <AnimatedReveal direction="right" delay={0.1} className="col-span-5 relative">
+          <AnimatedReveal direction="right" delay={0.1} amount={0} margin="0px" className="col-span-5 relative">
             <div className="relative w-full h-[min(82svh,680px)] rounded-[32px] overflow-hidden border border-[#C59B46]/35 shadow-[0_30px_70px_rgba(0,0,0,0.9)] bg-[#121815] group">
               <Image
                 src="/images/hero-barber-craft.webp"
@@ -238,7 +238,7 @@ export function HeroSection() {
         </div>
 
         {/* MOBILE & TABLET LAYOUT (< 1024px): Mobile-first 360-430px */}
-        <AnimatedReveal direction="up" delay={0.05} className="block lg:hidden text-center space-y-6">
+        <AnimatedReveal direction="up" delay={0.05} amount={0} margin="0px" className="block lg:hidden text-center space-y-6">
           
           {/* Mobile Location Badge & Dynamic Typing Animation */}
           <div className="space-y-2.5">
