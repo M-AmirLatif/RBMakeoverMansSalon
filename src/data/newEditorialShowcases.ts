@@ -1,0 +1,99 @@
+import { EditorialShowcaseProps } from "@/components/ui/EditorialShowcaseBand";
+
+export const newEditorialShowcases: Record<string, EditorialShowcaseProps> = {
+  // 1. Location 1: Below Hero Strap & Above Stats (Screenshot 1)
+  heroStrapQuiff: {
+    id: "showcase-quiff-taper",
+    badge: "Signature Style Spotlight",
+    title: "The Textured Quiff",
+    highlightText: "Precision Skin Taper",
+    description: "Engineered for gentlemen seeking volume and everyday elegance. Hand-sheared crown layers paired with surgical zero-gap temple transitions.",
+    image: "/images/cutout-quiff-taper.webp",
+    imageAlt: "Textured quiff haircut and precision skin taper fade at R.B Makeover",
+    captionTag: "SIGNATURE QUIFF • ZERO-GAP TEMPLE TAPER",
+    captionTitle: "Precision volume and sharp skin taper crafted by master barbers.",
+    features: ["Skin Taper Fade", "Textured Crown Lift", "Matte Pomade Finish", "Razor Clean Temple"],
+    imageSide: "left",
+    bgDarkTone: "black",
+  },
+
+  // 2. Location 2: Below Hero Part 2 CTAs / before Marquee Ticker 1 (Screenshot 2)
+  heroPart2CombOver: {
+    id: "showcase-combover-razor",
+    badge: "Executive Precision",
+    title: "Executive Comb-Over",
+    highlightText: "Razor Part Symmetry",
+    description: "A distinguished silhouette sculpted with surgical discipline. Hard razor parting line paired with seamless drop gradient for timeless executive authority.",
+    image: "/images/cutout-combover-razor.webp",
+    imageAlt: "Executive comb-over fade and razor part line at R.B Makeover",
+    captionTag: "EXECUTIVE COMB-OVER • RAZOR PART DISCIPLINE",
+    captionTitle: "Surgical razor parting and seamless taper fade for boardroom presence.",
+    features: ["Hard Razor Part", "Seamless Drop Fade", "Gloss Styling Tonic", "Crisp Ear Lineup"],
+    imageSide: "right",
+    bgDarkTone: "dark",
+  },
+
+  // 3. Location 3: Below Precision Section (Screenshot 4)
+  precisionDropFade: {
+    id: "showcase-razor-dropfade",
+    badge: "Contour Detailing",
+    title: "Precision Razor Line-Up",
+    highlightText: "High Skin Drop Fade",
+    description: "Surgically clean geometric edges combined with a steep drop taper around the ear curves. Sculpted to accentuate facial symmetry and jawline strength.",
+    image: "/images/cutout-razor-dropfade.webp",
+    imageAlt: "Precision razor line-up and skin drop fade at R.B Makeover",
+    captionTag: "RAZOR LINE-UP • DROP FADE CONTOURS",
+    captionTitle: "Crisp geometric edges sculpted with single-use feather blades.",
+    features: ["Geometric Line-Up", "Steep Drop Taper", "Feather-Blade Finish", "Natural Skin Blend"],
+    imageSide: "left",
+    bgDarkTone: "black",
+  },
+
+  // 4. Location 4: Below Services Section (Screenshot 3)
+  servicesBeardArchitecture: {
+    id: "showcase-beard-pompadour",
+    badge: "Royal Facial Craft",
+    title: "Royal Beard & Pompadour",
+    highlightText: "Hot Towel Steam Therapy",
+    description: "The premier full-spectrum transformation. High-rise pompadour paired with custom argan beard contouring and revitalizing steam aromatherapy.",
+    image: "/images/cutout-pompadour-sculpt.webp",
+    imageAlt: "Royal beard sculpting and pompadour hairstyle at R.B Makeover",
+    captionTag: "ROYAL BEARD ARCHITECTURE • POMPADOUR VOLUME",
+    captionTitle: "Hot towel argan therapy paired with classic high-volume styling.",
+    features: ["Argan Beard Steam", "High-Volume Pompadour", "Cheekbone Contours", "Ice Towel Refresh"],
+    imageSide: "right",
+    bgDarkTone: "dark",
+  },
+
+  // 5. Location 5: Below About Section (Screenshot 5)
+  aboutCurlyTaper: {
+    id: "showcase-curly-taper",
+    badge: "Bespoke Modern Styling",
+    title: "Textured Curly Crop",
+    highlightText: "Low-Fade Temple Definition",
+    description: "Tailored specifically for natural curl movement. Weightless debulking through crown spirals complemented by crisp micro-tapers.",
+    image: "/images/cutout-curly-taper.webp",
+    imageAlt: "Modern curly textured crop and skin fade at R.B Makeover",
+    captionTag: "CURLY TEXTURED CROP • MICRO-TAPER",
+    captionTitle: "Weightless volume and crisp temple taper for natural curls.",
+    features: ["Natural Curl Definition", "Weightless Debulking", "Low Temple Fade", "Moisture Seal Tonic"],
+    imageSide: "left",
+    bgDarkTone: "black",
+  },
+
+  // 6. Location 6: Below Team Section (Screenshot 6)
+  teamSeniorDiscipline: {
+    id: "showcase-senior-discipline",
+    badge: "14+ Years Master Heritage",
+    title: "Senior Stylist Discipline",
+    highlightText: "Handcrafted Scissor Precision",
+    description: "Led by salon owner Imtiaz Ahmad. Classic side-part scissor craft, tailored beard sculpting, and calm luxury consultation for distinguished gentlemen.",
+    image: "/images/cutout-mature-classic.webp",
+    imageAlt: "Distinguished gentleman scissor cut and beard styling at R.B Makeover",
+    captionTag: "HERITAGE SCISSOR CRAFT • MASTER STYLIST CARE",
+    captionTitle: "14+ years salon experience delivering bespoke executive transformations.",
+    features: ["Bespoke Scissor Craft", "Full Beard Alignment", "Head Stylist Care", "Dedicated Lounge Time"],
+    imageSide: "right",
+    bgDarkTone: "dark",
+  },
+};

@@ -6,6 +6,8 @@ import { siteConfig } from "@/data/siteConfig";
 import { Button } from "@/components/ui/Button";
 import { WhatsAppIcon, FacebookIcon } from "@/components/ui/Icons";
 import { AnimatedReveal } from "@/components/ui/AnimatedReveal";
+import { EditorialShowcaseBand } from "@/components/ui/EditorialShowcaseBand";
+import { newEditorialShowcases } from "@/data/newEditorialShowcases";
 import {
   Star,
   MapPin,
@@ -204,6 +206,11 @@ export function HeroSection() {
                 <span>Walk-Ins & WhatsApp Bookings Welcome</span>
               </span>
             </div>
+        </div>
+
+        {/* Editorial Showcase 1 (matching user screenshot 1: below strap and above stats) */}
+        <div className="w-full -mx-4 sm:-mx-6 lg:-mx-8">
+          <EditorialShowcaseBand {...newEditorialShowcases.heroStrapQuiff} />
         </div>
 
         {/* ============================================================ */}

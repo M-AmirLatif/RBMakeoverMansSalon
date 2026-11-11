@@ -18,8 +18,10 @@ import { LocationSection } from "@/components/sections/LocationSection";
 import { ContactSection } from "@/components/sections/ContactSection";
 import { MarqueeTicker } from "@/components/ui/MarqueeTicker";
 import { ServiceSpotlightBand } from "@/components/ui/ServiceSpotlightBand";
+import { EditorialShowcaseBand } from "@/components/ui/EditorialShowcaseBand";
 import { AnimatedReveal } from "@/components/ui/AnimatedReveal";
 import { serviceSpotlights } from "@/data/serviceSpotlights";
+import { newEditorialShowcases } from "@/data/newEditorialShowcases";
 
 export default function Home() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -35,6 +37,9 @@ export default function Home() {
       <main id="main-content" className="flex-1 focus:outline-none">
         {/* 1. Hero: Noir & Blade + The Gentleman's Club synthesis */}
         <HeroSection />
+
+        {/* Editorial Showcase 2 (matching user screenshot 2: below hero CTAs & before ticker) */}
+        <EditorialShowcaseBand {...newEditorialShowcases.heroPart2CombOver} />
 
         {/* Editorial Text Strap 1: Gold Foil Forward Ticker */}
         <AnimatedReveal direction="fade" delay={0.05} amount={0.05}>
@@ -61,11 +66,17 @@ export default function Home() {
         {/* 2. Precision in Every Cut: 3-column with tall portrait & icon cards */}
         <PrecisionSection />
 
+        {/* Editorial Showcase 3 (matching user screenshot 4: below precision section) */}
+        <EditorialShowcaseBand {...newEditorialShowcases.precisionDropFade} />
+
         {/* Service Spotlight 2: Low-Drop Skin Fade & Scissor Texture */}
         <ServiceSpotlightBand {...serviceSpotlights.skinFade} />
 
         {/* 3. The Grooming Menu: 2x2 featured cards with thumbnails + complete catalog */}
         <ServicesSection />
+
+        {/* Editorial Showcase 4 (matching user screenshot 3: below services section) */}
+        <EditorialShowcaseBand {...newEditorialShowcases.servicesBeardArchitecture} />
 
         {/* Service Spotlight 2: Royal Beard Architecture & Steam */}
         <ServiceSpotlightBand {...serviceSpotlights.royalBeard} />
@@ -73,11 +84,17 @@ export default function Home() {
         {/* 4. About Us: Arched window salon photo, owner quote & hours */}
         <AboutSection />
 
+        {/* Editorial Showcase 5 (matching user screenshot 5: below about section) */}
+        <EditorialShowcaseBand {...newEditorialShowcases.aboutCurlyTaper} />
+
         {/* Service Spotlight 3: The Royal Hot Towel Shave */}
         <ServiceSpotlightBand {...serviceSpotlights.royalShave} />
 
         {/* 5. The Hands Behind The Craft: 10 barbers roster with rate switcher */}
         <TeamSection onSelectBarber={setSelectedBarberId} />
+
+        {/* Editorial Showcase 6 (matching user screenshot 6: below team section) */}
+        <EditorialShowcaseBand {...newEditorialShowcases.teamSeniorDiscipline} />
 
         {/* Service Spotlight 4: Executive Hair & Beard Coordination */}
         <ServiceSpotlightBand {...serviceSpotlights.hairBeardCombo} />
