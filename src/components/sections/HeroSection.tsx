@@ -5,7 +5,6 @@ import Image from "next/image";
 import { siteConfig } from "@/data/siteConfig";
 import { Button } from "@/components/ui/Button";
 import { WhatsAppIcon, FacebookIcon } from "@/components/ui/Icons";
-import { TypewriterEffect } from "@/components/ui/TypewriterEffect";
 import { AnimatedReveal } from "@/components/ui/AnimatedReveal";
 import {
   Star,
@@ -38,33 +37,178 @@ export function HeroSection() {
     <section
       id="hero"
       aria-label="Welcome to R.B Makeover Man's Salon"
-      className="relative min-h-[100svh] bg-[#0A0E0C] pt-24 sm:pt-28 pb-12 sm:pb-16 flex flex-col justify-between overflow-x-clip"
+      className="relative min-h-[100svh] bg-black pt-24 sm:pt-28 pb-12 sm:pb-16 flex flex-col justify-between overflow-x-clip"
     >
-      {/* Background ambient lighting */}
-      <div className="absolute top-12 left-1/4 -translate-x-1/2 w-[550px] h-[350px] bg-[#C59B46]/10 rounded-full blur-[150px] pointer-events-none animate-pulse-subtle" />
-      <div className="absolute top-36 right-10 w-[450px] h-[350px] bg-[#141C18] rounded-full blur-[120px] pointer-events-none" />
+      {/* Subtle ambient lighting placed away from the portrait so black stays pure #000000 */}
+      <div className="absolute top-24 right-1/4 w-[500px] h-[350px] bg-[#C59B46]/5 rounded-full blur-[160px] pointer-events-none animate-pulse-subtle" />
+      <div className="absolute bottom-20 left-10 w-[450px] h-[350px] bg-[#141C18]/60 rounded-full blur-[140px] pointer-events-none" />
 
-      {/* Main Hero Container */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full relative z-10 my-auto">
+      {/* Main Container */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full relative z-10 space-y-16 sm:space-y-20">
         
-        {/* DESKTOP LAYOUT (>= 1024px): Exact Noir & Blade + The Gentleman's Club synthesis */}
-        <div className="hidden lg:grid grid-cols-12 gap-8 xl:gap-12 items-center">
+        {/* ============================================================ */}
+        {/* PART 1: THE GENTLEMAN'S CLUB MASTER CENTERPIECE (FRONT HERO)  */}
+        {/* ============================================================ */}
+        <AnimatedReveal direction="fade" delay={0.05} amount={0} margin="0px" className="w-full">
           
-          {/* Left Column (7 cols): Brand, Two-Tone Headline, CTAs, Hairline Services Rail */}
-          <AnimatedReveal direction="left" delay={0.05} amount={0} margin="0px" className="col-span-7 flex flex-col justify-center space-y-6">
+          {/* Headline Line 1: Shop Name across the top, crisp & grand */}
+          <div className="w-full mb-2 sm:mb-4 select-none">
+            <h1 className="font-['Bebas_Neue',sans-serif] text-5xl sm:text-7xl md:text-8xl lg:text-[7.5rem] xl:text-[9.5rem] tracking-tight text-[#F5EFEB] uppercase leading-[0.88] text-left">
+              R.B MAKEOVER
+            </h1>
+          </div>
+
+          {/* Center Split: Exact Borderless Gentleman Profile (Left) & MAN'S SALON + Services List (Right) */}
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-10 items-center">
             
-            {/* Top Badges (Location + Dynamic Typing Animation) */}
-            <div className="flex flex-wrap items-center gap-3">
-              <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/[0.04] border border-[#C59B46]/30 text-xs font-semibold text-[#C59B46] tracking-wide w-fit">
-                <MapPin className="w-3.5 h-3.5 text-[#C59B46]" />
-                <span>Rose Commercial, Park View City, Lahore</span>
+            {/* Left Column (5 cols): Exact real man photo without borders, seamless black */}
+            <div className="lg:col-span-5 flex justify-center lg:justify-start">
+              <div className="relative w-full max-w-[340px] sm:max-w-[420px] lg:max-w-[480px]">
+                <Image
+                  src="/images/gentleman-hero-profile.jpg"
+                  alt="R.B Makeover Man's Salon Signature Gentleman"
+                  width={640}
+                  height={640}
+                  priority
+                  className="w-full h-auto object-contain select-none"
+                />
               </div>
-              <TypewriterEffect
-                prefix="Craft: "
-                className="text-xs uppercase tracking-wider bg-[#141C18]/90 border border-[#C59B46]/35 px-3.5 py-1.5 rounded-full shadow-md backdrop-blur-md"
-              />
             </div>
 
+            {/* Right Column (7 cols): Title Part 2 "MAN'S SALON" + Hairline Service Rail */}
+            <div className="lg:col-span-7 flex flex-col justify-center space-y-4 sm:space-y-5 lg:pl-2">
+              
+              {/* Title Part 2: Pushed to right side of the face */}
+              <div className="select-none">
+                <h2 className="font-['Bebas_Neue',sans-serif] text-4xl sm:text-6xl md:text-7xl lg:text-8xl tracking-wider text-[#F5EFEB] uppercase leading-none">
+                  MAN&apos;S <span className="text-[#C59B46]">SALON</span>
+                </h2>
+              </div>
+
+              {/* Service List with Rates & BOOK buttons from Reference A */}
+              <div className="bg-[#111614]/90 rounded-2xl border border-white/[0.08] backdrop-blur-md p-3.5 sm:p-5 divide-y divide-white/[0.08] shadow-[0_20px_50px_rgba(0,0,0,0.8)]">
+                <div className="pb-2.5 px-2 sm:px-3 flex items-center justify-between text-[10px] sm:text-[11px] font-semibold uppercase tracking-wider text-[#7A756B]">
+                  <span>Featured Services</span>
+                  <span>Rates / Booking</span>
+                </div>
+
+                {heroServices.map((svc) => {
+                  const waUrl = buildServiceInquiryWhatsAppUrl(svc.name, svc.category);
+                  return (
+                    <div
+                      key={svc.name}
+                      className="py-2.5 sm:py-3 px-2 sm:px-3 flex items-center justify-between gap-2 sm:gap-4 group hover:bg-white/[0.02] rounded-lg transition-colors"
+                    >
+                      <div className="flex items-center gap-2 sm:gap-2.5 min-w-0 pr-1">
+                        <span className="w-1.5 h-1.5 rounded-full bg-[#C59B46] shrink-0" />
+                        <span className="font-['Playfair_Display',Georgia,serif] text-xs sm:text-base font-normal text-[#F5EFEB] group-hover:text-[#DFC074] transition-colors leading-snug">
+                          {svc.name}
+                        </span>
+                      </div>
+
+                      <div className="flex items-center gap-2 sm:gap-3 shrink-0 ml-auto">
+                        <span className="text-[11px] sm:text-xs font-semibold text-[#A8A193] font-mono whitespace-nowrap">
+                          {svc.price}
+                        </span>
+
+                        <a
+                          href={waUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="px-2.5 sm:px-3.5 py-1 sm:py-1.5 rounded-full text-[10px] sm:text-xs font-bold tracking-wider uppercase bg-[#C58A3E] hover:bg-[#DFA04E] text-[#0B0F0D] shadow-md transition-all inline-flex items-center justify-center gap-1 shrink-0 leading-none text-center select-none"
+                          aria-label={`Book ${svc.name} on WhatsApp`}
+                        >
+                          <span>BOOK</span>
+                          <ArrowRight className="w-2.5 h-2.5 sm:w-3 sm:h-3 shrink-0" />
+                        </a>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+
+            </div>
+
+          </div>
+
+        </AnimatedReveal>
+
+        {/* ============================================================ */}
+        {/* STAT STRIP (Connecting the two editorial hero showcases)       */}
+        {/* ============================================================ */}
+        <div className="w-full">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-2 sm:gap-4 p-3 sm:p-5 rounded-2xl bg-[#111614]/90 backdrop-blur-md border border-white/[0.08] shadow-[0_10px_30px_rgba(0,0,0,0.6)]">
+            {/* Stat 1: Google Rating */}
+            <div className="flex items-center gap-2.5 sm:gap-3.5 p-1 sm:p-2 border-r border-white/5 pb-2 sm:pb-2 border-b sm:border-b-0">
+              <div className="flex items-center justify-center w-8 h-8 sm:w-11 sm:h-11 rounded-xl bg-[#C59B46]/10 text-[#C59B46] border border-[#C59B46]/20 shrink-0">
+                <Star className="w-4 h-4 sm:w-5 sm:h-5 fill-[#C59B46]" />
+              </div>
+              <div>
+                <div className="font-['Bebas_Neue',sans-serif] text-xl sm:text-2xl lg:text-3xl tracking-wide text-[#F5EFEB] leading-none">
+                  4.9 / 5.0
+                </div>
+                <div className="text-[10px] sm:text-xs text-[#A8A193] mt-0.5">
+                  Google Rating
+                </div>
+              </div>
+            </div>
+
+            {/* Stat 2: 36 Reviews From Google */}
+            <div className="flex items-center gap-2.5 sm:gap-3.5 p-1 sm:p-2 md:border-r border-white/5 pb-2 sm:pb-2 border-b sm:border-b-0">
+              <div className="flex items-center justify-center w-8 h-8 sm:w-11 sm:h-11 rounded-xl bg-[#C59B46]/10 text-[#C59B46] border border-[#C59B46]/20 shrink-0">
+                <Sparkles className="w-4 h-4 sm:w-5 sm:h-5" />
+              </div>
+              <div>
+                <div className="font-['Bebas_Neue',sans-serif] text-xl sm:text-2xl lg:text-3xl tracking-wide text-[#F5EFEB] leading-none">
+                  36 REVIEWS
+                </div>
+                <div className="text-[10px] sm:text-xs text-[#A8A193] mt-0.5">
+                  From Google
+                </div>
+              </div>
+            </div>
+
+            {/* Stat 3: 23 Services */}
+            <div className="flex items-center gap-2.5 sm:gap-3.5 p-1 sm:p-2 border-r border-white/5 pt-2 sm:pt-2">
+              <div className="flex items-center justify-center w-8 h-8 sm:w-11 sm:h-11 rounded-xl bg-[#C59B46]/10 text-[#C59B46] border border-[#C59B46]/20 shrink-0">
+                <Scissors className="w-4 h-4 sm:w-5 sm:h-5" />
+              </div>
+              <div>
+                <div className="font-['Bebas_Neue',sans-serif] text-xl sm:text-2xl lg:text-3xl tracking-wide text-[#F5EFEB] leading-none">
+                  23 SERVICES
+                </div>
+                <div className="text-[10px] sm:text-xs text-[#A8A193] mt-0.5">
+                  Hair, Beard & Skin
+                </div>
+              </div>
+            </div>
+
+            {/* Stat 4: Park View City */}
+            <div className="flex items-center gap-2.5 sm:gap-3.5 p-1 sm:p-2 pt-2 sm:pt-2">
+              <div className="flex items-center justify-center w-8 h-8 sm:w-11 sm:h-11 rounded-xl bg-[#C59B46]/10 text-[#C59B46] border border-[#C59B46]/20 shrink-0">
+                <MapPin className="w-4 h-4 sm:w-5 sm:h-5" />
+              </div>
+              <div>
+                <div className="font-['Bebas_Neue',sans-serif] text-xl sm:text-2xl lg:text-3xl tracking-wide text-[#F5EFEB] leading-none">
+                  PARK VIEW
+                </div>
+                <div className="text-[10px] sm:text-xs text-[#A8A193] mt-0.5">
+                  Rose Commercial
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* ============================================================ */}
+        {/* PART 2: NOIR & BLADE SHOWCASE (PUSHED DOWN AS REQUESTED)      */}
+        {/* ============================================================ */}
+        {/* Desktop Presentation (>= 1024px) */}
+        <div className="hidden lg:grid grid-cols-12 gap-8 xl:gap-12 items-center pt-4">
+          
+          {/* Left Column: Brand, Two-Tone Headline, CTAs */}
+          <AnimatedReveal direction="left" delay={0.1} amount={0.15} className="col-span-7 flex flex-col justify-center space-y-6">
+            
             {/* Brand Title + Grand Two-Tone Headline */}
             <div className="space-y-2 select-none">
               <div className="flex items-center gap-2 text-xs font-bold tracking-[0.25em] uppercase text-[#A8A193]">
@@ -72,13 +216,13 @@ export function HeroSection() {
                 <span>R.B Makeover Man&apos;s Salon</span>
               </div>
 
-              <h1 className="font-['Playfair_Display',Georgia,serif] text-5xl xl:text-6xl 2xl:text-7xl font-normal text-[#F5EFEB] leading-[1.08] tracking-tight">
+              <h2 className="font-['Playfair_Display',Georgia,serif] text-5xl xl:text-6xl font-normal text-[#F5EFEB] leading-[1.08] tracking-tight">
                 <span>Beauty Beholds </span>
                 <span className="italic text-[#C59B46] font-normal block xl:inline">
                   Beneath the{" "}
                 </span>
                 <span>Cuts</span>
-              </h1>
+              </h2>
             </div>
 
             {/* Subtitle using exact mandated copy */}
@@ -86,7 +230,7 @@ export function HeroSection() {
               Men&apos;s haircuts, beard grooming and skincare in Park View City, Lahore.
             </p>
 
-            {/* Two Action Pill Buttons (Noir & Blade style) */}
+            {/* Two Action Pill Buttons */}
             <div className="flex items-center gap-4 pt-1">
               <Button
                 href="#contact"
@@ -106,59 +250,15 @@ export function HeroSection() {
                 Explore Services
               </Button>
             </div>
-
-            {/* Hairline 6-Row Service List from Reference A ("The Gentleman's Club") */}
-            <div className="bg-[#111614]/80 rounded-2xl border border-white/[0.08] backdrop-blur-md p-4 divide-y divide-white/[0.08] max-w-xl shadow-xl mt-4">
-              <div className="pb-2.5 px-3 flex items-center justify-between text-[11px] font-semibold uppercase tracking-wider text-[#7A756B]">
-                <span>Featured Services</span>
-                <span>Rates / Booking</span>
-              </div>
-
-              {heroServices.map((svc) => {
-                const waUrl = buildServiceInquiryWhatsAppUrl(svc.name, svc.category);
-                return (
-                  <div
-                    key={svc.name}
-                    className="py-2.5 px-3 flex items-center justify-between gap-4 group hover:bg-white/[0.02] rounded-lg transition-colors"
-                  >
-                    <div className="flex items-center gap-2.5 min-w-0">
-                      <span className="w-1.5 h-1.5 rounded-full bg-[#C59B46]/60 group-hover:bg-[#C59B46] transition-colors shrink-0" />
-                      <span className="font-['Playfair_Display',Georgia,serif] text-sm xl:text-base font-normal text-[#F5EFEB] group-hover:text-[#DFC074] transition-colors truncate">
-                        {svc.name}
-                      </span>
-                    </div>
-
-                    <div className="flex items-center gap-3 shrink-0 ml-auto">
-                      <span className="text-xs font-semibold text-[#A8A193] font-mono whitespace-nowrap">
-                        {svc.price}
-                      </span>
-
-                      <a
-                        href={waUrl}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="px-3.5 py-1.5 rounded-full text-xs font-bold tracking-wider uppercase bg-[#C58A3E] hover:bg-[#DFA04E] text-[#0B0F0D] shadow-md transition-all inline-flex items-center justify-center gap-1.5 shrink-0 leading-none text-center"
-                        aria-label={`Book ${svc.name} on WhatsApp`}
-                      >
-                        <span>BOOK</span>
-                        <ArrowRight className="w-3 h-3 shrink-0" />
-                      </a>
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-
           </AnimatedReveal>
 
-          {/* Right Column (5 cols): Master Barber Image + Circular Badge + Socials */}
-          <AnimatedReveal direction="right" delay={0.1} amount={0} margin="0px" className="col-span-5 relative">
-            <div className="relative w-full h-[min(82svh,680px)] rounded-[32px] overflow-hidden border border-[#C59B46]/35 shadow-[0_30px_70px_rgba(0,0,0,0.9)] bg-[#121815] group">
+          {/* Right Column: Master Barber Image + Circular Badge + Socials */}
+          <AnimatedReveal direction="right" delay={0.15} amount={0.15} className="col-span-5 relative">
+            <div className="relative w-full h-[min(75svh,580px)] rounded-[32px] overflow-hidden border border-[#C59B46]/35 shadow-[0_30px_70px_rgba(0,0,0,0.9)] bg-[#121815] group">
               <Image
                 src="/images/hero-barber-craft.webp"
                 alt="Master barber in black uniform styling client hair at R.B Makeover Man's Salon"
                 fill
-                priority
                 sizes="(max-width: 1440px) 42vw, 560px"
                 className="object-cover object-[50%_35%] group-hover:scale-105 transition-transform duration-1000 ease-out"
               />
@@ -201,7 +301,7 @@ export function HeroSection() {
               </div>
             </div>
 
-            {/* Vertical Social Links strip on the right side (Noir & Blade style) */}
+            {/* Vertical Social Links strip on the right side */}
             <div className="hidden xl:flex flex-col gap-3 absolute -right-6 top-1/2 -translate-y-1/2 z-20">
               <a
                 href={siteConfig.contact.whatsappUrl}
@@ -232,48 +332,32 @@ export function HeroSection() {
                 <FacebookIcon className="w-4 h-4" />
               </a>
             </div>
-
           </AnimatedReveal>
 
         </div>
 
-        {/* MOBILE & TABLET LAYOUT (< 1024px): Mobile-first 360-430px */}
-        <AnimatedReveal direction="up" delay={0.05} amount={0} margin="0px" className="block lg:hidden text-center space-y-6">
+        {/* Mobile & Tablet Presentation (< 1024px) */}
+        <AnimatedReveal direction="up" delay={0.1} amount={0.15} className="block lg:hidden text-center space-y-6 pt-4">
           
-          {/* Mobile Location Badge & Dynamic Typing Animation */}
-          <div className="space-y-2.5">
-            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/[0.04] border border-[#C59B46]/30 text-[11px] font-semibold text-[#C59B46] mx-auto">
-              <MapPin className="w-3 h-3 text-[#C59B46]" />
-              <span>Rose Commercial, Park View City</span>
-            </div>
-            <div>
-              <TypewriterEffect
-                prefix="Craft: "
-                className="text-[11px] uppercase tracking-wider bg-white/[0.04] border border-[#C59B46]/25 px-3 py-1 rounded-full mx-auto"
-              />
-            </div>
-          </div>
-
           {/* Brand & Headline */}
           <div className="space-y-1.5">
             <div className="text-[10px] font-bold tracking-[0.25em] uppercase text-[#A8A193]">
               R.B Makeover Man&apos;s Salon
             </div>
-            <h1 className="font-['Playfair_Display',Georgia,serif] text-3xl sm:text-4xl md:text-5xl font-normal text-[#F5EFEB] leading-[1.2] max-w-sm mx-auto text-center">
+            <h2 className="font-['Playfair_Display',Georgia,serif] text-3xl sm:text-4xl font-normal text-[#F5EFEB] leading-[1.2] max-w-sm mx-auto text-center">
               <span>Beauty Beholds</span>
               <br />
               <span className="italic text-[#C59B46]">Beneath the</span>{" "}
               <span>Cuts</span>
-            </h1>
+            </h2>
           </div>
 
           {/* Hero Image for Mobile */}
-          <div className="relative w-full max-w-[360px] sm:max-w-[420px] mx-auto h-[48svh] max-h-[420px] rounded-3xl overflow-hidden border border-[#C59B46]/30 shadow-2xl bg-[#121815]">
+          <div className="relative w-full max-w-[360px] sm:max-w-[420px] mx-auto h-[44svh] max-h-[380px] rounded-3xl overflow-hidden border border-[#C59B46]/30 shadow-2xl bg-[#121815]">
             <Image
               src="/images/hero-barber-craft.webp"
               alt="Master barber cutting hair at R.B Makeover Man's Salon"
               fill
-              priority
               sizes="(max-width: 640px) 92vw, 420px"
               className="object-cover object-[50%_35%]"
             />
@@ -295,7 +379,7 @@ export function HeroSection() {
           </div>
 
           {/* Mandated Subtitle */}
-          <p className="font-['Playfair_Display',Georgia,serif] text-base sm:text-lg text-[#F5EFEB]/90 font-normal leading-relaxed max-w-md mx-auto px-2">
+          <p className="font-['Playfair_Display',Georgia,serif] text-base text-[#F5EFEB]/90 font-normal leading-relaxed max-w-md mx-auto px-2">
             Men&apos;s haircuts, beard grooming and skincare in Park View City, Lahore.
           </p>
 
@@ -322,113 +406,10 @@ export function HeroSection() {
             </Button>
           </div>
 
-          {/* Compact Service List for Mobile */}
-          <div className="bg-[#111614]/90 rounded-2xl border border-white/[0.08] p-3 divide-y divide-white/[0.08] max-w-md mx-auto text-left shadow-xl">
-            <div className="pb-2 px-2 flex items-center justify-between text-[10px] font-semibold uppercase tracking-wider text-[#7A756B]">
-              <span>Featured Services</span>
-              <span>Rates / Booking</span>
-            </div>
-            {heroServices.slice(0, 4).map((svc) => {
-              const waUrl = buildServiceInquiryWhatsAppUrl(svc.name, svc.category);
-              return (
-                <div
-                  key={svc.name}
-                  className="py-2.5 px-2 flex items-center justify-between gap-2"
-                >
-                  <div className="flex items-center gap-2 min-w-0 pr-1">
-                    <span className="w-1.5 h-1.5 rounded-full bg-[#C59B46]/70 shrink-0" />
-                    <span className="font-['Playfair_Display',Georgia,serif] text-xs sm:text-sm text-[#F5EFEB] truncate">
-                      {svc.name}
-                    </span>
-                  </div>
-                  <div className="flex items-center gap-2.5 shrink-0 ml-auto">
-                    <span className="text-xs font-semibold text-[#A8A193] font-mono whitespace-nowrap">
-                      {svc.price}
-                    </span>
-                    <a
-                      href={waUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="px-3 py-1 rounded-full text-[10px] sm:text-xs font-bold uppercase tracking-wider bg-[#C58A3E] hover:bg-[#DFA04E] text-[#0B0F0D] shadow-sm inline-flex items-center justify-center gap-1 shrink-0 leading-none text-center"
-                      aria-label={`Book ${svc.name} on WhatsApp`}
-                    >
-                      <span>BOOK</span>
-                      <ArrowRight className="w-2.5 h-2.5 shrink-0" />
-                    </a>
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-
         </AnimatedReveal>
 
       </div>
 
-      {/* Verified Facts Stat Strip Below (Noir & Blade style) */}
-      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full mt-10">
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-2 sm:gap-4 p-3 sm:p-5 rounded-2xl bg-[#111614]/90 backdrop-blur-md border border-white/[0.08] shadow-[0_10px_30px_rgba(0,0,0,0.6)]">
-          {/* Stat 1: Google Rating */}
-          <div className="flex items-center gap-2.5 sm:gap-3.5 p-1 sm:p-2 border-r border-white/5 pb-2 sm:pb-2 border-b sm:border-b-0">
-            <div className="flex items-center justify-center w-8 h-8 sm:w-11 sm:h-11 rounded-xl bg-[#C59B46]/10 text-[#C59B46] border border-[#C59B46]/20 shrink-0">
-              <Star className="w-4 h-4 sm:w-5 sm:h-5 fill-[#C59B46]" />
-            </div>
-            <div>
-              <div className="font-['Bebas_Neue',sans-serif] text-xl sm:text-2xl lg:text-3xl tracking-wide text-[#F5EFEB] leading-none">
-                4.9 / 5.0
-              </div>
-              <div className="text-[10px] sm:text-xs text-[#A8A193] mt-0.5">
-                Google Rating
-              </div>
-            </div>
-          </div>
-
-          {/* Stat 2: 36 Reviews From Google */}
-          <div className="flex items-center gap-2.5 sm:gap-3.5 p-1 sm:p-2 md:border-r border-white/5 pb-2 sm:pb-2 border-b sm:border-b-0">
-            <div className="flex items-center justify-center w-8 h-8 sm:w-11 sm:h-11 rounded-xl bg-[#C59B46]/10 text-[#C59B46] border border-[#C59B46]/20 shrink-0">
-              <Sparkles className="w-4 h-4 sm:w-5 sm:h-5" />
-            </div>
-            <div>
-              <div className="font-['Bebas_Neue',sans-serif] text-xl sm:text-2xl lg:text-3xl tracking-wide text-[#F5EFEB] leading-none">
-                36 REVIEWS
-              </div>
-              <div className="text-[10px] sm:text-xs text-[#A8A193] mt-0.5">
-                From Google
-              </div>
-            </div>
-          </div>
-
-          {/* Stat 3: 23 Services */}
-          <div className="flex items-center gap-2.5 sm:gap-3.5 p-1 sm:p-2 border-r border-white/5 pt-2 sm:pt-2">
-            <div className="flex items-center justify-center w-8 h-8 sm:w-11 sm:h-11 rounded-xl bg-[#C59B46]/10 text-[#C59B46] border border-[#C59B46]/20 shrink-0">
-              <Scissors className="w-4 h-4 sm:w-5 sm:h-5" />
-            </div>
-            <div>
-              <div className="font-['Bebas_Neue',sans-serif] text-xl sm:text-2xl lg:text-3xl tracking-wide text-[#F5EFEB] leading-none">
-                23 SERVICES
-              </div>
-              <div className="text-[10px] sm:text-xs text-[#A8A193] mt-0.5">
-                Hair, Beard & Skin
-              </div>
-            </div>
-          </div>
-
-          {/* Stat 4: Park View City */}
-          <div className="flex items-center gap-2.5 sm:gap-3.5 p-1 sm:p-2 pt-2 sm:pt-2">
-            <div className="flex items-center justify-center w-8 h-8 sm:w-11 sm:h-11 rounded-xl bg-[#C59B46]/10 text-[#C59B46] border border-[#C59B46]/20 shrink-0">
-              <MapPin className="w-4 h-4 sm:w-5 sm:h-5" />
-            </div>
-            <div>
-              <div className="font-['Bebas_Neue',sans-serif] text-xl sm:text-2xl lg:text-3xl tracking-wide text-[#F5EFEB] leading-none">
-                PARK VIEW
-              </div>
-              <div className="text-[10px] sm:text-xs text-[#A8A193] mt-0.5">
-                Rose Commercial
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
     </section>
   );
 }
