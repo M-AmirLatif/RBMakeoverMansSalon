@@ -25,6 +25,7 @@ import {
   ExternalLink,
   UserCheck,
   Tag,
+  ChevronDown,
 } from "lucide-react";
 
 function formatUnambiguousDate(isoDate: string): string {
@@ -535,26 +536,32 @@ export function ContactSection({
                       </span>
                     )}
                   </div>
-                  <select
-                    id="form-barber"
-                    name="barberId"
-                    value={formData.barberId}
-                    onChange={handleChange}
-                    className="w-full px-3.5 py-3 rounded-xl bg-[#0B0F0D] border border-white/10 focus:border-[#C59B46] text-base sm:text-sm text-[#F5EFEB] transition-colors focus:outline-none focus:ring-1 focus:ring-[#C59B46]"
-                  >
-                    <option value="" className="bg-[#0B0F0D] text-[#7A756B]">
-                      Any Available Stylist (First available slot)
-                    </option>
-                    {staffBarbers.map((b) => (
-                      <option
-                        key={b.id}
-                        value={b.id}
-                        className="bg-[#0B0F0D] text-[#F5EFEB]"
-                      >
-                        {b.name} — {b.title} (Haircut: Rs. {b.rates.haircut.toLocaleString()} | Beard: Rs. {b.rates.beard.toLocaleString()})
+                  <div className="relative group">
+                    <select
+                      id="form-barber"
+                      name="barberId"
+                      value={formData.barberId}
+                      onChange={handleChange}
+                      className="w-full appearance-none pl-3.5 pr-12 py-3 rounded-xl bg-[#0B0F0D] border border-white/10 group-hover:border-[#C59B46]/40 focus:border-[#C59B46] text-base sm:text-sm text-[#F5EFEB] transition-all focus:outline-none focus:ring-1 focus:ring-[#C59B46] cursor-pointer"
+                    >
+                      <option value="" className="bg-[#0B0F0D] text-[#7A756B]">
+                        Any Available Stylist (First available slot)
                       </option>
-                    ))}
-                  </select>
+                      {staffBarbers.map((b) => (
+                        <option
+                          key={b.id}
+                          value={b.id}
+                          className="bg-[#0B0F0D] text-[#F5EFEB]"
+                        >
+                          {b.name} — {b.title} (Haircut: Rs. {b.rates.haircut.toLocaleString()} | Beard: Rs. {b.rates.beard.toLocaleString()})
+                        </option>
+                      ))}
+                    </select>
+                    {/* Realistic Gold Dropdown Arrow Indicator with ample spacing from the right */}
+                    <div className="absolute right-3.5 sm:right-4 top-1/2 -translate-y-1/2 pointer-events-none flex items-center justify-center w-7 h-7 rounded-lg bg-white/[0.04] border border-white/[0.08] text-[#C59B46] group-hover:text-[#DFC074] group-hover:border-[#C59B46]/40 transition-all shadow-sm">
+                      <ChevronDown className="w-4 h-4 stroke-[2.25]" />
+                    </div>
+                  </div>
                 </div>
 
                 {/* Service Selection */}
@@ -565,31 +572,39 @@ export function ContactSection({
                   >
                     Service <span className="text-[#C59B46]">*</span>
                   </label>
-                  <select
-                    id="form-service"
-                    name="service"
-                    required
-                    value={formData.service}
-                    onChange={handleChange}
-                    aria-invalid={!!errors.service}
-                    aria-describedby={errors.service ? "service-error" : undefined}
-                    className={`w-full px-3.5 py-3 rounded-xl bg-[#0B0F0D] border text-base sm:text-sm text-[#F5EFEB] transition-colors focus:outline-none focus:ring-1 focus:ring-[#C59B46] ${
-                      errors.service ? "border-red-500/80" : "border-white/10 focus:border-[#C59B46]"
-                    }`}
-                  >
-                    <option value="" disabled className="bg-[#0B0F0D] text-[#7A756B]">
-                      Select a service...
-                    </option>
-                    {allServices.map((svc) => (
-                      <option
-                        key={svc.id}
-                        value={svc.name}
-                        className="bg-[#0B0F0D] text-[#F5EFEB]"
-                      >
-                        {svc.name}
+                  <div className="relative group">
+                    <select
+                      id="form-service"
+                      name="service"
+                      required
+                      value={formData.service}
+                      onChange={handleChange}
+                      aria-invalid={!!errors.service}
+                      aria-describedby={errors.service ? "service-error" : undefined}
+                      className={`w-full appearance-none pl-3.5 pr-12 py-3 rounded-xl bg-[#0B0F0D] border text-base sm:text-sm text-[#F5EFEB] transition-all focus:outline-none focus:ring-1 focus:ring-[#C59B46] cursor-pointer ${
+                        errors.service
+                          ? "border-red-500/80"
+                          : "border-white/10 group-hover:border-[#C59B46]/40 focus:border-[#C59B46]"
+                      }`}
+                    >
+                      <option value="" disabled className="bg-[#0B0F0D] text-[#7A756B]">
+                        Select a service...
                       </option>
-                    ))}
-                  </select>
+                      {allServices.map((svc) => (
+                        <option
+                          key={svc.id}
+                          value={svc.name}
+                          className="bg-[#0B0F0D] text-[#F5EFEB]"
+                        >
+                          {svc.name}
+                        </option>
+                      ))}
+                    </select>
+                    {/* Realistic Gold Dropdown Arrow Indicator with ample spacing from the right */}
+                    <div className="absolute right-3.5 sm:right-4 top-1/2 -translate-y-1/2 pointer-events-none flex items-center justify-center w-7 h-7 rounded-lg bg-white/[0.04] border border-white/[0.08] text-[#C59B46] group-hover:text-[#DFC074] group-hover:border-[#C59B46]/40 transition-all shadow-sm">
+                      <ChevronDown className="w-4 h-4 stroke-[2.25]" />
+                    </div>
+                  </div>
                   {errors.service && (
                     <p id="service-error" className="mt-1 text-xs text-red-400">
                       {errors.service}
@@ -663,31 +678,39 @@ export function ContactSection({
                     >
                       Preferred Time <span className="text-[#C59B46]">*</span>
                     </label>
-                    <select
-                      id="form-time"
-                      name="preferredTime"
-                      required
-                      value={formData.preferredTime}
-                      onChange={handleChange}
-                      aria-invalid={!!errors.preferredTime}
-                      aria-describedby={errors.preferredTime ? "time-error" : undefined}
-                      className={`w-full px-3.5 py-3 rounded-xl bg-[#0B0F0D] border text-base sm:text-sm text-[#F5EFEB] transition-colors focus:outline-none focus:ring-1 focus:ring-[#C59B46] ${
-                        errors.preferredTime ? "border-red-500/80" : "border-white/10 focus:border-[#C59B46]"
-                      }`}
-                    >
-                      <option value="" disabled className="bg-[#0B0F0D] text-[#7A756B]">
-                        Select a time...
-                      </option>
-                      {timeSlots.map((time) => (
-                        <option
-                          key={time}
-                          value={time}
-                          className="bg-[#0B0F0D] text-[#F5EFEB]"
-                        >
-                          {time}
+                    <div className="relative group">
+                      <select
+                        id="form-time"
+                        name="preferredTime"
+                        required
+                        value={formData.preferredTime}
+                        onChange={handleChange}
+                        aria-invalid={!!errors.preferredTime}
+                        aria-describedby={errors.preferredTime ? "time-error" : undefined}
+                        className={`w-full appearance-none pl-3.5 pr-12 py-3 rounded-xl bg-[#0B0F0D] border text-base sm:text-sm text-[#F5EFEB] transition-all focus:outline-none focus:ring-1 focus:ring-[#C59B46] cursor-pointer ${
+                          errors.preferredTime
+                            ? "border-red-500/80"
+                            : "border-white/10 group-hover:border-[#C59B46]/40 focus:border-[#C59B46]"
+                        }`}
+                      >
+                        <option value="" disabled className="bg-[#0B0F0D] text-[#7A756B]">
+                          Select a time...
                         </option>
-                      ))}
-                    </select>
+                        {timeSlots.map((time) => (
+                          <option
+                            key={time}
+                            value={time}
+                            className="bg-[#0B0F0D] text-[#F5EFEB]"
+                          >
+                            {time}
+                          </option>
+                        ))}
+                      </select>
+                      {/* Realistic Gold Dropdown Arrow Indicator with ample spacing from the right */}
+                      <div className="absolute right-3.5 sm:right-4 top-1/2 -translate-y-1/2 pointer-events-none flex items-center justify-center w-7 h-7 rounded-lg bg-white/[0.04] border border-white/[0.08] text-[#C59B46] group-hover:text-[#DFC074] group-hover:border-[#C59B46]/40 transition-all shadow-sm">
+                        <ChevronDown className="w-4 h-4 stroke-[2.25]" />
+                      </div>
+                    </div>
                     {errors.preferredTime && (
                       <p id="time-error" className="mt-1 text-xs text-red-400">
                         {errors.preferredTime}
