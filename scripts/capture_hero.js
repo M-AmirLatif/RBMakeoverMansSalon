@@ -16,45 +16,28 @@ async function capture() {
     args: ['--no-sandbox', '--disable-setuid-sandbox']
   });
 
-  // Desktop capture
-  const pageDesktop = await browser.newPage();
-  await pageDesktop.setViewport({ width: 1440, height: 950, deviceScaleFactor: 2 });
-  await pageDesktop.goto('http://localhost:3000', { waitUntil: 'networkidle0' });
+  const page = await browser.newPage();
+  await page.setViewport({ width: 1440, height: 950, deviceScaleFactor: 2 });
+  await page.goto('http://localhost:3000', { waitUntil: 'networkidle0' });
   await new Promise(r => setTimeout(r, 1000));
-  
-  await pageDesktop.screenshot({
-    path: path.join(screenshotsDir, 'hero_gentleman_desktop.png'),
-    clip: { x: 0, y: 0, width: 1440, height: 950 }
-  });
 
-  // Scroll to Beauty Beholds on Desktop to verify text alignment
-  const beautyEl = await pageDesktop.$('section#hero div.pt-4');
-  if (beautyEl) {
-    await pageDesktop.evaluate(el => el.scrollIntoView({ behavior: 'instant', block: 'center' }), beautyEl);
+  // Spotlight 1: Skin Fade on Desktop
+  const fadeEl = await page.$('#spotlight-skin-fade');
+  if (fadeEl) {
+    await page.evaluate(el => el.scrollIntoView({ behavior: 'instant', block: 'center' }), fadeEl);
     await new Promise(r => setTimeout(r, 800));
-    await beautyEl.screenshot({
-      path: path.join(screenshotsDir, 'hero_beauty_beholds_desktop.png')
+    await fadeEl.screenshot({
+      path: path.join(screenshotsDir, 'spotlight_skin_fade_desktop.png')
     });
   }
 
-  // Mobile capture
-  const pageMobile = await browser.newPage();
-  await pageMobile.setViewport({ width: 390, height: 844, deviceScaleFactor: 2, isMobile: true });
-  await pageMobile.goto('http://localhost:3000', { waitUntil: 'networkidle0' });
-  await new Promise(r => setTimeout(r, 1000));
-
-  await pageMobile.screenshot({
-    path: path.join(screenshotsDir, 'hero_gentleman_mobile.png'),
-    clip: { x: 0, y: 0, width: 390, height: 844 }
-  });
-
-  // Scroll to Royal Beard Feature on mobile
-  const royalBeard = await pageMobile.$('section[aria-label="Royal Beard Architecture Feature"]');
-  if (royalBeard) {
-    await pageMobile.evaluate(el => el.scrollIntoView({ behavior: 'instant', block: 'center' }), royalBeard);
-    await new Promise(r => setTimeout(r, 1000));
-    await royalBeard.screenshot({
-      path: path.join(screenshotsDir, 'royal_beard_mobile.png')
+  // Spotlight 5: Facial Skincare on Desktop
+  const facialEl = await page.$('#spotlight-facial');
+  if (facialEl) {
+    await page.evaluate(el => el.scrollIntoView({ behavior: 'instant', block: 'center' }), facialEl);
+    await new Promise(r => setTimeout(r, 800));
+    await facialEl.screenshot({
+      path: path.join(screenshotsDir, 'spotlight_facial_desktop.png')
     });
   }
 
