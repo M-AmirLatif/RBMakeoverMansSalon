@@ -52,10 +52,13 @@ export default function Home() {
           ]}
         />
 
+        {/* Service Spotlight 1: Modern Textured European Crop */}
+        <ServiceSpotlightBand {...serviceSpotlights.executiveCrop} />
+
         {/* 2. Precision in Every Cut: 3-column with tall portrait & icon cards */}
         <PrecisionSection />
 
-        {/* Service Spotlight 1: Low-Drop Skin Fade & Scissor Texture */}
+        {/* Service Spotlight 2: Low-Drop Skin Fade & Scissor Texture */}
         <ServiceSpotlightBand {...serviceSpotlights.skinFade} />
 
         {/* 3. The Grooming Menu: 2x2 featured cards with thumbnails + complete catalog */}
@@ -139,8 +142,14 @@ export default function Home() {
         {/* 11. Location & Verified Google Map */}
         <LocationSection />
 
+        {/* Service Spotlight 11: Precision Razor Lineup & Temple Detailing */}
+        <ServiceSpotlightBand {...serviceSpotlights.razorLineup} />
+
         {/* 12. Appointment Booking Form with 10 Barbers */}
         <ContactSection preselectedBarberId={selectedBarberId} />
+
+        {/* Service Spotlight 12: The Grand Executive Finish & Signature Presence */}
+        <ServiceSpotlightBand {...serviceSpotlights.executiveFinish} />
       </main>
 
       <Footer />

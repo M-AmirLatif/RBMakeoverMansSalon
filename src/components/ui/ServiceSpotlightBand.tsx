@@ -81,7 +81,11 @@ export function ServiceSpotlightBand({
               />
 
               {/* Bottom Scrim blending seamlessly into dark background */}
-              <div className="absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-black via-black/40 to-transparent pointer-events-none" />
+              <div className={`absolute inset-x-0 bottom-0 h-32 pointer-events-none ${
+                bgDarkTone === "black"
+                  ? "bg-gradient-to-t from-black via-black/40 to-transparent"
+                  : "bg-gradient-to-t from-[#080C0A] via-[#080C0A]/40 to-transparent"
+              }`} />
 
               {/* Floating Modern Editorial Caption Band */}
               <div className="relative z-10 mx-2 sm:mx-6 mb-4 p-3.5 sm:p-4 rounded-2xl bg-[#0E1411]/90 backdrop-blur-md border border-[#C59B46]/30 text-center shadow-2xl select-none">

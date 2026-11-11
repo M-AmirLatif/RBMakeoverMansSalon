@@ -130,8 +130,8 @@ export function PrecisionSection() {
           <AnimatedReveal direction="scale" delay={0.15} className="lg:col-span-4 order-1 lg:order-2 flex justify-center">
             <div className="relative w-full max-w-[340px] sm:max-w-[420px] lg:max-w-none mx-auto h-[480px] sm:h-[560px] lg:h-[640px] group flex flex-col justify-end">
               <Image
-                src="/images/cutout-skin-fade.webp"
-                alt="Gentleman profile with precision fade and groomed beard at R.B Makeover Man's Salon"
+                src="/images/cutout-precision-taper.webp"
+                alt="Executive gentleman profile with precision fade and groomed beard at R.B Makeover Man's Salon"
                 fill
                 sizes="(max-width: 1024px) 420px, 460px"
                 className="object-contain object-bottom group-hover:scale-105 transition-transform duration-700 ease-out select-none"
@@ -143,10 +143,10 @@ export function PrecisionSection() {
               {/* Floating Modern Editorial Caption on Center Portrait */}
               <div className="relative z-10 mx-2 sm:mx-4 mb-4 p-4 rounded-2xl bg-[#0B0F0D]/90 backdrop-blur-md border border-[#C59B46]/30 text-center shadow-2xl select-none">
                 <span className="text-[10px] sm:text-[11px] font-mono tracking-widest uppercase text-[#C59B46] font-bold block mb-1">
-                  ✦ SIGNATURE LOW-DROP SKIN FADE • PRECISION SCISSOR TEXTURE
+                  ✦ EXECUTIVE TAPER FADE • BESPOKE BEARD CONTOURS
                 </span>
                 <p className="font-['Playfair_Display',Georgia,serif] text-sm sm:text-base text-[#F5EFEB] font-normal leading-snug">
-                  Zero-gap taper fade tailored to highlight jawline angles &amp; facial symmetry.
+                  Precision scissor discipline and razor contours sculpted to enhance jawline symmetry.
                 </p>
               </div>
             </div>

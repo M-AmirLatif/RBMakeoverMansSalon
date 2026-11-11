@@ -1,6 +1,26 @@
 import { ServiceSpotlightProps } from "@/components/ui/ServiceSpotlightBand";
 
 export const serviceSpotlights: Record<string, ServiceSpotlightProps> = {
+  // 1. Between Hero and Precision (Transition 1)
+  executiveCrop: {
+    id: "spotlight-executive-crop",
+    badge: "Modern European Styling",
+    serviceName: "French Crop & Textured Fringe",
+    category: "Haircuts & Styling",
+    price: "Rs. 1,000",
+    title: "Textured Executive Crop",
+    highlightText: "Point-Cut Volume & Micro-Taper",
+    description: "Modern European crop featuring high micro-fade temples and point-cut scissor volume through the crown for low-maintenance, sharp everyday presence.",
+    image: "/images/cutout-executive-crop.webp",
+    imageAlt: "Modern textured executive crop haircut at R.B Makeover",
+    captionTag: "MODERN TEXTURED CROP • BLUNT FRINGE SYMMETRY",
+    captionTitle: "Weightless volume and clean micro-tapers crafted with Japanese shears.",
+    features: ["Micro Temple Taper", "Point-Cut Crown Texture", "Matte Clay Finish", "Razor Clean Neckline"],
+    imageSide: "left",
+    bgDarkTone: "black",
+  },
+
+  // 2. After Precision Section (Transition 2)
   skinFade: {
     id: "spotlight-skin-fade",
     badge: "Master Cut Spotlight",
@@ -16,9 +36,10 @@ export const serviceSpotlights: Record<string, ServiceSpotlightProps> = {
     captionTitle: "Tailored temple tapers and razor-sharp nape lines crafted by master barbers.",
     features: ["Zero-Gap Clippers", "Scissor-Over-Comb", "Razor Clean Nape", "Matte Texture Paste"],
     imageSide: "right",
-    bgDarkTone: "black",
+    bgDarkTone: "obsidian",
   },
 
+  // 3. After Services Section (Transition 3)
   royalBeard: {
     id: "spotlight-royal-beard",
     badge: "Beard Architecture",
@@ -34,9 +55,10 @@ export const serviceSpotlights: Record<string, ServiceSpotlightProps> = {
     captionTitle: "Hot towel relaxation paired with argan beard oil for shine and hold.",
     features: ["Hot Towel Steam", "Feather-Edge Razor", "Mustache Contouring", "Organic Argan Oil"],
     imageSide: "left",
-    bgDarkTone: "obsidian",
+    bgDarkTone: "black",
   },
 
+  // 4. After About Section (Transition 4)
   royalShave: {
     id: "spotlight-royal-shave",
     badge: "Heritage Shaving",
@@ -52,9 +74,10 @@ export const serviceSpotlights: Record<string, ServiceSpotlightProps> = {
     captionTitle: "Warm lather and sterile blades deliver the closest, smoothest finish.",
     features: ["Dual Hot Towels", "Pre-Shave Oil", "Single-Use Blades", "Soothing Balm Finish"],
     imageSide: "right",
-    bgDarkTone: "black",
+    bgDarkTone: "obsidian",
   },
 
+  // 5. After Team Section (Transition 5)
   hairBeardCombo: {
     id: "spotlight-hair-beard",
     badge: "Executive Transformation",
@@ -70,9 +93,10 @@ export const serviceSpotlights: Record<string, ServiceSpotlightProps> = {
     captionTitle: "Harmonized hair & beard proportions crafted for confidence and executive poise.",
     features: ["Facial Proportions", "Temple Transition", "Long-Lasting Hold", "Beard Sculpting"],
     imageSide: "left",
-    bgDarkTone: "obsidian",
+    bgDarkTone: "black",
   },
 
+  // 6. After Testimonials Section (Transition 6)
   facialSkincare: {
     id: "spotlight-facial",
     badge: "Skincare & Rejuvenation",
@@ -88,27 +112,29 @@ export const serviceSpotlights: Record<string, ServiceSpotlightProps> = {
     captionTitle: "Removes pollutants, tightens pores, and restores youthfulness.",
     features: ["Deep Cleansing", "Charcoal Mask", "Facial Acupressure", "Hydrating Mist"],
     imageSide: "right",
-    bgDarkTone: "black",
-  },
-
-  scalpMassage: {
-    id: "spotlight-scalp",
-    badge: "Therapeutic Wash",
-    serviceName: "Hair Treatments",
-    category: "Haircuts & Styling",
-    price: "Rs. 500",
-    title: "Deep Scalp Massage & Wash",
-    highlightText: "Energizing Menthol Therapy",
-    description: "Recline in our ergonomic shampoo station for a restorative scalp acupressure massage using tea-tree and menthol clarifying shampoos to stimulate hair follicles.",
-    image: "/images/cutout-shampoo-station.webp",
-    imageAlt: "Shampoo and scalp washing station at R.B Makeover",
-    captionTag: "SCALP DETOX WASH • MENTHOL ACUPRESSURE THERAPY",
-    captionTitle: "Cleanses styling product residue and promotes strong, healthy roots.",
-    features: ["Ergonomic Wash Chair", "Tea-Tree Menthol", "Acupressure Massage", "Cold Rinse Seal"],
-    imageSide: "left",
     bgDarkTone: "obsidian",
   },
 
+  // 7. After Interior Photo Band (Transition 7)
+  scalpMassage: {
+    id: "spotlight-scalp",
+    badge: "Therapeutic Wash",
+    serviceName: "Hair Treatments & Scalp Therapy",
+    category: "Haircuts & Styling",
+    price: "Rs. 800",
+    title: "Invigorating Scalp Massage",
+    highlightText: "Menthol Acupressure & Follicle Therapy",
+    description: "Stimulating scalp acupressure massage using tea tree and peppermint clarifying botanicals, relieving daily tension while promoting healthy hair follicle circulation.",
+    image: "/images/cutout-scalp-therapy.webp",
+    imageAlt: "Invigorating scalp acupressure massage and steam therapy at R.B Makeover",
+    captionTag: "SCALP DETOX WASH • MENTHOL ACUPRESSURE THERAPY",
+    captionTitle: "Cleanses styling product residue and promotes strong, healthy roots.",
+    features: ["Botanical Steam", "Tea-Tree Menthol", "Acupressure Massage", "Cold Rinse Seal"],
+    imageSide: "left",
+    bgDarkTone: "black",
+  },
+
+  // 8. After Why Choose Us Section (Transition 8)
   classicCut: {
     id: "spotlight-classic-cut",
     badge: "Timeless Barbering",
@@ -124,27 +150,29 @@ export const serviceSpotlights: Record<string, ServiceSpotlightProps> = {
     captionTitle: "Natural parting lines and scissor-shaped volume tailored to your head shape.",
     features: ["Pure Scissor Work", "Gentle Neckline Lineup", "Natural Parting", "Light Styling Tonic"],
     imageSide: "right",
-    bgDarkTone: "black",
+    bgDarkTone: "obsidian",
   },
 
+  // 9. After Gallery Section (Transition 9)
   keratinProtein: {
     id: "spotlight-keratin",
     badge: "Structural Hair Care",
-    serviceName: "Hair Straightening",
+    serviceName: "Hair Straightening & Keratin",
     category: "Haircuts & Styling",
     price: "Rs. 3,000",
-    title: "Keratin Protein & Smoothing",
-    highlightText: "Frizz-Free Silk Finish",
-    description: "Transform unmanageable, coarse hair with our premium keratin protein treatment. Eliminates curl and frizz while maintaining healthy bounce and deep sheen for months.",
-    image: "/images/cutout-styling-arched.webp",
-    imageAlt: "Keratin smoothing and protein hair treatment station at R.B Makeover",
+    title: "Keratin Silk Smoothing",
+    highlightText: "Glossy Silk Finish & Frizz Control",
+    description: "Deep protein rebuilding that eliminates coarse frizz and locks in brilliant mirror shine for up to 12 weeks of effortless comb-through manageability.",
+    image: "/images/cutout-keratin-silk.webp",
+    imageAlt: "Keratin silk smoothing and protein hair transformation at R.B Makeover",
     captionTag: "KERATIN SMOOTHING • FRIZZ CONTROL & SHINE",
     captionTitle: "Deep protein rebuilding that seals the hair cuticle for effortless daily styling.",
     features: ["Formaldehyde-Free", "Heat Activated Seal", "12-Week Durability", "Silky Manageability"],
     imageSide: "left",
-    bgDarkTone: "obsidian",
+    bgDarkTone: "black",
   },
 
+  // 10. After Facilities Section (Transition 10)
   vipGrooming: {
     id: "spotlight-vip",
     badge: "Signature All-Inclusive",
@@ -158,8 +186,46 @@ export const serviceSpotlights: Record<string, ServiceSpotlightProps> = {
     imageAlt: "VIP executive grooming station at R.B Makeover",
     captionTag: "ALL-INCLUSIVE VIP GROOMING • ULTIMATE DISTINCTION",
     captionTitle: "The definitive 90-minute gentleman transformation for special occasions and executive poise.",
-    features: ["Full Hair & Beard Cut", "Hydra Skincare Mask", "Scalp Acupressure", "Complimentary Refreshment"],
+    features: ["Full Service Hair & Beard", "Hydra Facial Cleansing", "Scalp Steam Massage", "Signature Styling"],
     imageSide: "right",
+    bgDarkTone: "obsidian",
+  },
+
+  // 11. After Location Section (Transition 11)
+  razorLineup: {
+    id: "spotlight-razor-lineup",
+    badge: "Precision Detailing",
+    serviceName: "Beard Trimming & Lineup",
+    category: "Beard & Grooming",
+    price: "Rs. 600",
+    title: "Razor Lineup & Temple Edge",
+    highlightText: "Zero-Tolerance Contour Geometry",
+    description: "Laser-focused edge work using disposable feather blades to carve crisp cheek curves, neckline definition, and geometric temple tapers.",
+    image: "/images/cutout-razor-lineup.webp",
+    imageAlt: "Razor-sharp temple and beard lineup detailing at R.B Makeover",
+    captionTag: "FEATHER BLADE LINEUPS • CRISP TEMPLE GEOMETRY",
+    captionTitle: "Razor-straight lines and tapered curves sculpted with surgeon-level discipline.",
+    features: ["Feather Razor Blades", "Hot Aloe Prep", "Geometric Symmetry", "Post-Shave Ice Towel"],
+    imageSide: "left",
     bgDarkTone: "black",
+  },
+
+  // 12. After Contact Section (Transition 12)
+  executiveFinish: {
+    id: "spotlight-executive-finish",
+    badge: "The Grand Standard",
+    serviceName: "Bespoke Executive Consultation",
+    category: "Additional Grooming Services",
+    price: "Rs. 2,000",
+    title: "The Executive Finish & Aura",
+    highlightText: "Signature Confidence for Every Occasion",
+    description: "Every appointment concludes with our signature hot towel finish, collar brush-down, and premium styling tonic so you step out of our chair looking your absolute sharpest.",
+    image: "/images/cutout-master-finish.webp",
+    imageAlt: "Executive gentleman finishing styling and presence at R.B Makeover",
+    captionTag: "THE FINAL TOUCH • UNCOMPROMISED CONFIDENCE",
+    captionTitle: "Walk out with polished distinction, tailored for boardroom and evening prominence.",
+    features: ["Hot Towel Finish", "Collar Brush-Down", "Matte Pomade Styling", "VIP Walkout Confidence"],
+    imageSide: "right",
+    bgDarkTone: "obsidian",
   },
 };
