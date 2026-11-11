@@ -44,7 +44,7 @@ export function HeroSection() {
       <div className="absolute bottom-20 left-10 w-[450px] h-[350px] bg-[#141C18]/60 rounded-full blur-[140px] pointer-events-none" />
 
       {/* Main Container */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full relative z-10 space-y-16 sm:space-y-20">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full relative z-10 space-y-8 sm:space-y-12">
         
         {/* ============================================================ */}
         {/* PART 1: THE GENTLEMAN'S CLUB MASTER CENTERPIECE (FRONT HERO)  */}
@@ -52,14 +52,14 @@ export function HeroSection() {
         <AnimatedReveal direction="fade" delay={0.05} amount={0} margin="0px" className="w-full">
           
           {/* Headline Line 1: Shop Name across the top, crisp & grand */}
-          <div className="w-full mb-2 sm:mb-4 select-none">
-            <h1 className="font-['Bebas_Neue',sans-serif] text-5xl sm:text-7xl md:text-8xl lg:text-[7.5rem] xl:text-[9.5rem] tracking-tight text-[#F5EFEB] uppercase leading-[0.88] text-left">
-              R.B MAKEOVER
+          <div className="w-full mb-1 sm:mb-3 select-none">
+            <h1 className="font-['Bebas_Neue',sans-serif] text-5xl sm:text-7xl md:text-8xl lg:text-[7rem] xl:text-[8.8rem] tracking-tight text-[#F5EFEB] uppercase leading-[0.88] text-left">
+              R.B MAKEOVER <span className="text-[#DFC074]">MAN&apos;S</span>
             </h1>
           </div>
 
-          {/* Center Split: Exact Borderless Gentleman Profile (Left) & MAN'S SALON + Services List (Right) */}
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-10 items-center">
+          {/* Center Split: Exact Borderless Gentleman Profile (Left) & SALON + Services List (Right) */}
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 items-center">
             
             {/* Left Column (5 cols): Exact real man photo without borders, seamless black */}
             <div className="lg:col-span-5 flex justify-center lg:justify-start">
@@ -72,16 +72,23 @@ export function HeroSection() {
                   priority
                   className="w-full h-auto object-contain select-none"
                 />
+                
+                {/* Mobile only: SALON merged into the img on face side of person */}
+                <div className="lg:hidden absolute right-1 sm:right-4 top-[38%] -translate-y-1/2 select-none pointer-events-none z-10 text-right">
+                  <span className="font-['Bebas_Neue',sans-serif] text-6xl sm:text-7xl md:text-8xl text-[#C59B46] tracking-wider uppercase leading-none drop-shadow-[0_6px_24px_rgba(0,0,0,0.98)] block">
+                    SALON
+                  </span>
+                </div>
               </div>
             </div>
 
-            {/* Right Column (7 cols): Title Part 2 "MAN'S SALON" + Hairline Service Rail */}
+            {/* Right Column (7 cols): SALON word on face side + Hairline Service Rail */}
             <div className="lg:col-span-7 flex flex-col justify-center space-y-4 sm:space-y-5 lg:pl-2">
               
-              {/* Title Part 2: Pushed to right side of the face */}
-              <div className="select-none">
-                <h2 className="font-['Bebas_Neue',sans-serif] text-4xl sm:text-6xl md:text-7xl lg:text-8xl tracking-wider text-[#F5EFEB] uppercase leading-none">
-                  MAN&apos;S <span className="text-[#C59B46]">SALON</span>
+              {/* Desktop only: Title Part 2 "SALON" merged into the face side of the image */}
+              <div className="hidden lg:block select-none -ml-12 lg:-ml-20 xl:-ml-28 z-20 relative pointer-events-none">
+                <h2 className="font-['Bebas_Neue',sans-serif] text-7xl md:text-8xl lg:text-[7.5rem] xl:text-[9rem] tracking-wider text-[#C59B46] uppercase leading-none drop-shadow-[0_8px_30px_rgba(0,0,0,0.95)]">
+                  SALON
                 </h2>
               </div>
 
@@ -132,6 +139,71 @@ export function HeroSection() {
           </div>
 
         </AnimatedReveal>
+
+        {/* ============================================================ */}
+        {/* ANIMATED LUXURY TICKER STRAP (BETWEEN THE 2 CARDS)           */}
+        {/* ============================================================ */}
+        <div className="w-full relative py-1">
+          <div className="w-full overflow-hidden rounded-full border border-[#C59B46]/30 bg-gradient-to-r from-[#111714] via-[#1A231E] to-[#111714] py-2.5 sm:py-3 shadow-[0_8px_25px_rgba(0,0,0,0.7)] backdrop-blur-md">
+            <div className="flex w-max animate-marquee space-x-6 sm:space-x-8 text-[11px] sm:text-xs font-bold tracking-[0.2em] uppercase text-[#DFC074] items-center select-none">
+              <span className="flex items-center gap-2">
+                <Scissors className="w-3.5 h-3.5 text-[#C59B46] -rotate-45 shrink-0" />
+                <span>10 Master Barbers on Deck</span>
+              </span>
+              <span className="text-white/30">•</span>
+              <span className="flex items-center gap-2">
+                <Star className="w-3.5 h-3.5 fill-[#C59B46] text-[#C59B46] shrink-0" />
+                <span>4.9 Google Rated • 36 Reviews</span>
+              </span>
+              <span className="text-white/30">•</span>
+              <span className="flex items-center gap-2">
+                <Sparkles className="w-3.5 h-3.5 text-[#DFC074] shrink-0" />
+                <span>Precision Skin Fades & Beard Sculpting</span>
+              </span>
+              <span className="text-white/30">•</span>
+              <span className="flex items-center gap-2">
+                <MapPin className="w-3.5 h-3.5 text-[#C59B46] shrink-0" />
+                <span>Rose Commercial • Park View City Lahore</span>
+              </span>
+              <span className="text-white/30">•</span>
+              <span className="flex items-center gap-2">
+                <Scissors className="w-3.5 h-3.5 text-[#C59B46] -rotate-45 shrink-0" />
+                <span>Walk-Ins & WhatsApp Bookings Welcome</span>
+              </span>
+              <span className="text-white/30">•</span>
+              <span className="flex items-center gap-2">
+                <Sparkles className="w-3.5 h-3.5 text-[#DFC074] shrink-0" />
+                <span>Executive Hot Towel & Hydra Facial Treatments</span>
+              </span>
+              <span className="text-white/30">•</span>
+              {/* Duplicated for seamless continuous loop */}
+              <span className="flex items-center gap-2">
+                <Scissors className="w-3.5 h-3.5 text-[#C59B46] -rotate-45 shrink-0" />
+                <span>10 Master Barbers on Deck</span>
+              </span>
+              <span className="text-white/30">•</span>
+              <span className="flex items-center gap-2">
+                <Star className="w-3.5 h-3.5 fill-[#C59B46] text-[#C59B46] shrink-0" />
+                <span>4.9 Google Rated • 36 Reviews</span>
+              </span>
+              <span className="text-white/30">•</span>
+              <span className="flex items-center gap-2">
+                <Sparkles className="w-3.5 h-3.5 text-[#DFC074] shrink-0" />
+                <span>Precision Skin Fades & Beard Sculpting</span>
+              </span>
+              <span className="text-white/30">•</span>
+              <span className="flex items-center gap-2">
+                <MapPin className="w-3.5 h-3.5 text-[#C59B46] shrink-0" />
+                <span>Rose Commercial • Park View City Lahore</span>
+              </span>
+              <span className="text-white/30">•</span>
+              <span className="flex items-center gap-2">
+                <Scissors className="w-3.5 h-3.5 text-[#C59B46] -rotate-45 shrink-0" />
+                <span>Walk-Ins & WhatsApp Bookings Welcome</span>
+              </span>
+            </div>
+          </div>
+        </div>
 
         {/* ============================================================ */}
         {/* STAT STRIP (Connecting the two editorial hero showcases)       */}

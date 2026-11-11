@@ -38,12 +38,11 @@ async function capture() {
     clip: { x: 0, y: 0, width: 390, height: 844 }
   });
 
-  // Scroll down mobile slightly to see services list below gentleman face if scrolled
-  await pageMobile.evaluate(() => window.scrollBy(0, 400));
-  await new Promise(r => setTimeout(r, 500));
+  // Scroll down mobile to show between card 1 and card 2
+  await pageMobile.evaluate(() => window.scrollTo(0, 500));
+  await new Promise(r => setTimeout(r, 600));
   await pageMobile.screenshot({
-    path: path.join(screenshotsDir, 'hero_gentleman_mobile_scrolled.png'),
-    clip: { x: 0, y: 0, width: 390, height: 844 }
+    path: path.join(screenshotsDir, 'hero_gentleman_mobile_scrolled.png')
   });
 
   await browser.close();
