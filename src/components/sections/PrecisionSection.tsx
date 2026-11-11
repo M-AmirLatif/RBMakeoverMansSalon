@@ -4,6 +4,7 @@ import React from "react";
 import Image from "next/image";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { Button } from "@/components/ui/Button";
+import { AnimatedReveal } from "@/components/ui/AnimatedReveal";
 import {
   Scissors,
   Sparkles,
@@ -92,39 +93,41 @@ export function PrecisionSection() {
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 xl:gap-8 items-center mt-10">
           
           {/* Left Column (3 cards) */}
-          <div className="lg:col-span-4 flex flex-col gap-4 sm:gap-5 order-2 lg:order-1">
-            {leftCards.map((card) => (
-              <a
-                key={card.title}
-                href={card.anchor}
-                className="group p-5 rounded-2xl bg-[#111614] border border-white/[0.08] hover:border-[#C59B46]/40 transition-all duration-300 shadow-lg flex items-center justify-between"
-              >
-                <div className="flex items-center gap-4">
-                  <div className="w-12 h-12 rounded-xl bg-[#C59B46]/10 border border-[#C59B46]/20 flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
-                    {card.icon}
+          <AnimatedReveal direction="left" delay={0.1} className="lg:col-span-4 order-2 lg:order-1">
+            <div className="flex flex-col gap-4 sm:gap-5">
+              {leftCards.map((card) => (
+                <a
+                  key={card.title}
+                  href={card.anchor}
+                  className="group p-5 rounded-2xl bg-[#111614] border border-white/[0.08] hover:border-[#C59B46]/40 transition-all duration-300 shadow-lg flex items-center justify-between"
+                >
+                  <div className="flex items-center gap-4">
+                    <div className="w-12 h-12 rounded-xl bg-[#C59B46]/10 border border-[#C59B46]/20 flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
+                      {card.icon}
+                    </div>
+                    <div>
+                      <h3 className="font-['Playfair_Display',Georgia,serif] text-base sm:text-lg font-medium text-[#F5EFEB] group-hover:text-[#DFC074] transition-colors">
+                        {card.title}
+                      </h3>
+                      <p className="text-xs text-[#A8A193] mt-0.5 line-clamp-1">
+                        {card.subtitle}
+                      </p>
+                      <span className="text-[11px] font-semibold text-[#C59B46] font-mono mt-1 block">
+                        {card.priceNote}
+                      </span>
+                    </div>
                   </div>
-                  <div>
-                    <h3 className="font-['Playfair_Display',Georgia,serif] text-base sm:text-lg font-medium text-[#F5EFEB] group-hover:text-[#DFC074] transition-colors">
-                      {card.title}
-                    </h3>
-                    <p className="text-xs text-[#A8A193] mt-0.5 line-clamp-1">
-                      {card.subtitle}
-                    </p>
-                    <span className="text-[11px] font-semibold text-[#C59B46] font-mono mt-1 block">
-                      {card.priceNote}
-                    </span>
-                  </div>
-                </div>
 
-                <div className="w-8 h-8 rounded-full bg-white/5 group-hover:bg-[#C59B46] text-[#A8A193] group-hover:text-[#0B0F0D] flex items-center justify-center transition-colors shrink-0">
-                  <ArrowRight className="w-3.5 h-3.5" />
-                </div>
-              </a>
-            ))}
-          </div>
+                  <div className="w-8 h-8 rounded-full bg-white/5 group-hover:bg-[#C59B46] text-[#A8A193] group-hover:text-[#0B0F0D] flex items-center justify-center transition-colors shrink-0">
+                    <ArrowRight className="w-3.5 h-3.5" />
+                  </div>
+                </a>
+              ))}
+            </div>
+          </AnimatedReveal>
 
           {/* Center Column: Tall Portrait of Gentleman (matching Noir & Blade centerpiece) */}
-          <div className="lg:col-span-4 order-1 lg:order-2">
+          <AnimatedReveal direction="scale" delay={0.15} className="lg:col-span-4 order-1 lg:order-2">
             <div className="relative w-full max-w-[340px] sm:max-w-[380px] lg:max-w-none mx-auto h-[460px] sm:h-[520px] rounded-3xl overflow-hidden border border-[#C59B46]/35 shadow-[0_20px_50px_rgba(0,0,0,0.8)] group">
               <Image
                 src="/images/hero-gentleman-profile.webp"
@@ -147,39 +150,41 @@ export function PrecisionSection() {
                 </p>
               </div>
             </div>
-          </div>
+          </AnimatedReveal>
 
           {/* Right Column (3 cards) */}
-          <div className="lg:col-span-4 flex flex-col gap-4 sm:gap-5 order-3">
-            {rightCards.map((card) => (
-              <a
-                key={card.title}
-                href={card.anchor}
-                className="group p-5 rounded-2xl bg-[#111614] border border-white/[0.08] hover:border-[#C59B46]/40 transition-all duration-300 shadow-lg flex items-center justify-between"
-              >
-                <div className="flex items-center gap-4">
-                  <div className="w-12 h-12 rounded-xl bg-[#C59B46]/10 border border-[#C59B46]/20 flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
-                    {card.icon}
+          <AnimatedReveal direction="right" delay={0.2} className="lg:col-span-4 order-3">
+            <div className="flex flex-col gap-4 sm:gap-5">
+              {rightCards.map((card) => (
+                <a
+                  key={card.title}
+                  href={card.anchor}
+                  className="group p-5 rounded-2xl bg-[#111614] border border-white/[0.08] hover:border-[#C59B46]/40 transition-all duration-300 shadow-lg flex items-center justify-between"
+                >
+                  <div className="flex items-center gap-4">
+                    <div className="w-12 h-12 rounded-xl bg-[#C59B46]/10 border border-[#C59B46]/20 flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
+                      {card.icon}
+                    </div>
+                    <div>
+                      <h3 className="font-['Playfair_Display',Georgia,serif] text-base sm:text-lg font-medium text-[#F5EFEB] group-hover:text-[#DFC074] transition-colors">
+                        {card.title}
+                      </h3>
+                      <p className="text-xs text-[#A8A193] mt-0.5 line-clamp-1">
+                        {card.subtitle}
+                      </p>
+                      <span className="text-[11px] font-semibold text-[#C59B46] font-mono mt-1 block">
+                        {card.priceNote}
+                      </span>
+                    </div>
                   </div>
-                  <div>
-                    <h3 className="font-['Playfair_Display',Georgia,serif] text-base sm:text-lg font-medium text-[#F5EFEB] group-hover:text-[#DFC074] transition-colors">
-                      {card.title}
-                    </h3>
-                    <p className="text-xs text-[#A8A193] mt-0.5 line-clamp-1">
-                      {card.subtitle}
-                    </p>
-                    <span className="text-[11px] font-semibold text-[#C59B46] font-mono mt-1 block">
-                      {card.priceNote}
-                    </span>
-                  </div>
-                </div>
 
-                <div className="w-8 h-8 rounded-full bg-white/5 group-hover:bg-[#C59B46] text-[#A8A193] group-hover:text-[#0B0F0D] flex items-center justify-center transition-colors shrink-0">
-                  <ArrowRight className="w-3.5 h-3.5" />
-                </div>
-              </a>
-            ))}
-          </div>
+                  <div className="w-8 h-8 rounded-full bg-white/5 group-hover:bg-[#C59B46] text-[#A8A193] group-hover:text-[#0B0F0D] flex items-center justify-center transition-colors shrink-0">
+                    <ArrowRight className="w-3.5 h-3.5" />
+                  </div>
+                </a>
+              ))}
+            </div>
+          </AnimatedReveal>
 
         </div>
 

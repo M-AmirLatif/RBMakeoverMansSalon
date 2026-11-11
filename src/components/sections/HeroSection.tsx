@@ -5,6 +5,8 @@ import Image from "next/image";
 import { siteConfig } from "@/data/siteConfig";
 import { Button } from "@/components/ui/Button";
 import { WhatsAppIcon, FacebookIcon } from "@/components/ui/Icons";
+import { TypewriterEffect } from "@/components/ui/TypewriterEffect";
+import { AnimatedReveal } from "@/components/ui/AnimatedReveal";
 import {
   Star,
   MapPin,
@@ -39,7 +41,7 @@ export function HeroSection() {
       className="relative min-h-[100svh] bg-[#0A0E0C] pt-24 sm:pt-28 pb-12 sm:pb-16 flex flex-col justify-between overflow-x-clip"
     >
       {/* Background ambient lighting */}
-      <div className="absolute top-12 left-1/4 -translate-x-1/2 w-[550px] h-[350px] bg-[#C59B46]/6 rounded-full blur-[150px] pointer-events-none" />
+      <div className="absolute top-12 left-1/4 -translate-x-1/2 w-[550px] h-[350px] bg-[#C59B46]/10 rounded-full blur-[150px] pointer-events-none animate-pulse-subtle" />
       <div className="absolute top-36 right-10 w-[450px] h-[350px] bg-[#141C18] rounded-full blur-[120px] pointer-events-none" />
 
       {/* Main Hero Container */}
@@ -49,12 +51,18 @@ export function HeroSection() {
         <div className="hidden lg:grid grid-cols-12 gap-8 xl:gap-12 items-center">
           
           {/* Left Column (7 cols): Brand, Two-Tone Headline, CTAs, Hairline Services Rail */}
-          <div className="col-span-7 flex flex-col justify-center space-y-6">
+          <AnimatedReveal direction="left" delay={0.05} className="col-span-7 flex flex-col justify-center space-y-6">
             
-            {/* Top Location Pill Badge (Noir & Blade style) */}
-            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/[0.04] border border-[#C59B46]/30 text-xs font-semibold text-[#C59B46] tracking-wide w-fit">
-              <MapPin className="w-3.5 h-3.5 text-[#C59B46]" />
-              <span>Rose Commercial, Park View City, Lahore</span>
+            {/* Top Badges (Location + Dynamic Typing Animation) */}
+            <div className="flex flex-wrap items-center gap-3">
+              <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/[0.04] border border-[#C59B46]/30 text-xs font-semibold text-[#C59B46] tracking-wide w-fit">
+                <MapPin className="w-3.5 h-3.5 text-[#C59B46]" />
+                <span>Rose Commercial, Park View City, Lahore</span>
+              </div>
+              <TypewriterEffect
+                prefix="Craft: "
+                className="text-xs uppercase tracking-wider bg-[#141C18]/90 border border-[#C59B46]/35 px-3.5 py-1.5 rounded-full shadow-md backdrop-blur-md"
+              />
             </div>
 
             {/* Brand Title + Grand Two-Tone Headline */}
@@ -141,10 +149,10 @@ export function HeroSection() {
               })}
             </div>
 
-          </div>
+          </AnimatedReveal>
 
           {/* Right Column (5 cols): Master Barber Image + Circular Badge + Socials */}
-          <div className="col-span-5 relative">
+          <AnimatedReveal direction="right" delay={0.1} className="col-span-5 relative">
             <div className="relative w-full h-[min(82svh,680px)] rounded-[32px] overflow-hidden border border-[#C59B46]/35 shadow-[0_30px_70px_rgba(0,0,0,0.9)] bg-[#121815] group">
               <Image
                 src="/images/hero-barber-craft.webp"
@@ -225,17 +233,25 @@ export function HeroSection() {
               </a>
             </div>
 
-          </div>
+          </AnimatedReveal>
 
         </div>
 
         {/* MOBILE & TABLET LAYOUT (< 1024px): Mobile-first 360-430px */}
-        <div className="block lg:hidden text-center space-y-6">
+        <AnimatedReveal direction="up" delay={0.05} className="block lg:hidden text-center space-y-6">
           
-          {/* Mobile Location Badge */}
-          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/[0.04] border border-[#C59B46]/30 text-[11px] font-semibold text-[#C59B46] mx-auto">
-            <MapPin className="w-3 h-3 text-[#C59B46]" />
-            <span>Rose Commercial, Park View City</span>
+          {/* Mobile Location Badge & Dynamic Typing Animation */}
+          <div className="space-y-2.5">
+            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/[0.04] border border-[#C59B46]/30 text-[11px] font-semibold text-[#C59B46] mx-auto">
+              <MapPin className="w-3 h-3 text-[#C59B46]" />
+              <span>Rose Commercial, Park View City</span>
+            </div>
+            <div>
+              <TypewriterEffect
+                prefix="Craft: "
+                className="text-[11px] uppercase tracking-wider bg-white/[0.04] border border-[#C59B46]/25 px-3 py-1 rounded-full mx-auto"
+              />
+            </div>
           </div>
 
           {/* Brand & Headline */}
@@ -345,7 +361,7 @@ export function HeroSection() {
             })}
           </div>
 
-        </div>
+        </AnimatedReveal>
 
       </div>
 

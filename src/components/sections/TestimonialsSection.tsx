@@ -4,6 +4,7 @@ import React from "react";
 import Image from "next/image";
 import { reviews, reviewsSummary } from "@/data/reviews";
 import { SectionHeading } from "@/components/ui/SectionHeading";
+import { AnimatedReveal } from "@/components/ui/AnimatedReveal";
 import { Star, ShieldCheck } from "lucide-react";
 import { GoogleGIcon } from "@/components/ui/Icons";
 
@@ -69,7 +70,7 @@ export function TestimonialsSection() {
         <div className="hidden lg:grid grid-cols-12 gap-6 xl:gap-8 items-center mb-12">
           
           {/* Left Column: 2 Testimonial Cards */}
-          <div className="col-span-4 flex flex-col gap-6">
+          <AnimatedReveal direction="left" delay={0.1} className="col-span-4 flex flex-col gap-6">
             {leftReviews.map((rev) => (
               <div
                 key={rev.id}
@@ -102,10 +103,10 @@ export function TestimonialsSection() {
                 </div>
               </div>
             ))}
-          </div>
+          </AnimatedReveal>
 
           {/* Center Column: Luxury Vintage Barber Chair (Noir & Blade Signature Centerpiece) */}
-          <div className="col-span-4 flex flex-col items-center justify-center">
+          <AnimatedReveal direction="scale" delay={0.15} className="col-span-4 flex flex-col items-center justify-center">
             <div className="relative w-full max-w-[320px] aspect-square rounded-3xl overflow-hidden border border-[#C59B46]/30 shadow-[0_20px_60px_rgba(0,0,0,0.85)] bg-[#111614] p-4 flex items-center justify-center group">
               <Image
                 src="/images/vintage-barber-chair.webp"
@@ -125,10 +126,10 @@ export function TestimonialsSection() {
                 </span>
               </div>
             </div>
-          </div>
+          </AnimatedReveal>
 
           {/* Right Column: 2 Testimonial Cards */}
-          <div className="col-span-4 flex flex-col gap-6">
+          <AnimatedReveal direction="right" delay={0.2} className="col-span-4 flex flex-col gap-6">
             {rightReviews.map((rev) => (
               <div
                 key={rev.id}
@@ -161,7 +162,7 @@ export function TestimonialsSection() {
                 </div>
               </div>
             ))}
-          </div>
+          </AnimatedReveal>
 
         </div>
 

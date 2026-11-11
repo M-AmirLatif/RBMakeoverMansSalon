@@ -2,6 +2,7 @@
 
 import React from "react";
 import { SectionHeading } from "@/components/ui/SectionHeading";
+import { AnimatedReveal } from "@/components/ui/AnimatedReveal";
 
 interface WhyChooseItem {
   num: string;
@@ -68,9 +69,11 @@ export function WhyChooseUsSection() {
 
         {/* Editorial Numbered List: 2 Columns Desktop, Large Condensed Numerals, Hairline Dividers, NO BOXES */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-x-14 gap-y-10 mt-12">
-          {reasons.map((item) => (
-            <div
+          {reasons.map((item, idx) => (
+            <AnimatedReveal
               key={item.num}
+              direction="up"
+              delay={idx * 0.08}
               className="relative pb-8 border-b border-white/[0.08] flex items-start gap-6 group"
             >
               {/* Large Condensed Numeral in Gold (Bebas Neue) */}
@@ -90,7 +93,7 @@ export function WhyChooseUsSection() {
                   {item.attribution}
                 </div>
               </div>
-            </div>
+            </AnimatedReveal>
           ))}
         </div>
 

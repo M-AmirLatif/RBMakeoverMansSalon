@@ -5,6 +5,7 @@ import Image from "next/image";
 import { galleryImages, SalonImage } from "@/data/images";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { Lightbox } from "@/components/ui/Lightbox";
+import { AnimatedReveal } from "@/components/ui/AnimatedReveal";
 import { Eye } from "lucide-react";
 
 export function GallerySection({
@@ -54,26 +55,37 @@ export function GallerySection({
             const isLast = idx === galleryImages.length - 1;
 
             return (
-              <div
+              <AnimatedReveal
                 key={image.id}
-                onClick={() => handleOpenLightbox(image)}
-                onKeyDown={(e) => {
-                  if (e.key === "Enter" || e.key === " ") {
-                    e.preventDefault();
-                    handleOpenLightbox(image);
-                  }
-                }}
-                tabIndex={0}
-                role="button"
-                aria-label={`Open photo: ${image.title}`}
-                className={`group relative rounded-2xl overflow-hidden bg-[#141C18] border border-white/[0.08] hover:border-[#C59B46]/60 cursor-pointer shadow-lg transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C59B46] ${
+                direction="up"
+                delay={idx * 0.05}
+                className={
                   isFirst
-                    ? "col-span-2 lg:col-span-2 aspect-[16/10]"
+                    ? "col-span-2 lg:col-span-2"
                     : isLast
-                    ? "col-span-2 lg:col-span-1 aspect-[16/10] lg:aspect-[4/5]"
-                    : "col-span-1 aspect-[4/5]"
-                }`}
+                    ? "col-span-2 lg:col-span-1"
+                    : "col-span-1"
+                }
               >
+                <div
+                  onClick={() => handleOpenLightbox(image)}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter" || e.key === " ") {
+                      e.preventDefault();
+                      handleOpenLightbox(image);
+                    }
+                  }}
+                  tabIndex={0}
+                  role="button"
+                  aria-label={`Open photo: ${image.title}`}
+                  className={`group relative rounded-2xl overflow-hidden bg-[#141C18] border border-white/[0.08] hover:border-[#C59B46]/60 cursor-pointer shadow-lg transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C59B46] w-full h-full ${
+                    isFirst
+                      ? "aspect-[16/10]"
+                      : isLast
+                      ? "aspect-[16/10] lg:aspect-[4/5]"
+                      : "aspect-[4/5]"
+                  }`}
+                >
                 <Image
                   src={image.webp}
                   alt={image.alt}
@@ -96,7 +108,8 @@ export function GallerySection({
                   </div>
                 </div>
               </div>
-            );
+            </AnimatedReveal>
+          );
           })}
         </div>
 

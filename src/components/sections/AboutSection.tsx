@@ -2,6 +2,7 @@ import React from "react";
 import Image from "next/image";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { Button } from "@/components/ui/Button";
+import { AnimatedReveal } from "@/components/ui/AnimatedReveal";
 import { ArrowRight, UserCheck, Star, Clock, MapPin, Sparkles } from "lucide-react";
 
 export function AboutSection() {
@@ -15,7 +16,7 @@ export function AboutSection() {
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center">
           
           {/* Left Column: Arched Window Salon Photo (Noir & Blade signature shape) */}
-          <div className="lg:col-span-5 relative">
+          <AnimatedReveal direction="left" delay={0.1} className="lg:col-span-5 relative">
             <div className="relative rounded-t-[180px] rounded-b-[32px] overflow-hidden border border-[#C59B46]/35 shadow-[0_25px_60px_rgba(0,0,0,0.8)] aspect-[3/4] max-w-md mx-auto lg:max-w-none group bg-[#121815]">
               <Image
                 src="/images/about-interior-floor.webp"
@@ -53,10 +54,10 @@ export function AboutSection() {
                 <span className="text-[#C59B46] text-[11px] font-medium">Park View City</span>
               </div>
             </div>
-          </div>
+          </AnimatedReveal>
 
           {/* Right Column: Editorial Information (Noir & Blade style) */}
-          <div className="lg:col-span-7 space-y-6">
+          <AnimatedReveal direction="right" delay={0.2} className="lg:col-span-7 space-y-6">
             <SectionHeading
               align="left"
               eyebrow="About Us"
@@ -147,7 +148,7 @@ export function AboutSection() {
                 Explore Services
               </Button>
             </div>
-          </div>
+          </AnimatedReveal>
 
         </div>
       </div>

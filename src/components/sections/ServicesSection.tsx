@@ -4,6 +4,7 @@ import React, { useState } from "react";
 import Image from "next/image";
 import { serviceCategories, ServiceCategoryKey } from "@/data/services";
 import { SectionHeading } from "@/components/ui/SectionHeading";
+import { AnimatedReveal } from "@/components/ui/AnimatedReveal";
 import { WhatsAppIcon } from "@/components/ui/Icons";
 import { buildServiceInquiryWhatsAppUrl } from "@/lib/whatsapp";
 import { ArrowUpRight, ArrowRight } from "lucide-react";
@@ -73,56 +74,60 @@ export function ServicesSection() {
 
         {/* 2x2 Grid of Featured Menu Items (Noir & Blade signature layout) */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-5 sm:gap-6 mb-16 sm:mb-20">
-          {featuredMenu.map((item) => {
+          {featuredMenu.map((item, idx) => {
             const waUrl = buildServiceInquiryWhatsAppUrl(item.title, item.category);
             return (
-              <div
+              <AnimatedReveal
                 key={item.title}
-                className="group p-5 sm:p-6 rounded-2xl bg-[#121815] border border-white/[0.08] hover:border-[#C59B46]/40 transition-all duration-300 shadow-xl flex items-center gap-5 sm:gap-6"
+                direction="up"
+                delay={idx * 0.08}
+                className="h-full"
               >
-                {/* Haircut / Style Thumbnail */}
-                <div className="relative w-24 h-24 sm:w-28 sm:h-28 rounded-2xl overflow-hidden shrink-0 border border-white/10 group-hover:scale-105 transition-transform duration-500">
-                  <Image
-                    src={item.image}
-                    alt={item.title}
-                    fill
-                    sizes="(max-width: 640px) 96px, 112px"
-                    className="object-cover object-center"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent" />
-                </div>
-
-                {/* Content */}
-                <div className="flex-1 min-w-0 space-y-1.5">
-                  <div className="flex items-start justify-between gap-2">
-                    <h3 className="font-['Playfair_Display',Georgia,serif] text-sm sm:text-base lg:text-lg font-medium text-[#F5EFEB] group-hover:text-[#DFC074] transition-colors leading-snug">
-                      {item.title}
-                    </h3>
-                    <span className="text-[11px] sm:text-xs font-bold text-[#C59B46] font-mono shrink-0 px-2 sm:px-2.5 py-0.5 rounded-full bg-[#C59B46]/10 border border-[#C59B46]/25">
-                      {item.price}
-                    </span>
+                <div className="h-full group p-5 sm:p-6 rounded-2xl bg-[#121815] border border-white/[0.08] hover:border-[#C59B46]/50 transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_15px_35px_rgba(0,0,0,0.85)] flex items-center gap-5 sm:gap-6">
+                  {/* Haircut / Style Thumbnail */}
+                  <div className="relative w-24 h-24 sm:w-28 sm:h-28 rounded-2xl overflow-hidden shrink-0 border border-white/10 group-hover:scale-105 transition-transform duration-500">
+                    <Image
+                      src={item.image}
+                      alt={item.title}
+                      fill
+                      sizes="(max-width: 640px) 96px, 112px"
+                      className="object-cover object-center"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent" />
                   </div>
 
-                  <p className="text-xs text-[#A8A193] line-clamp-2 leading-relaxed">
-                    {item.desc}
-                  </p>
+                  {/* Content */}
+                  <div className="flex-1 min-w-0 space-y-1.5">
+                    <div className="flex items-start justify-between gap-2">
+                      <h3 className="font-['Playfair_Display',Georgia,serif] text-sm sm:text-base lg:text-lg font-medium text-[#F5EFEB] group-hover:text-[#DFC074] transition-colors leading-snug">
+                        {item.title}
+                      </h3>
+                      <span className="text-[11px] sm:text-xs font-bold text-[#C59B46] font-mono shrink-0 px-2 sm:px-2.5 py-0.5 rounded-full bg-[#C59B46]/10 border border-[#C59B46]/25">
+                        {item.price}
+                      </span>
+                    </div>
 
-                  <div className="pt-2 flex items-center justify-between">
-                    <span className="text-[10px] uppercase font-bold tracking-wider text-[#7A756B]">
-                      {item.category}
-                    </span>
-                    <a
-                      href={waUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="inline-flex items-center gap-1 text-xs font-semibold text-[#C59B46] hover:text-[#DFC074] transition-colors"
-                    >
-                      <span>Book on WhatsApp</span>
-                      <ArrowRight className="w-3 h-3 group-hover:translate-x-1 transition-transform" />
-                    </a>
+                    <p className="text-xs text-[#A8A193] line-clamp-2 leading-relaxed">
+                      {item.desc}
+                    </p>
+
+                    <div className="pt-2 flex items-center justify-between">
+                      <span className="text-[10px] uppercase font-bold tracking-wider text-[#7A756B]">
+                        {item.category}
+                      </span>
+                      <a
+                        href={waUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center gap-1 text-xs font-semibold text-[#C59B46] hover:text-[#DFC074] transition-colors"
+                      >
+                        <span>Book on WhatsApp</span>
+                        <ArrowRight className="w-3 h-3 group-hover:translate-x-1 transition-transform" />
+                      </a>
+                    </div>
                   </div>
                 </div>
-              </div>
+              </AnimatedReveal>
             );
           })}
         </div>

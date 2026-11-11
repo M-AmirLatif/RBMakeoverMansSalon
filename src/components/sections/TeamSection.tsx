@@ -166,7 +166,7 @@ export function TeamSection({
               <div
                 key={barber.id}
                 data-barber-card
-                className="relative rounded-2xl bg-[#141C18] border border-white/[0.08] hover:border-[#C59B46]/40 p-5 sm:p-6 shadow-xl transition-all duration-300 flex flex-col justify-between group"
+                className="relative rounded-2xl bg-[#141C18] border border-white/[0.08] hover:border-[#C59B46]/60 p-5 sm:p-6 shadow-xl transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_16px_36px_rgba(0,0,0,0.85)] flex flex-col justify-between group"
               >
                 {/* Popular Badge */}
                 {barber.isPopular && (
