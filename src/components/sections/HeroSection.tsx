@@ -51,10 +51,10 @@ export function HeroSection() {
         {/* ============================================================ */}
         <AnimatedReveal direction="fade" delay={0.05} amount={0} margin="0px" className="w-full">
           
-          {/* Headline: Desktop in ONE LINE across the top, Mobile in clean bold stack */}
-          <div className="w-full mb-3 sm:mb-6 select-none">
-            {/* Desktop: Exactly in one single line */}
-            <h1 className="hidden lg:block font-['Bebas_Neue',sans-serif] text-5xl md:text-6xl lg:text-[5.5rem] xl:text-[6.8rem] 2xl:text-[7.8rem] tracking-tight text-[#F5EFEB] uppercase leading-none text-left whitespace-nowrap">
+          {/* Headline: Desktop centered in ONE LINE across the top, Mobile in clean bold stack */}
+          <div className="w-full mb-3 sm:mb-6 select-none text-center">
+            {/* Desktop: Exactly in one single line, centered in the middle */}
+            <h1 className="hidden lg:block font-['Bebas_Neue',sans-serif] text-5xl md:text-6xl lg:text-[5.5rem] xl:text-[6.8rem] 2xl:text-[7.8rem] tracking-tight text-[#F5EFEB] uppercase leading-none text-center whitespace-nowrap">
               R.B MAKEOVER <span className="text-[#C59B46]">MAN&apos;S SALON</span>
             </h1>
 
@@ -144,11 +144,10 @@ export function HeroSection() {
         </AnimatedReveal>
 
         {/* ============================================================ */}
-        {/* ANIMATED LUXURY TICKER STRAP (BETWEEN THE 2 CARDS)           */}
+        {/* FULL-WIDTH SCROLLING STRAP (EDGE-TO-EDGE, NOT ROUNDED)       */}
         {/* ============================================================ */}
-        <div className="w-full relative py-1">
-          <div className="w-full overflow-hidden rounded-full border border-[#C59B46]/30 bg-gradient-to-r from-[#111714] via-[#1A231E] to-[#111714] py-2.5 sm:py-3 shadow-[0_8px_25px_rgba(0,0,0,0.7)] backdrop-blur-md">
-            <div className="flex w-max animate-marquee space-x-6 sm:space-x-8 text-[11px] sm:text-xs font-bold tracking-[0.2em] uppercase text-[#DFC074] items-center select-none">
+        <div className="w-screen relative left-1/2 -translate-x-1/2 overflow-hidden border-y border-[#C59B46]/30 bg-gradient-to-r from-[#111714] via-[#1A231E] to-[#111714] py-2.5 sm:py-3 shadow-[0_4px_20px_rgba(0,0,0,0.6)] select-none">
+          <div className="flex w-max animate-marquee space-x-6 sm:space-x-8 text-[11px] sm:text-xs font-bold tracking-[0.2em] uppercase text-[#DFC074] items-center">
               <span className="flex items-center gap-2">
                 <Scissors className="w-3.5 h-3.5 text-[#C59B46] -rotate-45 shrink-0" />
                 <span>10 Master Barbers on Deck</span>
@@ -205,7 +204,6 @@ export function HeroSection() {
                 <span>Walk-Ins & WhatsApp Bookings Welcome</span>
               </span>
             </div>
-          </div>
         </div>
 
         {/* ============================================================ */}
