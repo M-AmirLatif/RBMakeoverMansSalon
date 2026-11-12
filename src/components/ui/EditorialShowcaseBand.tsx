@@ -69,8 +69,8 @@ export function EditorialShowcaseBand({
             direction={isRight ? "right" : "left"}
             delay={0.05}
             amount={0.05}
-            className={`lg:col-span-6 flex justify-center ${
-              isRight ? "order-2" : "order-2 lg:order-1"
+            className={`lg:col-span-6 flex justify-center order-1 ${
+              isRight ? "lg:order-2" : "lg:order-1"
             }`}
           >
             <div className="relative w-full max-w-[420px] sm:max-w-[480px] lg:max-w-none h-[420px] sm:h-[480px] lg:h-[600px] group flex flex-col justify-end">
@@ -108,8 +108,8 @@ export function EditorialShowcaseBand({
             direction={isRight ? "left" : "right"}
             delay={0.05}
             amount={0}
-            className={`lg:col-span-6 space-y-6 ${
-              isRight ? "order-1" : "order-1 lg:order-2"
+            className={`lg:col-span-6 space-y-6 order-2 ${
+              isRight ? "lg:order-1" : "lg:order-2"
             }`}
           >
             <div className="space-y-3 select-none">

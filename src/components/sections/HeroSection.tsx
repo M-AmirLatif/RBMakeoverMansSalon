@@ -435,38 +435,6 @@ export function HeroSection() {
             </h2>
           </div>
 
-          {/* Hero Image for Mobile: Blurred smooth edges, no card border, compact height */}
-          <div
-            className="relative w-full max-w-[340px] sm:max-w-[400px] mx-auto h-[30svh] max-h-[260px] rounded-3xl overflow-hidden shadow-2xl bg-black"
-            style={{
-              WebkitMaskImage: 'radial-gradient(ellipse 90% 90% at 50% 50%, black 55%, transparent 100%)',
-              maskImage: 'radial-gradient(ellipse 90% 90% at 50% 50%, black 55%, transparent 100%)'
-            }}
-          >
-            <Image
-              src="/images/hero-barber-craft.webp"
-              alt="Master barber cutting hair at R.B Makeover Man's Salon"
-              fill
-              sizes="(max-width: 640px) 92vw, 400px"
-              className="object-cover object-[50%_35%]"
-            />
-
-            {/* Gradient scrim */}
-            <div className="absolute inset-0 bg-gradient-to-t from-black via-black/25 to-transparent pointer-events-none" />
-
-            {/* Rating Chip */}
-            <div className="absolute bottom-3.5 left-3.5 px-3 py-1.5 rounded-full bg-[#0D1311]/90 border border-[#C59B46]/40 backdrop-blur-md shadow-lg flex items-center gap-1.5">
-              <Star className="w-3 h-3 fill-[#C59B46] text-[#C59B46]" />
-              <span className="text-xs font-bold text-[#F5EFEB]">4.9</span>
-              <span className="text-[11px] text-[#A8A193]">• 36 Google reviews</span>
-            </div>
-
-            {/* Location Badge */}
-            <div className="absolute bottom-3.5 right-3.5 px-2.5 py-1 rounded-full bg-[#0D1311]/85 border border-white/10 text-[10px] text-[#A8A193]">
-              Rose Commercial
-            </div>
-          </div>
-
           {/* Mandated Subtitle */}
           <p className="font-['Playfair_Display',Georgia,serif] text-base text-[#F5EFEB]/90 font-normal leading-relaxed max-w-md mx-auto px-2">
             Men&apos;s haircuts, beard grooming and skincare in Park View City, Lahore.
@@ -493,6 +461,38 @@ export function HeroSection() {
             >
               Explore Services
             </Button>
+          </div>
+
+          {/* Master Barber Craft Image Placed Directly Below Explore Services in Mobile View */}
+          <div
+            className="relative w-full max-w-[360px] sm:max-w-[420px] mx-auto h-[320px] sm:h-[380px] rounded-3xl overflow-hidden shadow-2xl bg-black mt-4"
+            style={{
+              WebkitMaskImage: 'radial-gradient(ellipse 92% 92% at 50% 50%, black 58%, transparent 100%)',
+              maskImage: 'radial-gradient(ellipse 92% 92% at 50% 50%, black 58%, transparent 100%)'
+            }}
+          >
+            <Image
+              src="/images/hero-barber-craft.webp"
+              alt="Master barber cutting hair at R.B Makeover Man's Salon"
+              fill
+              sizes="(max-width: 640px) 94vw, 420px"
+              className="object-cover object-[50%_35%]"
+            />
+
+            {/* Gradient scrim */}
+            <div className="absolute inset-0 bg-gradient-to-t from-black via-black/25 to-transparent pointer-events-none" />
+
+            {/* Rating Chip */}
+            <div className="absolute bottom-3.5 left-3.5 px-3 py-1.5 rounded-full bg-[#0D1311]/90 border border-[#C59B46]/40 backdrop-blur-md shadow-lg flex items-center gap-1.5">
+              <Star className="w-3 h-3 fill-[#C59B46] text-[#C59B46]" />
+              <span className="text-xs font-bold text-[#F5EFEB]">4.9</span>
+              <span className="text-[11px] text-[#A8A193]">• 36 Google reviews</span>
+            </div>
+
+            {/* Location Badge */}
+            <div className="absolute bottom-3.5 right-3.5 px-2.5 py-1 rounded-full bg-[#0D1311]/85 border border-white/10 text-[10px] text-[#A8A193]">
+              Rose Commercial
+            </div>
           </div>
 
         </AnimatedReveal>

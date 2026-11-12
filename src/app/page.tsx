@@ -38,10 +38,7 @@ export default function Home() {
         {/* 1. Hero: Noir & Blade + The Gentleman's Club synthesis */}
         <HeroSection />
 
-        {/* Editorial Showcase 2 (matching user screenshot 2: below hero CTAs & before ticker) */}
-        <EditorialShowcaseBand {...newEditorialShowcases.heroPart2CombOver} />
-
-        {/* Editorial Text Strap 1: Gold Foil Forward Ticker */}
+        {/* Editorial Text Strap 1: Gold Foil Forward Ticker (Directly below Hero image & Explore Services) */}
         <AnimatedReveal direction="fade" delay={0.05} amount={0.05}>
           <MarqueeTicker
             direction="forward"
@@ -59,6 +56,9 @@ export default function Home() {
             ]}
           />
         </AnimatedReveal>
+
+        {/* Editorial Showcase 2: Executive Comb-Over & Razor Part Symmetry */}
+        <EditorialShowcaseBand {...newEditorialShowcases.heroPart2CombOver} />
 
         {/* Service Spotlight 1: Modern Textured European Crop */}
         <ServiceSpotlightBand {...serviceSpotlights.executiveCrop} />

@@ -67,8 +67,8 @@ export function ServiceSpotlightBand({
             direction={isImageRight ? "right" : "left"}
             delay={0.05}
             amount={0.05}
-            className={`lg:col-span-6 flex justify-center ${
-              isImageRight ? "order-2" : "order-2 lg:order-1"
+            className={`lg:col-span-6 flex justify-center order-1 ${
+              isImageRight ? "lg:order-2" : "lg:order-1"
             }`}
           >
             <div className="relative w-full max-w-[420px] sm:max-w-[480px] lg:max-w-none h-[380px] sm:h-[460px] lg:h-[580px] group flex flex-col justify-end">
@@ -104,8 +104,8 @@ export function ServiceSpotlightBand({
             direction={isImageRight ? "left" : "right"}
             delay={0.05}
             amount={0}
-            className={`lg:col-span-6 space-y-6 ${
-              isImageRight ? "order-1" : "order-1 lg:order-2"
+            className={`lg:col-span-6 space-y-6 order-2 ${
+              isImageRight ? "lg:order-1" : "lg:order-2"
             }`}
           >
             <div className="space-y-3 select-none">

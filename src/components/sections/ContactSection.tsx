@@ -545,7 +545,7 @@ export function ContactSection({
                       className="w-full appearance-none pl-3.5 pr-12 py-3 rounded-xl bg-[#0B0F0D] border border-white/10 group-hover:border-[#C59B46]/40 focus:border-[#C59B46] text-base sm:text-sm text-[#F5EFEB] transition-all focus:outline-none focus:ring-1 focus:ring-[#C59B46] cursor-pointer"
                     >
                       <option value="" className="bg-[#0B0F0D] text-[#7A756B]">
-                        Any Available Stylist (First available slot)
+                        Any Available Stylist (First Available Slot)
                       </option>
                       {staffBarbers.map((b) => (
                         <option
@@ -649,20 +649,30 @@ export function ContactSection({
                         </span>
                       )}
                     </div>
-                    <input
-                      type="date"
-                      id="form-date"
-                      name="preferredDate"
-                      required
-                      min={todayDateString}
-                      value={formData.preferredDate}
-                      onChange={handleChange}
-                      aria-invalid={!!errors.preferredDate}
-                      aria-describedby={errors.preferredDate ? "date-error" : undefined}
-                      className={`w-full px-3.5 py-3 rounded-xl bg-[#0B0F0D] border text-base sm:text-sm text-[#F5EFEB] transition-colors focus:outline-none focus:ring-1 focus:ring-[#C59B46] ${
-                        errors.preferredDate ? "border-red-500/80" : "border-white/10 focus:border-[#C59B46]"
-                      }`}
-                    />
+                    <div className="relative group cursor-pointer">
+                      <input
+                        type="date"
+                        id="form-date"
+                        name="preferredDate"
+                        required
+                        min={todayDateString}
+                        value={formData.preferredDate}
+                        onChange={handleChange}
+                        aria-invalid={!!errors.preferredDate}
+                        aria-describedby={errors.preferredDate ? "date-error" : undefined}
+                        className={`w-full appearance-none pl-3.5 pr-12 py-3 rounded-xl bg-[#0B0F0D] border text-base sm:text-sm transition-all focus:outline-none focus:ring-1 focus:ring-[#C59B46] cursor-pointer date-input-custom ${
+                          !formData.preferredDate ? "text-[#7A756B]" : "text-[#F5EFEB]"
+                        } ${
+                          errors.preferredDate
+                            ? "border-red-500/80"
+                            : "border-white/10 group-hover:border-[#C59B46]/40 focus:border-[#C59B46]"
+                        }`}
+                      />
+                      {/* Realistic Gold Dropdown Arrow Indicator matching all other fields */}
+                      <div className="absolute right-3.5 sm:right-4 top-1/2 -translate-y-1/2 pointer-events-none flex items-center justify-center w-7 h-7 rounded-lg bg-white/[0.04] border border-white/[0.08] text-[#C59B46] group-hover:text-[#DFC074] group-hover:border-[#C59B46]/40 transition-all shadow-sm">
+                        <ChevronDown className="w-4 h-4 stroke-[2.25]" />
+                      </div>
+                    </div>
                     {errors.preferredDate && (
                       <p id="date-error" className="mt-1 text-xs text-red-400">
                         {errors.preferredDate}
