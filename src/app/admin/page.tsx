@@ -54,7 +54,15 @@ export default function AdminDashboardPage() {
   const [loading, setLoading] = useState(false);
 
   // Modals & Editing states
-  const [editingBarber, setEditingBarber] = useState<BarberStaff | null>(null);
+  const [editingBarber, setEditingBarber] = useState<(Omit<BarberStaff, "rates"> & {
+    rates: {
+      haircut: number | string;
+      beard: number | string;
+      hairAndBeard: number | string;
+      facial: number | string;
+      groomingPackage: number | string;
+    };
+  }) | null>(null);
   const [isNewBarber, setIsNewBarber] = useState(false);
   const [editingService, setEditingService] = useState<SiteService | null>(null);
   const [isNewService, setIsNewService] = useState(false);
@@ -189,6 +197,24 @@ export default function AdminDashboardPage() {
   // -------------------------------------------------------------
   // BARBERS CRUD
   // -------------------------------------------------------------
+  const handleRateChange = (
+    key: "haircut" | "beard" | "hairAndBeard" | "facial" | "groomingPackage",
+    val: string
+  ) => {
+    // Keep only digits so user can freely type, clear, or backspace
+    const cleaned = val.replace(/[^0-9]/g, "");
+    setEditingBarber((prev) => {
+      if (!prev) return null;
+      return {
+        ...prev,
+        rates: {
+          ...prev.rates,
+          [key]: cleaned,
+        },
+      };
+    });
+  };
+
   const handleSaveBarber = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!editingBarber) return;
@@ -201,11 +227,17 @@ export default function AdminDashboardPage() {
         category: editingBarber.category,
         initials: editingBarber.initials || editingBarber.name.substring(0, 2).toUpperCase(),
         experience: editingBarber.experience,
-        rating: editingBarber.rating,
-        review_count: editingBarber.reviewCount,
+        rating: Number(editingBarber.rating) || 5.0,
+        review_count: Number(editingBarber.reviewCount) || 10,
         specialties: editingBarber.specialties,
         bio: editingBarber.bio,
-        rates: editingBarber.rates,
+        rates: {
+          haircut: Number(editingBarber.rates.haircut) || 0,
+          beard: Number(editingBarber.rates.beard) || 0,
+          hairAndBeard: Number(editingBarber.rates.hairAndBeard) || 0,
+          facial: Number(editingBarber.rates.facial) || 0,
+          groomingPackage: Number(editingBarber.rates.groomingPackage) || 0,
+        },
         is_popular: !!editingBarber.isPopular,
         updated_at: new Date().toISOString(),
       };
@@ -306,12 +338,17 @@ export default function AdminDashboardPage() {
     if (!editingService) return;
 
     try {
+      const num = Number(String(editingService.price).replace(/[^0-9]/g, "")) || 0;
+      const displayPrice = String(editingService.price).includes("Rs.")
+        ? editingService.price
+        : `Rs. ${num.toLocaleString()}`;
+
       const payload = {
         id: editingService.id,
         name: editingService.name,
         category: editingService.category,
-        price: editingService.price,
-        numeric_price: editingService.numeric_price,
+        price: displayPrice || "Rs. 1,000",
+        numeric_price: num,
         description: editingService.description,
         duration: editingService.duration,
         updated_at: new Date().toISOString(),
@@ -1188,80 +1225,42 @@ export default function AdminDashboardPage() {
 
               {/* Service Pricing Matrix */}
               <div className="pt-2">
-                <label className="block text-xs uppercase font-mono text-[#DFC074] mb-2 font-bold">
-                  Individual Barber Rates (Rs.)
-                </label>
+                <div className="flex items-center justify-between mb-2">
+                  <label className="block text-xs uppercase font-mono text-[#DFC074] font-bold">
+                    Individual Barber Rates
+                  </label>
+                  <span className="text-[11px] text-[#7A756B] font-mono">
+                    Amounts in PKR (Rs.)
+                  </span>
+                </div>
                 <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 bg-[#141C18] p-4 rounded-xl border border-white/[0.06]">
-                  <div>
-                    <label className="block text-[11px] text-[#7A756B] mb-1">Haircut</label>
-                    <input
-                      type="number"
-                      value={editingBarber.rates?.haircut || 1000}
-                      onChange={(e) =>
-                        setEditingBarber({
-                          ...editingBarber,
-                          rates: { ...editingBarber.rates, haircut: Number(e.target.value) },
-                        })
-                      }
-                      className="w-full bg-[#0E1411] border border-white/[0.1] rounded-lg px-2.5 py-1.5 text-xs text-[#DFC074] font-mono outline-none"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-[11px] text-[#7A756B] mb-1">Beard Trim</label>
-                    <input
-                      type="number"
-                      value={editingBarber.rates?.beard || 600}
-                      onChange={(e) =>
-                        setEditingBarber({
-                          ...editingBarber,
-                          rates: { ...editingBarber.rates, beard: Number(e.target.value) },
-                        })
-                      }
-                      className="w-full bg-[#0E1411] border border-white/[0.1] rounded-lg px-2.5 py-1.5 text-xs text-[#DFC074] font-mono outline-none"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-[11px] text-[#7A756B] mb-1">Hair + Beard</label>
-                    <input
-                      type="number"
-                      value={editingBarber.rates?.hairAndBeard || 1500}
-                      onChange={(e) =>
-                        setEditingBarber({
-                          ...editingBarber,
-                          rates: { ...editingBarber.rates, hairAndBeard: Number(e.target.value) },
-                        })
-                      }
-                      className="w-full bg-[#0E1411] border border-white/[0.1] rounded-lg px-2.5 py-1.5 text-xs text-[#DFC074] font-mono outline-none"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-[11px] text-[#7A756B] mb-1">Facial</label>
-                    <input
-                      type="number"
-                      value={editingBarber.rates?.facial || 1800}
-                      onChange={(e) =>
-                        setEditingBarber({
-                          ...editingBarber,
-                          rates: { ...editingBarber.rates, facial: Number(e.target.value) },
-                        })
-                      }
-                      className="w-full bg-[#0E1411] border border-white/[0.1] rounded-lg px-2.5 py-1.5 text-xs text-[#DFC074] font-mono outline-none"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-[11px] text-[#7A756B] mb-1">VIP Package</label>
-                    <input
-                      type="number"
-                      value={editingBarber.rates?.groomingPackage || 3500}
-                      onChange={(e) =>
-                        setEditingBarber({
-                          ...editingBarber,
-                          rates: { ...editingBarber.rates, groomingPackage: Number(e.target.value) },
-                        })
-                      }
-                      className="w-full bg-[#0E1411] border border-white/[0.1] rounded-lg px-2.5 py-1.5 text-xs text-[#DFC074] font-mono outline-none"
-                    />
-                  </div>
+                  {([
+                    { key: "haircut", label: "Haircut" },
+                    { key: "beard", label: "Beard Trim" },
+                    { key: "hairAndBeard", label: "Hair + Beard" },
+                    { key: "facial", label: "Facial" },
+                    { key: "groomingPackage", label: "VIP Package" },
+                  ] as const).map(({ key, label }) => (
+                    <div key={key}>
+                      <label className="block text-[11px] font-mono text-[#A8A29E] mb-1.5 font-medium">
+                        {label}
+                      </label>
+                      <div className="relative flex items-center">
+                        <span className="absolute left-3 text-xs font-mono text-[#7A756B] select-none pointer-events-none">
+                          Rs.
+                        </span>
+                        <input
+                          type="text"
+                          inputMode="numeric"
+                          pattern="[0-9]*"
+                          value={editingBarber.rates?.[key] !== undefined ? editingBarber.rates[key] : ""}
+                          onChange={(e) => handleRateChange(key, e.target.value)}
+                          placeholder="0"
+                          className="w-full bg-[#0E1411] border border-white/[0.12] focus:border-[#C59B46] rounded-xl pl-9 pr-3 py-2 text-sm text-[#DFC074] font-mono font-medium outline-none transition-colors"
+                        />
+                      </div>
+                    </div>
+                  ))}
                 </div>
               </div>
 
@@ -1342,18 +1341,29 @@ export default function AdminDashboardPage() {
               <div className="grid grid-cols-2 gap-3">
                 <div>
                   <label className="block text-xs uppercase font-mono text-[#DFC074] mb-1">
-                    Price (Display)
+                    Price
                   </label>
-                  <input
-                    type="text"
-                    required
-                    value={editingService.price}
-                    onChange={(e) =>
-                      setEditingService({ ...editingService, price: e.target.value })
-                    }
-                    placeholder="Rs. 1,000"
-                    className="w-full bg-[#141C18] border border-white/[0.1] rounded-xl px-3.5 py-2 text-xs text-[#F5EFEB] focus:border-[#C59B46] outline-none"
-                  />
+                  <div className="relative flex items-center">
+                    <span className="absolute left-3 text-xs font-mono text-[#7A756B] select-none pointer-events-none">
+                      Rs.
+                    </span>
+                    <input
+                      type="text"
+                      inputMode="numeric"
+                      required
+                      value={String(editingService.price || "").replace(/[^0-9]/g, "")}
+                      onChange={(e) => {
+                        const val = e.target.value.replace(/[^0-9]/g, "");
+                        setEditingService({
+                          ...editingService,
+                          price: val ? `Rs. ${val}` : "",
+                          numeric_price: Number(val) || 0,
+                        });
+                      }}
+                      placeholder="1000"
+                      className="w-full bg-[#141C18] border border-white/[0.12] focus:border-[#C59B46] rounded-xl pl-9 pr-3.5 py-2.5 text-xs text-[#DFC074] font-mono outline-none"
+                    />
+                  </div>
                 </div>
                 <div>
                   <label className="block text-xs uppercase font-mono text-[#DFC074] mb-1">
