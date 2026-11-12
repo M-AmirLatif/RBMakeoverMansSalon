@@ -57,20 +57,20 @@ export const metadata: Metadata = {
     type: "website",
     images: [
       {
-        url: "/images/og-share-card.jpg",
+        url: "https://rb-makeover-salon.vercel.app/images/hero-og-chat.jpg",
+        secureUrl: "https://rb-makeover-salon.vercel.app/images/hero-og-chat.jpg",
+        width: 600,
+        height: 600,
+        type: "image/jpeg",
+        alt: "R.B Makeover Man's Salon Signature Gentleman",
+      },
+      {
+        url: "https://rb-makeover-salon.vercel.app/images/og-share-card.jpg",
         secureUrl: "https://rb-makeover-salon.vercel.app/images/og-share-card.jpg",
         width: 1200,
         height: 630,
         type: "image/jpeg",
         alt: "R.B Makeover Man's Salon — Executive Grooming & Styling at Park View City Lahore",
-      },
-      {
-        url: "/images/og-hero-square.jpg",
-        secureUrl: "https://rb-makeover-salon.vercel.app/images/og-hero-square.jpg",
-        width: 800,
-        height: 800,
-        type: "image/jpeg",
-        alt: "R.B Makeover Signature Gentleman Profile",
       },
     ],
   },
@@ -78,7 +78,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: siteConfig.seo.title,
     description: siteConfig.seo.description,
-    images: ["/images/og-share-card.jpg"],
+    images: ["https://rb-makeover-salon.vercel.app/images/hero-og-chat.jpg"],
   },
   robots: {
     index: true,
@@ -139,6 +139,9 @@ export default function RootLayout({
       className={`${bebasNeue.variable} ${playfairDisplay.variable} ${plusJakartaSans.variable} scroll-smooth`}
     >
       <head>
+        <link rel="image_src" href="https://rb-makeover-salon.vercel.app/images/hero-og-chat.jpg" />
+        <meta itemProp="image" content="https://rb-makeover-salon.vercel.app/images/hero-og-chat.jpg" />
+        <meta property="og:image:secure_url" content="https://rb-makeover-salon.vercel.app/images/hero-og-chat.jpg" />
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
