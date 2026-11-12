@@ -1,8 +1,9 @@
 "use client";
 
-import React from "react";
+import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import { siteConfig } from "@/data/siteConfig";
+import { fetchSiteImages } from "@/lib/supabase/queries";
 import { Button } from "@/components/ui/Button";
 import { WhatsAppIcon, FacebookIcon } from "@/components/ui/Icons";
 import { AnimatedReveal } from "@/components/ui/AnimatedReveal";
@@ -35,6 +36,21 @@ const heroServices: HeroServiceRow[] = [
 ];
 
 export function HeroSection() {
+  const [siteImages, setSiteImages] = useState<Record<string, string>>({
+    hero_barber: "/images/hero-barber-craft.webp",
+  });
+
+  useEffect(() => {
+    let mounted = true;
+    fetchSiteImages().then((imgs) => {
+      if (mounted && imgs && imgs.hero_barber) {
+        setSiteImages(imgs);
+      }
+    });
+    return () => {
+      mounted = false;
+    };
+  }, []);
   return (
     <section
       id="hero"
@@ -339,7 +355,7 @@ export function HeroSection() {
               }}
             >
               <Image
-                src="/images/hero-barber-craft.webp"
+                src={siteImages.hero_barber || "/images/hero-barber-craft.webp"}
                 alt="Master barber in black uniform styling client hair at R.B Makeover Man's Salon"
                 fill
                 sizes="(max-width: 1440px) 42vw, 560px"
@@ -472,7 +488,7 @@ export function HeroSection() {
             }}
           >
             <Image
-              src="/images/hero-barber-craft.webp"
+              src={siteImages.hero_barber || "/images/hero-barber-craft.webp"}
               alt="Master barber cutting hair at R.B Makeover Man's Salon"
               fill
               sizes="(max-width: 640px) 94vw, 420px"

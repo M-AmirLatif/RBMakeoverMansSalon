@@ -159,6 +159,13 @@ export function Footer() {
 
           <div className="flex items-center gap-6">
             <span className="text-[#605C55]">Park View City, Lahore</span>
+            <a
+              href="/admin/login"
+              className="text-[#605C55] hover:text-[#C59B46] transition-colors"
+              title="Admin Login"
+            >
+              Admin
+            </a>
             <button
               type="button"
               onClick={scrollToTop}

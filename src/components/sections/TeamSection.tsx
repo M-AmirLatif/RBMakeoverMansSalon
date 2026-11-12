@@ -1,7 +1,8 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { staffBarbers, BarberStaff } from "@/data/team";
+import { fetchBarbers } from "@/lib/supabase/queries";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { AnimatedReveal } from "@/components/ui/AnimatedReveal";
 import { WhatsAppIcon } from "@/components/ui/Icons";
@@ -41,11 +42,24 @@ export function TeamSection({
 }: {
   onSelectBarber?: (barberId: string) => void;
 }) {
+  const [barbersList, setBarbersList] = useState<BarberStaff[]>(staffBarbers);
   const [activeCategory, setActiveCategory] = useState<string>("all");
   const [activeTier, setActiveTier] = useState<RateTier>("haircut");
   const [expandedRatesId, setExpandedRatesId] = useState<string | null>(null);
 
-  const filteredBarbers = staffBarbers.filter((barber) => {
+  useEffect(() => {
+    let mounted = true;
+    fetchBarbers().then((data) => {
+      if (mounted && data && data.length > 0) {
+        setBarbersList(data);
+      }
+    });
+    return () => {
+      mounted = false;
+    };
+  }, []);
+
+  const filteredBarbers = barbersList.filter((barber) => {
     if (activeCategory === "all") return true;
     return barber.category === activeCategory;
   });
