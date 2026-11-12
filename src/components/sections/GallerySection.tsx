@@ -139,6 +139,9 @@ export function GallerySection({
                     <img
                       src={imageSrc}
                       alt={item.alt || item.title}
+                      onError={(e) => {
+                        (e.target as HTMLImageElement).src = "/images/salon-wide-stations.webp";
+                      }}
                       className="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-700 ease-out"
                     />
                   ) : (

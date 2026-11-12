@@ -393,8 +393,8 @@ VALUES
   'Styling team and barber staff at R.B Makeover Man''s Salon',
   'Styling',
   'image',
-  '/images/team-barbers-staff.jpg',
-  '/images/team-barbers-staff.webp',
+  '/images/team-staff-craft.jpg',
+  '/images/team-staff-craft.webp',
   1350,
   1800,
   'portrait',
@@ -441,9 +441,9 @@ ON CONFLICT (id) DO UPDATE SET
 -- SEED KEY SITE IMAGES
 INSERT INTO public.site_images (key, label, description, url)
 VALUES
-('hero_barber', 'Hero Barber Cutout Image', 'The master barber cutout portrait shown on the hero section', '/images/master-barber-cutout.webp'),
+('hero_barber', 'Hero Barber Cutout Image', 'The master barber cutout portrait shown on the hero section', '/images/hero-barber-craft.webp'),
 ('about_salon', 'About Section Salon Floor', 'The wide styling room photograph in the About Story section', '/images/about-interior-floor.webp'),
-('precision_center', 'Precision Section Center Model', 'The center portrait in the Craftsmanship section', '/images/razor-drop-fade-v2.webp')
+('precision_center', 'Precision Section Center Model', 'The center portrait in the Craftsmanship section', '/images/cutout-precision-taper.webp')
 ON CONFLICT (key) DO UPDATE SET
   label = EXCLUDED.label,
   description = EXCLUDED.description,

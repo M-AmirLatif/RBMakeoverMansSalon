@@ -118,9 +118,9 @@ export async function fetchGalleryItems(): Promise<GalleryMediaItem[]> {
  */
 export async function fetchSiteImages(): Promise<Record<string, string>> {
   const defaults: Record<string, string> = {
-    hero_barber: "/images/master-barber-cutout.webp",
+    hero_barber: "/images/hero-barber-craft.webp",
     about_salon: "/images/about-interior-floor.webp",
-    precision_center: "/images/razor-drop-fade-v2.webp",
+    precision_center: "/images/cutout-precision-taper.webp",
   };
 
   try {

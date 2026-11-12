@@ -14,17 +14,18 @@ import {
   Plus,
   Trash2,
   Edit2,
-  Check,
-  X,
   Upload,
   Video,
   ExternalLink,
   RefreshCw,
   Sparkles,
   AlertCircle,
+  X,
+  Clock,
+  Tag,
 } from "lucide-react";
 import { staffBarbers, BarberStaff } from "@/data/team";
-import { galleryImages, SalonImage } from "@/data/images";
+import { galleryImages } from "@/data/images";
 import { SiteService, GalleryMediaItem } from "@/lib/supabase/queries";
 
 export default function AdminDashboardPage() {
@@ -45,7 +46,11 @@ export default function AdminDashboardPage() {
   const [barbers, setBarbers] = useState<BarberStaff[]>([]);
   const [galleryItems, setGalleryItems] = useState<GalleryMediaItem[]>([]);
   const [services, setServices] = useState<SiteService[]>([]);
-  const [siteImages, setSiteImages] = useState<Record<string, string>>({});
+  const [siteImages, setSiteImages] = useState<Record<string, string>>({
+    hero_barber: "/images/hero-barber-craft.webp",
+    about_salon: "/images/about-interior-floor.webp",
+    precision_center: "/images/cutout-precision-taper.webp",
+  });
   const [loading, setLoading] = useState(false);
 
   // Modals & Editing states
@@ -157,11 +162,11 @@ export default function AdminDashboardPage() {
         .from("site_images")
         .select("key, url");
 
-      if (!imgErr && imgData) {
+      if (!imgErr && imgData && imgData.length > 0) {
         const map: Record<string, string> = {
-          hero_barber: "/images/master-barber-cutout.webp",
+          hero_barber: "/images/hero-barber-craft.webp",
           about_salon: "/images/about-interior-floor.webp",
-          precision_center: "/images/razor-drop-fade-v2.webp",
+          precision_center: "/images/cutout-precision-taper.webp",
         };
         imgData.forEach((row) => {
           if (row.key && row.url) map[row.key] = row.url;
@@ -250,7 +255,6 @@ export default function AdminDashboardPage() {
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || "Upload failed");
 
-      // Insert gallery row into Supabase
       const isVideo = file.type.startsWith("video/");
       const mediaItem = {
         title: newGalleryTitle || file.name.replace(/\.[^/.]+$/, ""),
@@ -402,62 +406,65 @@ export default function AdminDashboardPage() {
         </div>
       )}
 
-      {/* Top Navbar */}
+      {/* Top Navbar: Mobile-perfect layout with zero wrapping */}
       <header className="sticky top-0 z-40 bg-[#0E1411]/95 backdrop-blur-md border-b border-white/[0.08]">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 sm:h-20 flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#C59B46] to-[#DFC074] p-0.5 flex items-center justify-center">
-              <div className="w-full h-full bg-[#0E1411] rounded-[10px] flex items-center justify-center text-[#C59B46]">
-                <Scissors className="w-5 h-5" />
+        <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 h-14 sm:h-18 flex items-center justify-between gap-2">
+          {/* Brand */}
+          <div className="flex items-center gap-2 sm:gap-3 min-w-0">
+            <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-xl bg-gradient-to-br from-[#C59B46] to-[#DFC074] p-0.5 flex-shrink-0 flex items-center justify-center">
+              <div className="w-full h-full bg-[#0E1411] rounded-[9px] sm:rounded-[10px] flex items-center justify-center text-[#C59B46]">
+                <Scissors className="w-4 h-4 sm:w-5 sm:h-5" />
               </div>
             </div>
-            <div>
-              <div className="flex items-center gap-2">
-                <span className="font-serif font-bold text-lg text-[#F5EFEB]">R.B Makeover</span>
-                <span className="text-[10px] font-mono uppercase px-2 py-0.5 rounded bg-[#C59B46]/10 border border-[#C59B46]/30 text-[#C59B46]">
-                  Admin Portal
-                </span>
-              </div>
-              <p className="text-xs text-[#7A756B] hidden sm:block">Logged in as {user?.email}</p>
+            <div className="min-w-0 flex items-center gap-2">
+              <span className="font-serif font-bold text-sm sm:text-lg text-[#F5EFEB] whitespace-nowrap">
+                R.B Makeover
+              </span>
+              <span className="text-[9px] sm:text-[10px] font-mono uppercase px-1.5 sm:px-2 py-0.5 rounded bg-[#C59B46]/10 border border-[#C59B46]/30 text-[#C59B46] whitespace-nowrap">
+                Admin
+              </span>
             </div>
           </div>
 
-          <div className="flex items-center gap-3">
+          {/* Action Buttons: Responsive icons on phone, full text on desktop */}
+          <div className="flex items-center gap-1.5 sm:gap-3 flex-shrink-0">
             <Link
               href="/"
               target="_blank"
-              className="inline-flex items-center gap-1.5 px-3 sm:px-4 py-2 rounded-xl bg-white/[0.04] border border-white/[0.08] hover:border-[#C59B46]/40 text-xs text-[#DFC074] transition-colors"
+              className="inline-flex items-center gap-1.5 px-2.5 sm:px-3.5 py-1.5 sm:py-2 rounded-xl bg-white/[0.04] border border-white/[0.08] hover:border-[#C59B46]/40 text-xs text-[#DFC074] transition-colors"
+              title="View Live Site"
             >
-              <span>View Live Site</span>
-              <ExternalLink className="w-3.5 h-3.5" />
+              <ExternalLink className="w-3.5 h-3.5 text-[#C59B46]" />
+              <span className="hidden sm:inline">View Site</span>
             </Link>
             <button
               onClick={handleSignOut}
-              className="inline-flex items-center gap-1.5 px-3 sm:px-4 py-2 rounded-xl bg-red-950/30 border border-red-500/20 hover:border-red-500/50 text-xs text-red-300 transition-colors"
+              className="inline-flex items-center gap-1.5 px-2.5 sm:px-3.5 py-1.5 sm:py-2 rounded-xl bg-red-950/30 border border-red-500/20 hover:border-red-500/50 text-xs text-red-300 transition-colors"
+              title="Sign Out"
             >
               <LogOut className="w-3.5 h-3.5" />
-              <span className="hidden sm:inline">Sign Out</span>
+              <span className="hidden sm:inline">Logout</span>
             </button>
           </div>
         </div>
 
-        {/* Tab Navigation */}
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex space-x-1 sm:space-x-4 border-t border-white/[0.04] overflow-x-auto scrollbar-none">
+        {/* Tab Navigation: Smooth horizontal scroll on mobile */}
+        <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 flex space-x-2 sm:space-x-4 border-t border-white/[0.04] overflow-x-auto scrollbar-none">
           <button
             onClick={() => setActiveTab("barbers")}
-            className={`py-3 sm:py-3.5 px-3 sm:px-5 font-mono text-xs uppercase tracking-wider flex items-center gap-2 border-b-2 transition-all whitespace-nowrap ${
+            className={`py-3 sm:py-3.5 px-3 sm:px-4 font-mono text-xs uppercase tracking-wider flex items-center gap-2 border-b-2 transition-all whitespace-nowrap ${
               activeTab === "barbers"
                 ? "border-[#C59B46] text-[#DFC074] font-bold"
                 : "border-transparent text-[#7A756B] hover:text-[#F5EFEB]"
             }`}
           >
             <Users className="w-4 h-4" />
-            <span>Barbers &amp; Team ({barbers.length})</span>
+            <span>Barbers ({barbers.length})</span>
           </button>
 
           <button
             onClick={() => setActiveTab("gallery")}
-            className={`py-3 sm:py-3.5 px-3 sm:px-5 font-mono text-xs uppercase tracking-wider flex items-center gap-2 border-b-2 transition-all whitespace-nowrap ${
+            className={`py-3 sm:py-3.5 px-3 sm:px-4 font-mono text-xs uppercase tracking-wider flex items-center gap-2 border-b-2 transition-all whitespace-nowrap ${
               activeTab === "gallery"
                 ? "border-[#C59B46] text-[#DFC074] font-bold"
                 : "border-transparent text-[#7A756B] hover:text-[#F5EFEB]"
@@ -469,19 +476,19 @@ export default function AdminDashboardPage() {
 
           <button
             onClick={() => setActiveTab("services")}
-            className={`py-3 sm:py-3.5 px-3 sm:px-5 font-mono text-xs uppercase tracking-wider flex items-center gap-2 border-b-2 transition-all whitespace-nowrap ${
+            className={`py-3 sm:py-3.5 px-3 sm:px-4 font-mono text-xs uppercase tracking-wider flex items-center gap-2 border-b-2 transition-all whitespace-nowrap ${
               activeTab === "services"
                 ? "border-[#C59B46] text-[#DFC074] font-bold"
                 : "border-transparent text-[#7A756B] hover:text-[#F5EFEB]"
             }`}
           >
             <DollarSign className="w-4 h-4" />
-            <span>Services &amp; Pricing</span>
+            <span>Services &amp; Pricing ({services.length})</span>
           </button>
 
           <button
             onClick={() => setActiveTab("siteImages")}
-            className={`py-3 sm:py-3.5 px-3 sm:px-5 font-mono text-xs uppercase tracking-wider flex items-center gap-2 border-b-2 transition-all whitespace-nowrap ${
+            className={`py-3 sm:py-3.5 px-3 sm:px-4 font-mono text-xs uppercase tracking-wider flex items-center gap-2 border-b-2 transition-all whitespace-nowrap ${
               activeTab === "siteImages"
                 ? "border-[#C59B46] text-[#DFC074] font-bold"
                 : "border-transparent text-[#7A756B] hover:text-[#F5EFEB]"
@@ -494,7 +501,7 @@ export default function AdminDashboardPage() {
       </header>
 
       {/* Main Content Area */}
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8">
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6 sm:pt-8">
         {/* ========================================================= */}
         {/* TAB 1: BARBERS & TEAM CRUD                                */}
         {/* ========================================================= */}
@@ -531,7 +538,7 @@ export default function AdminDashboardPage() {
                   });
                   setIsNewBarber(true);
                 }}
-                className="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-[#C59B46] to-[#DFC074] text-black font-semibold text-xs tracking-wider uppercase hover:shadow-[0_0_15px_rgba(197,155,70,0.3)] transition-all"
+                className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-5 py-3 rounded-xl bg-gradient-to-r from-[#C59B46] to-[#DFC074] text-black font-semibold text-xs tracking-wider uppercase hover:shadow-[0_0_15px_rgba(197,155,70,0.3)] transition-all"
               >
                 <Plus className="w-4 h-4" />
                 <span>Add New Barber</span>
@@ -606,14 +613,14 @@ export default function AdminDashboardPage() {
                         setEditingBarber({ ...barber });
                         setIsNewBarber(false);
                       }}
-                      className="flex-1 py-2 px-3 rounded-lg bg-white/[0.05] hover:bg-[#C59B46]/20 border border-white/[0.08] hover:border-[#C59B46]/40 text-xs text-[#F5EFEB] flex items-center justify-center gap-1.5 transition-colors"
+                      className="flex-1 py-2.5 px-3 rounded-xl bg-white/[0.05] hover:bg-[#C59B46]/20 border border-white/[0.08] hover:border-[#C59B46]/40 text-xs text-[#F5EFEB] flex items-center justify-center gap-1.5 transition-colors"
                     >
                       <Edit2 className="w-3.5 h-3.5 text-[#C59B46]" />
                       <span>Edit Barber</span>
                     </button>
                     <button
                       onClick={() => handleDeleteBarber(barber.id, barber.name)}
-                      className="py-2 px-3 rounded-lg bg-red-950/20 hover:bg-red-950/50 border border-red-500/20 text-xs text-red-400 flex items-center justify-center transition-colors"
+                      className="py-2.5 px-3 rounded-xl bg-red-950/20 hover:bg-red-950/50 border border-red-500/20 text-xs text-red-400 flex items-center justify-center transition-colors"
                       title="Delete Barber"
                     >
                       <Trash2 className="w-3.5 h-3.5" />
@@ -630,17 +637,15 @@ export default function AdminDashboardPage() {
         {/* ========================================================= */}
         {activeTab === "gallery" && (
           <div>
-            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
-              <div>
-                <h2 className="text-xl sm:text-2xl font-serif text-[#F5EFEB]">Gallery Media (Images &amp; Videos)</h2>
-                <p className="text-xs text-[#7A756B] mt-1">
-                  Upload new photos or MP4/WebM videos directly into the public salon gallery.
-                </p>
-              </div>
+            <div className="mb-6">
+              <h2 className="text-xl sm:text-2xl font-serif text-[#F5EFEB]">Gallery Media (Images &amp; Videos)</h2>
+              <p className="text-xs text-[#7A756B] mt-1">
+                Upload new photos or MP4/WebM videos directly into the public salon gallery.
+              </p>
             </div>
 
-            {/* Upload Box */}
-            <div className="bg-[#0E1411] border border-dashed border-[#C59B46]/40 rounded-2xl p-6 sm:p-8 mb-8 text-center relative">
+            {/* Upload Box: Clean, stacked & thumb-friendly on mobile */}
+            <div className="bg-[#0E1411] border border-dashed border-[#C59B46]/40 rounded-2xl p-5 sm:p-8 mb-8 text-center relative">
               <input
                 ref={galleryFileInputRef}
                 type="file"
@@ -652,7 +657,7 @@ export default function AdminDashboardPage() {
               />
 
               <div className="max-w-md mx-auto space-y-4">
-                <div className="w-14 h-14 rounded-2xl bg-[#141C18] border border-[#C59B46]/30 flex items-center justify-center text-[#C59B46] mx-auto">
+                <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-[#141C18] border border-[#C59B46]/30 flex items-center justify-center text-[#C59B46] mx-auto">
                   {uploadingGallery ? (
                     <RefreshCw className="w-6 h-6 animate-spin text-[#C59B46]" />
                   ) : (
@@ -661,7 +666,7 @@ export default function AdminDashboardPage() {
                 </div>
 
                 <div>
-                  <h3 className="text-base font-semibold text-[#F5EFEB]">
+                  <h3 className="text-sm sm:text-base font-semibold text-[#F5EFEB]">
                     {uploadingGallery ? "Uploading media to storage..." : "Upload New Photo or Video"}
                   </h3>
                   <p className="text-xs text-[#7A756B] mt-1">
@@ -679,7 +684,7 @@ export default function AdminDashboardPage() {
                       value={newGalleryTitle}
                       onChange={(e) => setNewGalleryTitle(e.target.value)}
                       placeholder="e.g. Master Beard Sculpting"
-                      className="w-full bg-[#141C18] border border-white/[0.1] rounded-lg px-3 py-2 text-xs text-[#F5EFEB] focus:border-[#C59B46] outline-none"
+                      className="w-full bg-[#141C18] border border-white/[0.1] rounded-xl px-3 py-2 text-xs text-[#F5EFEB] focus:border-[#C59B46] outline-none"
                     />
                   </div>
                   <div>
@@ -689,7 +694,7 @@ export default function AdminDashboardPage() {
                     <select
                       value={newGalleryCategory}
                       onChange={(e) => setNewGalleryCategory(e.target.value)}
-                      className="w-full bg-[#141C18] border border-white/[0.1] rounded-lg px-3 py-2 text-xs text-[#F5EFEB] focus:border-[#C59B46] outline-none"
+                      className="w-full bg-[#141C18] border border-white/[0.1] rounded-xl px-3 py-2 text-xs text-[#F5EFEB] focus:border-[#C59B46] outline-none"
                     >
                       <option value="Interiors">Interiors</option>
                       <option value="Styling">Styling</option>
@@ -700,20 +705,21 @@ export default function AdminDashboardPage() {
                   </div>
                 </div>
 
-                <div className="flex items-center justify-between pt-2">
-                  <label className="flex items-center gap-2 cursor-pointer text-xs text-[#A8A29E]">
+                {/* Mobile stacked controls: checkbox on top, full width upload button */}
+                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 pt-3">
+                  <label className="flex items-center gap-2 cursor-pointer text-xs text-[#A8A29E] py-1">
                     <input
                       type="checkbox"
                       checked={newGalleryFeatured}
                       onChange={(e) => setNewGalleryFeatured(e.target.checked)}
-                      className="rounded accent-[#C59B46]"
+                      className="w-4 h-4 rounded accent-[#C59B46]"
                     />
                     <span>Featured (spans 2 columns)</span>
                   </label>
 
                   <label
                     htmlFor="gallery-file-upload"
-                    className={`cursor-pointer inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-[#C59B46] to-[#DFC074] text-black font-semibold text-xs tracking-wider uppercase hover:shadow-[0_0_15px_rgba(197,155,70,0.3)] transition-all ${
+                    className={`cursor-pointer w-full sm:w-auto inline-flex items-center justify-center gap-2 px-5 py-3 rounded-xl bg-gradient-to-r from-[#C59B46] to-[#DFC074] text-black font-semibold text-xs tracking-wider uppercase hover:shadow-[0_0_15px_rgba(197,155,70,0.3)] transition-all ${
                       uploadingGallery ? "opacity-50 pointer-events-none" : ""
                     }`}
                   >
@@ -724,7 +730,7 @@ export default function AdminDashboardPage() {
               </div>
             </div>
 
-            {/* Gallery Media Grid */}
+            {/* Gallery Media Grid: with onError fallback protection */}
             <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
               {galleryItems.map((item) => (
                 <div
@@ -749,6 +755,9 @@ export default function AdminDashboardPage() {
                       <img
                         src={item.webp || item.url}
                         alt={item.alt || item.title}
+                        onError={(e) => {
+                          (e.target as HTMLImageElement).src = "/images/salon-wide-stations.webp";
+                        }}
                         className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                       />
                     )}
@@ -765,7 +774,7 @@ export default function AdminDashboardPage() {
                       </span>
                       <button
                         onClick={() => handleDeleteGalleryItem(item.id, item.title)}
-                        className="p-1 rounded bg-red-950/30 hover:bg-red-950/60 text-red-400 border border-red-500/20 text-xs transition-colors"
+                        className="p-1.5 rounded-lg bg-red-950/30 hover:bg-red-950/60 text-red-400 border border-red-500/20 text-xs transition-colors"
                         title="Delete from gallery"
                       >
                         <Trash2 className="w-3.5 h-3.5" />
@@ -804,14 +813,72 @@ export default function AdminDashboardPage() {
                   });
                   setIsNewService(true);
                 }}
-                className="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-[#C59B46] to-[#DFC074] text-black font-semibold text-xs tracking-wider uppercase hover:shadow-[0_0_15px_rgba(197,155,70,0.3)] transition-all"
+                className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-5 py-3 rounded-xl bg-gradient-to-r from-[#C59B46] to-[#DFC074] text-black font-semibold text-xs tracking-wider uppercase hover:shadow-[0_0_15px_rgba(197,155,70,0.3)] transition-all"
               >
                 <Plus className="w-4 h-4" />
                 <span>Add New Service</span>
               </button>
             </div>
 
-            <div className="bg-[#0E1411] border border-white/[0.08] rounded-2xl overflow-hidden shadow-xl">
+            {/* Mobile View: Luxury Cards (never cut off, thumb friendly) */}
+            <div className="block md:hidden space-y-3.5">
+              {services.map((svc) => (
+                <div
+                  key={svc.id}
+                  className="bg-[#0E1411] border border-white/[0.08] hover:border-[#C59B46]/40 rounded-2xl p-4 shadow-md space-y-3"
+                >
+                  <div className="flex items-start justify-between gap-3">
+                    <div className="min-w-0">
+                      <h4 className="font-semibold text-sm text-[#F5EFEB]">{svc.name}</h4>
+                      <div className="flex items-center gap-2 mt-1.5 flex-wrap">
+                        <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded bg-white/[0.05] border border-white/[0.08] text-[10px] font-mono uppercase text-[#DFC074]">
+                          <Tag className="w-2.5 h-2.5 text-[#C59B46]" />
+                          {svc.category}
+                        </span>
+                        {svc.duration && (
+                          <span className="inline-flex items-center gap-1 text-[11px] text-[#7A756B]">
+                            <Clock className="w-3 h-3 text-[#7A756B]" />
+                            {svc.duration}
+                          </span>
+                        )}
+                      </div>
+                    </div>
+                    <div className="font-mono text-sm text-[#DFC074] font-bold whitespace-nowrap bg-[#141C18] px-2.5 py-1 rounded-lg border border-[#C59B46]/30">
+                      {svc.price}
+                    </div>
+                  </div>
+
+                  {svc.description && (
+                    <p className="text-xs text-[#A8A29E] bg-white/[0.02] p-2.5 rounded-xl border border-white/[0.04]">
+                      {svc.description}
+                    </p>
+                  )}
+
+                  <div className="flex items-center justify-end gap-2 pt-2 border-t border-white/[0.05]">
+                    <button
+                      onClick={() => {
+                        setEditingService({ ...svc });
+                        setIsNewService(false);
+                      }}
+                      className="flex-1 py-2 px-3 rounded-xl bg-white/[0.05] hover:bg-[#C59B46]/20 border border-white/[0.08] text-xs text-[#DFC074] flex items-center justify-center gap-1.5 transition-colors"
+                    >
+                      <Edit2 className="w-3.5 h-3.5 text-[#C59B46]" />
+                      <span>Edit Service</span>
+                    </button>
+                    <button
+                      onClick={() => handleDeleteService(svc.id, svc.name)}
+                      className="py-2 px-3 rounded-xl bg-red-950/20 hover:bg-red-950/50 border border-red-500/20 text-xs text-red-400 flex items-center justify-center gap-1.5 transition-colors"
+                    >
+                      <Trash2 className="w-3.5 h-3.5" />
+                      <span>Delete</span>
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            {/* Desktop View: Full Table */}
+            <div className="hidden md:block bg-[#0E1411] border border-white/[0.08] rounded-2xl overflow-hidden shadow-xl">
               <div className="overflow-x-auto">
                 <table className="w-full text-left text-xs">
                   <thead className="bg-[#141C18] border-b border-white/[0.08] text-[#DFC074] font-mono uppercase tracking-wider">
@@ -843,12 +910,14 @@ export default function AdminDashboardPage() {
                               setIsNewService(false);
                             }}
                             className="p-1.5 rounded-lg bg-white/[0.04] hover:bg-[#C59B46]/20 border border-white/[0.08] text-[#C59B46] transition-colors"
+                            title="Edit Service"
                           >
                             <Edit2 className="w-3.5 h-3.5" />
                           </button>
                           <button
                             onClick={() => handleDeleteService(svc.id, svc.name)}
                             className="p-1.5 rounded-lg bg-red-950/20 hover:bg-red-950/50 border border-red-500/20 text-red-400 transition-colors"
+                            title="Delete Service"
                           >
                             <Trash2 className="w-3.5 h-3.5" />
                           </button>
@@ -881,8 +950,11 @@ export default function AdminDashboardPage() {
                   <div className="aspect-[4/5] rounded-xl overflow-hidden bg-[#141C18] border border-white/[0.08] relative mb-4">
                     {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img
-                      src={siteImages.hero_barber || "/images/master-barber-cutout.webp"}
+                      src={siteImages.hero_barber || "/images/hero-barber-craft.webp"}
                       alt="Hero master barber"
+                      onError={(e) => {
+                        (e.target as HTMLImageElement).src = "/images/hero-barber-craft.webp";
+                      }}
                       className="w-full h-full object-cover"
                     />
                     <div className="absolute top-2 left-2 px-2 py-0.5 rounded bg-black/80 text-[10px] font-mono uppercase text-[#DFC074] border border-[#C59B46]/30">
@@ -924,6 +996,9 @@ export default function AdminDashboardPage() {
                     <img
                       src={siteImages.about_salon || "/images/about-interior-floor.webp"}
                       alt="About salon floor"
+                      onError={(e) => {
+                        (e.target as HTMLImageElement).src = "/images/about-interior-floor.webp";
+                      }}
                       className="w-full h-full object-cover"
                     />
                     <div className="absolute top-2 left-2 px-2 py-0.5 rounded bg-black/80 text-[10px] font-mono uppercase text-[#DFC074] border border-[#C59B46]/30">
@@ -963,8 +1038,11 @@ export default function AdminDashboardPage() {
                   <div className="aspect-[4/5] rounded-xl overflow-hidden bg-[#141C18] border border-white/[0.08] relative mb-4">
                     {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img
-                      src={siteImages.precision_center || "/images/razor-drop-fade-v2.webp"}
+                      src={siteImages.precision_center || "/images/cutout-precision-taper.webp"}
                       alt="Precision section center model"
+                      onError={(e) => {
+                        (e.target as HTMLImageElement).src = "/images/cutout-precision-taper.webp";
+                      }}
                       className="w-full h-full object-cover"
                     />
                     <div className="absolute top-2 left-2 px-2 py-0.5 rounded bg-black/80 text-[10px] font-mono uppercase text-[#DFC074] border border-[#C59B46]/30">
@@ -1118,7 +1196,7 @@ export default function AdminDashboardPage() {
                     <label className="block text-[11px] text-[#7A756B] mb-1">Haircut</label>
                     <input
                       type="number"
-                      value={editingBarber.rates.haircut}
+                      value={editingBarber.rates?.haircut || 1000}
                       onChange={(e) =>
                         setEditingBarber({
                           ...editingBarber,
@@ -1132,7 +1210,7 @@ export default function AdminDashboardPage() {
                     <label className="block text-[11px] text-[#7A756B] mb-1">Beard Trim</label>
                     <input
                       type="number"
-                      value={editingBarber.rates.beard}
+                      value={editingBarber.rates?.beard || 600}
                       onChange={(e) =>
                         setEditingBarber({
                           ...editingBarber,
@@ -1146,7 +1224,7 @@ export default function AdminDashboardPage() {
                     <label className="block text-[11px] text-[#7A756B] mb-1">Hair + Beard</label>
                     <input
                       type="number"
-                      value={editingBarber.rates.hairAndBeard}
+                      value={editingBarber.rates?.hairAndBeard || 1500}
                       onChange={(e) =>
                         setEditingBarber({
                           ...editingBarber,
@@ -1160,7 +1238,7 @@ export default function AdminDashboardPage() {
                     <label className="block text-[11px] text-[#7A756B] mb-1">Facial</label>
                     <input
                       type="number"
-                      value={editingBarber.rates.facial}
+                      value={editingBarber.rates?.facial || 1800}
                       onChange={(e) =>
                         setEditingBarber({
                           ...editingBarber,
@@ -1174,7 +1252,7 @@ export default function AdminDashboardPage() {
                     <label className="block text-[11px] text-[#7A756B] mb-1">VIP Package</label>
                     <input
                       type="number"
-                      value={editingBarber.rates.groomingPackage}
+                      value={editingBarber.rates?.groomingPackage || 3500}
                       onChange={(e) =>
                         setEditingBarber({
                           ...editingBarber,
