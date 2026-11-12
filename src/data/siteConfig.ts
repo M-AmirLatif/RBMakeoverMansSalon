@@ -104,7 +104,7 @@ export const siteConfig: SiteConfig = {
       "https://maps.google.com/maps?q=92%2C+R.B+Makeover+Man%27s+Salon+%7C+Park+View+City%2C+Rose+Commercial%2C+Lahore&t=&z=17&ie=UTF8&iwloc=&output=embed",
   },
   seo: {
-    siteUrl: process.env.NEXT_PUBLIC_SITE_URL || "https://rbmakeover.com",
+    siteUrl: process.env.NEXT_PUBLIC_SITE_URL || "https://rb-makeover-salon.vercel.app",
     title: "R.B Makeover Man's Salon | Park View City Lahore",
     description:
       "Men's haircuts, beard grooming and skincare in Park View City, Lahore. Rated 4.9 from 36 Google reviews at Rose Commercial, Main Boulevard.",
