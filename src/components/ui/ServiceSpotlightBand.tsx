@@ -1,11 +1,12 @@
 "use client";
 
-import React from "react";
+import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import { AnimatedReveal } from "@/components/ui/AnimatedReveal";
 import { Button } from "@/components/ui/Button";
 import { ArrowRight, Sparkles, Scissors, CheckCircle2 } from "lucide-react";
 import { buildServiceInquiryWhatsAppUrl } from "@/lib/whatsapp";
+import { fetchServices, resolveServicePrice } from "@/lib/supabase/queries";
 
 export interface ServiceSpotlightProps {
   id: string;
@@ -42,6 +43,21 @@ export function ServiceSpotlightBand({
   imageSide = "right",
   bgDarkTone = "black",
 }: ServiceSpotlightProps) {
+  const [livePrice, setLivePrice] = useState<string>(price);
+
+  useEffect(() => {
+    let mounted = true;
+    fetchServices().then((services) => {
+      if (mounted && services && services.length > 0) {
+        const resolved = resolveServicePrice(services, serviceName, price);
+        setLivePrice(resolved);
+      }
+    });
+    return () => {
+      mounted = false;
+    };
+  }, [serviceName, price]);
+
   const waUrl = buildServiceInquiryWhatsAppUrl(serviceName, category);
   const isImageRight = imageSide === "right";
   const bgClass = bgDarkTone === "black" ? "bg-black" : "bg-[#080C0A]";
@@ -147,7 +163,7 @@ export function ServiceSpotlightBand({
                 icon={<ArrowRight className="w-4 h-4" />}
                 className="w-full sm:w-auto"
               >
-                Book via WhatsApp • {price}
+                Book via WhatsApp • {livePrice}
               </Button>
             </div>
           </AnimatedReveal>

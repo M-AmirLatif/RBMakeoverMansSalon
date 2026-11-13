@@ -70,11 +70,25 @@ CREATE TABLE IF NOT EXISTS public.site_images (
   updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 
+-- 5. CLIENT REVIEWS TABLE (Allows public user reviews without login)
+CREATE TABLE IF NOT EXISTS public.reviews (
+  id TEXT PRIMARY KEY DEFAULT gen_random_uuid()::text,
+  author_name TEXT NOT NULL,
+  rating INTEGER NOT NULL DEFAULT 5 CHECK (rating >= 1 AND rating <= 5),
+  review_text TEXT NOT NULL,
+  service_tag TEXT,
+  barber_name TEXT,
+  source TEXT NOT NULL DEFAULT 'Verified Client',
+  active BOOLEAN NOT NULL DEFAULT true,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
 -- ENABLE ROW LEVEL SECURITY (RLS)
 ALTER TABLE public.barbers ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.gallery_items ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.services ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.site_images ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.reviews ENABLE ROW LEVEL SECURITY;
 
 -- DROP EXISTING POLICIES IF RE-RUNNING
 DROP POLICY IF EXISTS "Public read barbers" ON public.barbers;
@@ -85,6 +99,9 @@ DROP POLICY IF EXISTS "Public read services" ON public.services;
 DROP POLICY IF EXISTS "Admin write services" ON public.services;
 DROP POLICY IF EXISTS "Public read site images" ON public.site_images;
 DROP POLICY IF EXISTS "Admin write site images" ON public.site_images;
+DROP POLICY IF EXISTS "Public read reviews" ON public.reviews;
+DROP POLICY IF EXISTS "Public insert reviews" ON public.reviews;
+DROP POLICY IF EXISTS "Admin manage reviews" ON public.reviews;
 
 -- CREATE RLS POLICIES FOR PUBLIC READ & AUTHENTICATED WRITE
 CREATE POLICY "Public read barbers" ON public.barbers FOR SELECT USING (true);
@@ -98,6 +115,10 @@ CREATE POLICY "Admin write services" ON public.services FOR ALL TO authenticated
 
 CREATE POLICY "Public read site images" ON public.site_images FOR SELECT USING (true);
 CREATE POLICY "Admin write site images" ON public.site_images FOR ALL TO authenticated USING (true) WITH CHECK (true);
+
+CREATE POLICY "Public read reviews" ON public.reviews FOR SELECT USING (true);
+CREATE POLICY "Public insert reviews" ON public.reviews FOR INSERT WITH CHECK (true);
+CREATE POLICY "Admin manage reviews" ON public.reviews FOR ALL TO authenticated USING (true) WITH CHECK (true);
 
 -- STORAGE POLICIES FOR 'salon-media' BUCKET
 INSERT INTO storage.buckets (id, name, public, file_size_limit, allowed_mime_types)

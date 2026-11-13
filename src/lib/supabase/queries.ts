@@ -59,6 +59,7 @@ export async function fetchBarbers(): Promise<BarberStaff[]> {
       bio: b.bio || "",
       rates: b.rates,
       isPopular: b.is_popular,
+      avatar_url: b.avatar_url || undefined,
     }));
   } catch {
     return staffBarbers;
@@ -162,10 +163,52 @@ export function resolveServicePrice(
 ): string {
   if (!services || services.length === 0) return fallback;
   const q = query.toLowerCase().trim();
+
+  // 1. Direct ID match
+  const directId = services.find((s) => s.id.toLowerCase() === q);
+  if (directId?.price) return directId.price;
+
+  // 2. Direct Name match
+  const directName = services.find((s) => s.name.toLowerCase() === q);
+  if (directName?.price) return directName.price;
+
+  // 3. Keyword / partial matches
+  if (q.includes("mani & pedi") || q.includes("mani-pedi") || (q.includes("mani") && q.includes("pedi"))) {
+    const found = services.find((s) => s.id === "mani-pedi");
+    if (found?.price) return found.price;
+  }
+  if (q === "manicure" || q.includes("manicure")) {
+    const found = services.find((s) => s.id === "manicure");
+    if (found?.price) return found.price;
+  }
+  if (q === "pedicure" || q.includes("pedicure")) {
+    const found = services.find((s) => s.id === "pedicure");
+    if (found?.price) return found.price;
+  }
+  if (q.includes("fade") || q.includes("crop") || q.includes("quiff")) {
+    const found = services.find((s) => s.id === "fade-haircuts" || s.id === "mens-haircuts");
+    if (found?.price) return found.price;
+  }
+  if (q.includes("beard") && (q.includes("sculpt") || q.includes("trim") || q.includes("lineup"))) {
+    const found = services.find((s) => s.id === "beard-trimming");
+    if (found?.price) return found.price;
+  }
+  if (q.includes("shav")) {
+    const found = services.find((s) => s.id === "pro-shave");
+    if (found?.price) return found.price;
+  }
+  if (q.includes("facial") || q.includes("skin")) {
+    const found = services.find((s) => s.id === "facial-massage");
+    if (found?.price) return found.price;
+  }
+  if (q.includes("vip") || q.includes("package")) {
+    const found = services.find((s) => s.id === "vip-grooming");
+    if (found?.price) return found.price;
+  }
+
+  // 4. General substring inclusion
   const found = services.find(
     (s) =>
-      s.id.toLowerCase() === q ||
-      s.name.toLowerCase() === q ||
       s.name.toLowerCase().includes(q) ||
       q.includes(s.name.toLowerCase())
   );

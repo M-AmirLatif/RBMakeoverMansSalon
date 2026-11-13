@@ -216,6 +216,35 @@ export default function AdminDashboardPage() {
     });
   };
 
+  const [uploadingBarberImage, setUploadingBarberImage] = useState(false);
+
+  const handleBarberImageUpload = async (file: File) => {
+    if (!editingBarber) return;
+    setUploadingBarberImage(true);
+    try {
+      const fd = new FormData();
+      fd.append("file", file);
+      const res = await fetch("/api/admin/upload", {
+        method: "POST",
+        body: fd,
+      });
+      const data = await res.json();
+      if (!res.ok || !data.success) {
+        throw new Error(data.error || "Failed to upload image");
+      }
+      setEditingBarber({
+        ...editingBarber,
+        avatar_url: data.url,
+      });
+      showToast("Barber photo uploaded successfully!");
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : "Upload failed";
+      showToast(msg, "error");
+    } finally {
+      setUploadingBarberImage(false);
+    }
+  };
+
   const handleSaveBarber = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!editingBarber) return;
@@ -232,6 +261,7 @@ export default function AdminDashboardPage() {
         review_count: Number(editingBarber.reviewCount) || 10,
         specialties: editingBarber.specialties,
         bio: editingBarber.bio,
+        avatar_url: editingBarber.avatar_url || null,
         rates: {
           haircut: Number(editingBarber.rates.haircut) || 0,
           beard: Number(editingBarber.rates.beard) || 0,
@@ -587,8 +617,17 @@ export default function AdminDashboardPage() {
                     {/* Header */}
                     <div className="flex items-start justify-between gap-3 mb-4">
                       <div className="flex items-center gap-3">
-                        <div className="w-12 h-12 rounded-xl bg-[#141C18] border border-[#C59B46]/40 flex items-center justify-center text-[#DFC074] font-serif font-bold text-lg">
-                          {barber.initials}
+                        <div className="w-12 h-12 rounded-xl overflow-hidden bg-[#141C18] border border-[#C59B46]/40 flex items-center justify-center text-[#DFC074] font-serif font-bold text-lg relative shrink-0">
+                          {barber.avatar_url ? (
+                            // eslint-disable-next-line @next/next/no-img-element
+                            <img
+                              src={barber.avatar_url}
+                              alt={barber.name}
+                              className="w-full h-full object-cover"
+                            />
+                          ) : (
+                            barber.initials
+                          )}
                         </div>
                         <div>
                           <div className="flex items-center gap-2">
@@ -982,6 +1021,64 @@ export default function AdminDashboardPage() {
             </div>
 
             <form onSubmit={handleSaveBarber} className="space-y-4">
+              {/* Barber Profile Photo / Avatar Editor */}
+              <div className="p-4 rounded-xl bg-black/40 border border-white/[0.08] flex items-center gap-4">
+                <div className="w-16 h-16 rounded-2xl overflow-hidden bg-[#141C18] border border-[#C59B46]/40 flex items-center justify-center text-[#DFC074] font-serif font-bold text-xl relative shrink-0 shadow-md">
+                  {editingBarber.avatar_url ? (
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img
+                      src={editingBarber.avatar_url}
+                      alt={editingBarber.name}
+                      className="w-full h-full object-cover"
+                    />
+                  ) : (
+                    editingBarber.initials || editingBarber.name.substring(0, 2).toUpperCase()
+                  )}
+                </div>
+
+                <div className="flex-1 min-w-0 space-y-2">
+                  <div className="text-xs font-semibold text-[#F5EFEB]">Barber Profile Photo</div>
+                  <div className="flex flex-wrap items-center gap-2">
+                    <label className="cursor-pointer py-1.5 px-3 rounded-lg bg-[#C59B46]/20 hover:bg-[#C59B46]/30 border border-[#C59B46]/40 text-xs text-[#DFC074] font-medium flex items-center gap-1.5 transition-colors">
+                      {uploadingBarberImage ? (
+                        <RefreshCw className="w-3.5 h-3.5 animate-spin text-[#C59B46]" />
+                      ) : (
+                        <Upload className="w-3.5 h-3.5" />
+                      )}
+                      <span>{uploadingBarberImage ? "Uploading..." : "Upload Photo"}</span>
+                      <input
+                        type="file"
+                        accept="image/*"
+                        disabled={uploadingBarberImage}
+                        onChange={(e) => {
+                          const f = e.target.files?.[0];
+                          if (f) handleBarberImageUpload(f);
+                        }}
+                        className="hidden"
+                      />
+                    </label>
+
+                    {editingBarber.avatar_url && (
+                      <button
+                        type="button"
+                        onClick={() => setEditingBarber({ ...editingBarber, avatar_url: undefined })}
+                        className="py-1.5 px-3 rounded-lg bg-red-950/40 hover:bg-red-950/70 border border-red-500/30 text-xs text-red-300 flex items-center gap-1.5 transition-colors cursor-pointer"
+                      >
+                        <Trash2 className="w-3.5 h-3.5" />
+                        <span>Remove Photo</span>
+                      </button>
+                    )}
+                  </div>
+                  <input
+                    type="text"
+                    value={editingBarber.avatar_url || ""}
+                    onChange={(e) => setEditingBarber({ ...editingBarber, avatar_url: e.target.value })}
+                    placeholder="Or enter image URL e.g. /images/barbers/name.jpg"
+                    className="w-full bg-[#141C18] border border-white/[0.08] rounded-lg px-2.5 py-1.5 text-[11px] text-[#A8A193] placeholder-[#7A756B] focus:border-[#C59B46] outline-none"
+                  />
+                </div>
+              </div>
+
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
                   <label className="block text-xs uppercase font-mono text-[#DFC074] mb-1">

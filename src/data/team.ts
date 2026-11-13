@@ -19,6 +19,7 @@ export interface BarberStaff {
   bio: string;
   rates: BarberServiceRate;
   isPopular?: boolean;
+  avatar_url?: string;
 }
 
 export const staffBarbers: BarberStaff[] = [

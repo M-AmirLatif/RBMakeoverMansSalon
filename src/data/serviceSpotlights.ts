@@ -140,7 +140,7 @@ export const serviceSpotlights: Record<string, ServiceSpotlightProps> = {
     badge: "Timeless Barbering",
     serviceName: "Men's Haircuts",
     category: "Haircuts & Styling",
-    price: "Rs. 700",
+    price: "Rs. 1,000",
     title: "Classic Scissor Haircut",
     highlightText: "Handcrafted Scissor Discipline",
     description: "For gentlemen and boys who appreciate timeless scissor styling with soft natural tapers and razor-clean necklines. Crafted exclusively with Japanese steel shears.",

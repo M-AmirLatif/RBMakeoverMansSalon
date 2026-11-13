@@ -202,8 +202,19 @@ export function TeamSection({
                 <div>
                   {/* Avatar & Header Info */}
                   <div className="flex items-start gap-4">
-                    <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-[#1C2621] to-[#0E1512] border border-[#C59B46]/30 flex items-center justify-center text-[#C59B46] font-['Bebas_Neue',sans-serif] text-2xl tracking-wider shrink-0 select-none shadow-md">
-                      {barber.initials}
+                    <div className="w-14 h-14 rounded-2xl overflow-hidden bg-gradient-to-br from-[#1C2621] to-[#0E1512] border border-[#C59B46]/30 flex items-center justify-center shrink-0 shadow-md relative">
+                      {barber.avatar_url ? (
+                        // eslint-disable-next-line @next/next/no-img-element
+                        <img
+                          src={barber.avatar_url}
+                          alt={barber.name}
+                          className="w-full h-full object-cover"
+                        />
+                      ) : (
+                        <span className="text-[#C59B46] font-['Bebas_Neue',sans-serif] text-2xl tracking-wider select-none">
+                          {barber.initials}
+                        </span>
+                      )}
                     </div>
 
                     <div className="space-y-0.5 flex-1 pr-16">
