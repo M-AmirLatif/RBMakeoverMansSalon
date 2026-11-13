@@ -87,6 +87,20 @@ export default function AdminDashboardPage() {
     setTimeout(() => setToast(null), 4000);
   };
 
+  // Centralized Server-Side Admin CRUD API caller (uses Service Role Key on backend)
+  const callAdminApi = async (action: string, payload: unknown) => {
+    const res = await fetch("/api/admin/crud", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ action, payload }),
+    });
+    const data = await res.json();
+    if (!res.ok || data.error) {
+      throw new Error(data.error || "Operation failed");
+    }
+    return data;
+  };
+
   // Check auth session
   useEffect(() => {
     async function verifyAuth() {
@@ -255,8 +269,8 @@ export default function AdminDashboardPage() {
     }
   };
 
-  const handleSaveBarber = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleSaveBarber = async (e?: React.FormEvent) => {
+    if (e && typeof e.preventDefault === "function") e.preventDefault();
     if (!editingBarber) return;
 
     try {
@@ -271,10 +285,10 @@ export default function AdminDashboardPage() {
       const payload = {
         id: editingBarber.id,
         name: editingBarber.name,
-        title: editingBarber.title,
-        category: editingBarber.category,
+        title: editingBarber.title || "Barber & Stylist",
+        category: editingBarber.category || "haircut",
         initials: editingBarber.initials || editingBarber.name.substring(0, 2).toUpperCase(),
-        experience: editingBarber.experience,
+        experience: editingBarber.experience || "5 Years",
         rating: Number(editingBarber.rating) || 5.0,
         review_count: Number(editingBarber.reviewCount) || 10,
         specialties: Array.isArray(editingBarber.specialties) ? editingBarber.specialties : ["Fade Haircut", "Beard Trim"],
@@ -282,30 +296,34 @@ export default function AdminDashboardPage() {
         avatar_url: editingBarber.avatar_url || null,
         rates: barberRates,
         is_popular: !!editingBarber.isPopular,
-        updated_at: new Date().toISOString(),
       };
 
-      const { error } = await supabase.from("barbers").upsert(payload);
-      if (error) throw error;
+      // Call dedicated Admin CRUD API
+      await callAdminApi("save_barber", payload);
 
       // Optimistically update barbers in local state so the photo renders immediately
-      setBarbers((prev) =>
-        prev.map((b) =>
-          b.id === editingBarber.id
-            ? {
-                ...b,
-                name: editingBarber.name,
-                title: editingBarber.title,
-                category: editingBarber.category,
-                avatar_url: editingBarber.avatar_url || undefined,
-                experience: editingBarber.experience,
-                bio: editingBarber.bio || "",
-                isPopular: !!editingBarber.isPopular,
-                rates: barberRates,
-              }
-            : b
-        )
-      );
+      setBarbers((prev) => {
+        const updated = {
+          id: editingBarber.id,
+          name: editingBarber.name,
+          title: editingBarber.title,
+          category: editingBarber.category,
+          avatar_url: editingBarber.avatar_url || undefined,
+          experience: editingBarber.experience,
+          bio: editingBarber.bio || "",
+          initials: editingBarber.initials || editingBarber.name.substring(0, 2).toUpperCase(),
+          rating: Number(editingBarber.rating) || 5.0,
+          reviewCount: Number(editingBarber.reviewCount) || 10,
+          specialties: Array.isArray(editingBarber.specialties) ? editingBarber.specialties : ["Fade Haircut", "Beard Trim"],
+          isPopular: !!editingBarber.isPopular,
+          rates: barberRates,
+        };
+        const exists = prev.some((b) => b.id === editingBarber.id);
+        if (exists) {
+          return prev.map((b) => (b.id === editingBarber.id ? updated : b));
+        }
+        return [...prev, updated];
+      });
 
       showToast(`Barber "${editingBarber.name}" photo and details saved successfully!`);
       setEditingBarber(null);
@@ -320,8 +338,8 @@ export default function AdminDashboardPage() {
     if (!confirm(`Are you sure you want to remove barber "${name}"?`)) return;
 
     try {
-      const { error } = await supabase.from("barbers").delete().eq("id", id);
-      if (error) throw error;
+      await callAdminApi("delete_barber", { id });
+      setBarbers((prev) => prev.filter((b) => b.id !== id));
       showToast(`Barber "${name}" deleted.`);
       loadAllData();
     } catch (err: unknown) {
@@ -336,14 +354,7 @@ export default function AdminDashboardPage() {
   const handleUpdateHeroVideo = async (videoUrl: string) => {
     if (!videoUrl.trim()) return;
     try {
-      const { error } = await supabase.from("site_images").upsert({
-        key: "hero_video",
-        label: "Hero Showcase Video",
-        description: "Continuous hair salon loop video in Hero Section Part 2",
-        url: videoUrl.trim(),
-        updated_at: new Date().toISOString(),
-      });
-      if (error) throw error;
+      await callAdminApi("save_hero_video", { url: videoUrl.trim() });
       setHeroVideoUrl(videoUrl.trim());
       setHeroVideoInput(videoUrl.trim());
       showToast("Hero showcase video updated successfully!");
@@ -407,11 +418,9 @@ export default function AdminDashboardPage() {
         thumbnail_url: isVideo ? null : data.url,
         featured: newGalleryFeatured,
         display_order: galleryItems.length + 1,
-        active: true,
       };
 
-      const { error: dbError } = await supabase.from("gallery_items").insert(mediaItem);
-      if (dbError) throw dbError;
+      await callAdminApi("save_gallery_item", mediaItem);
 
       showToast(`Uploaded ${isVideo ? "video" : "photo"} to gallery successfully!`);
       setNewGalleryTitle("");
@@ -429,8 +438,8 @@ export default function AdminDashboardPage() {
     if (!confirm(`Are you sure you want to delete "${title}" from the gallery?`)) return;
 
     try {
-      const { error } = await supabase.from("gallery_items").delete().eq("id", id);
-      if (error) throw error;
+      await callAdminApi("delete_gallery_item", { id });
+      setGalleryItems((prev) => prev.filter((item) => item.id !== id));
       showToast(`Deleted "${title}" from gallery.`);
       loadAllData();
     } catch (err: unknown) {
@@ -442,8 +451,8 @@ export default function AdminDashboardPage() {
   // -------------------------------------------------------------
   // SERVICES CRUD
   // -------------------------------------------------------------
-  const handleSaveService = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleSaveService = async (e?: React.FormEvent) => {
+    if (e && typeof e.preventDefault === "function") e.preventDefault();
     if (!editingService) return;
 
     try {
@@ -458,13 +467,20 @@ export default function AdminDashboardPage() {
         category: editingService.category,
         price: displayPrice || "Rs. 1,000",
         numeric_price: num,
-        description: editingService.description,
-        duration: editingService.duration,
-        updated_at: new Date().toISOString(),
+        description: editingService.description || "",
+        duration: editingService.duration || "30 mins",
+        display_order: editingService.display_order || (services.length + 1),
       };
 
-      const { error } = await supabase.from("services").upsert(payload);
-      if (error) throw error;
+      await callAdminApi("save_service", payload);
+
+      setServices((prev) => {
+        const exists = prev.some((s) => s.id === payload.id);
+        if (exists) {
+          return prev.map((s) => (s.id === payload.id ? { ...s, ...payload } : s));
+        }
+        return [...prev, payload as SiteService];
+      });
 
       showToast(`Service "${editingService.name}" saved!`);
       setEditingService(null);
@@ -479,8 +495,8 @@ export default function AdminDashboardPage() {
     if (!confirm(`Are you sure you want to delete service "${name}"?`)) return;
 
     try {
-      const { error } = await supabase.from("services").delete().eq("id", id);
-      if (error) throw error;
+      await callAdminApi("delete_service", { id });
+      setServices((prev) => prev.filter((s) => s.id !== id));
       showToast(`Deleted service "${name}".`);
       loadAllData();
     } catch (err: unknown) {
@@ -1416,6 +1432,7 @@ export default function AdminDashboardPage() {
                   </button>
                   <button
                     type="submit"
+                    onClick={() => handleSaveBarber()}
                     className="px-6 py-2.5 rounded-xl bg-gradient-to-r from-[#C59B46] to-[#DFC074] text-black font-semibold text-xs tracking-wider uppercase hover:shadow-[0_0_15px_rgba(197,155,70,0.3)] transition-all cursor-pointer shrink-0"
                   >
                     Save Changes
@@ -1452,108 +1469,111 @@ export default function AdminDashboardPage() {
               </button>
             </div>
 
-            {/* Form Body - Scrollable */}
-            <form id="service-edit-form" onSubmit={handleSaveService} className="flex-1 overflow-y-auto p-4 sm:p-6 space-y-4">
-              <div>
-                <label className="block text-xs uppercase font-mono text-[#DFC074] mb-1">
-                  Service Name
-                </label>
-                <input
-                  type="text"
-                  required
-                  value={editingService.name}
-                  onChange={(e) =>
-                    setEditingService({
-                      ...editingService,
-                      name: e.target.value,
-                      id: isNewService
-                        ? e.target.value.toLowerCase().replace(/[^a-z0-9]/g, "-")
-                        : editingService.id,
-                    })
-                  }
-                  className="w-full bg-[#141C18] border border-white/[0.1] rounded-xl px-3.5 py-2 text-xs text-[#F5EFEB] focus:border-[#C59B46] outline-none"
-                />
-              </div>
-
-              <div className="grid grid-cols-2 gap-3">
+            {/* Form wrapping body and footer */}
+            <form onSubmit={handleSaveService} className="flex-1 flex flex-col min-h-0 overflow-hidden">
+              {/* Form Body - Scrollable */}
+              <div className="flex-1 overflow-y-auto p-4 sm:p-6 space-y-4">
                 <div>
                   <label className="block text-xs uppercase font-mono text-[#DFC074] mb-1">
-                    Price
-                  </label>
-                  <div className="relative flex items-center">
-                    <span className="absolute left-3 text-xs font-mono text-[#7A756B] select-none pointer-events-none">
-                      Rs.
-                    </span>
-                    <input
-                      type="text"
-                      inputMode="numeric"
-                      required
-                      value={String(editingService.price || "").replace(/[^0-9]/g, "")}
-                      onChange={(e) => {
-                        const val = e.target.value.replace(/[^0-9]/g, "");
-                        setEditingService({
-                          ...editingService,
-                          price: val ? `Rs. ${val}` : "",
-                          numeric_price: Number(val) || 0,
-                        });
-                      }}
-                      placeholder="1000"
-                      className="w-full bg-[#141C18] border border-white/[0.12] focus:border-[#C59B46] rounded-xl pl-9 pr-3.5 py-2.5 text-xs text-[#DFC074] font-mono outline-none"
-                    />
-                  </div>
-                </div>
-                <div>
-                  <label className="block text-xs uppercase font-mono text-[#DFC074] mb-1">
-                    Duration
+                    Service Name
                   </label>
                   <input
                     type="text"
-                    value={editingService.duration}
+                    required
+                    value={editingService.name}
                     onChange={(e) =>
-                      setEditingService({ ...editingService, duration: e.target.value })
+                      setEditingService({
+                        ...editingService,
+                        name: e.target.value,
+                        id: isNewService
+                          ? e.target.value.toLowerCase().replace(/[^a-z0-9]/g, "-")
+                          : editingService.id,
+                      })
                     }
-                    placeholder="30 mins"
                     className="w-full bg-[#141C18] border border-white/[0.1] rounded-xl px-3.5 py-2 text-xs text-[#F5EFEB] focus:border-[#C59B46] outline-none"
                   />
                 </div>
+
+                <div className="grid grid-cols-2 gap-3">
+                  <div>
+                    <label className="block text-xs uppercase font-mono text-[#DFC074] mb-1">
+                      Price
+                    </label>
+                    <div className="relative flex items-center">
+                      <span className="absolute left-3 text-xs font-mono text-[#7A756B] select-none pointer-events-none">
+                        Rs.
+                      </span>
+                      <input
+                        type="text"
+                        inputMode="numeric"
+                        required
+                        value={String(editingService.price || "").replace(/[^0-9]/g, "")}
+                        onChange={(e) => {
+                          const val = e.target.value.replace(/[^0-9]/g, "");
+                          setEditingService({
+                            ...editingService,
+                            price: val ? `Rs. ${val}` : "",
+                            numeric_price: Number(val) || 0,
+                          });
+                        }}
+                        placeholder="1000"
+                        className="w-full bg-[#141C18] border border-white/[0.12] focus:border-[#C59B46] rounded-xl pl-9 pr-3.5 py-2.5 text-xs text-[#DFC074] font-mono outline-none"
+                      />
+                    </div>
+                  </div>
+                  <div>
+                    <label className="block text-xs uppercase font-mono text-[#DFC074] mb-1">
+                      Duration
+                    </label>
+                    <input
+                      type="text"
+                      value={editingService.duration}
+                      onChange={(e) =>
+                        setEditingService({ ...editingService, duration: e.target.value })
+                      }
+                      placeholder="30 mins"
+                      className="w-full bg-[#141C18] border border-white/[0.1] rounded-xl px-3.5 py-2 text-xs text-[#F5EFEB] focus:border-[#C59B46] outline-none"
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-xs uppercase font-mono text-[#DFC074] mb-1">
+                    Category
+                  </label>
+                  <select
+                    value={editingService.category}
+                    onChange={(e) =>
+                      setEditingService({ ...editingService, category: e.target.value })
+                    }
+                    className="w-full bg-[#141C18] border border-white/[0.1] rounded-xl px-3.5 py-2 text-xs text-[#F5EFEB] focus:border-[#C59B46] outline-none"
+                  >
+                    <option value="haircuts">Haircuts &amp; Styling</option>
+                    <option value="beard">Beard &amp; Grooming</option>
+                    <option value="facial">Facial &amp; Skincare</option>
+                    <option value="grooming">VIP Packages</option>
+                  </select>
+                </div>
               </div>
 
-              <div>
-                <label className="block text-xs uppercase font-mono text-[#DFC074] mb-1">
-                  Category
-                </label>
-                <select
-                  value={editingService.category}
-                  onChange={(e) =>
-                    setEditingService({ ...editingService, category: e.target.value })
-                  }
-                  className="w-full bg-[#141C18] border border-white/[0.1] rounded-xl px-3.5 py-2 text-xs text-[#F5EFEB] focus:border-[#C59B46] outline-none"
+              {/* Modal Footer - Fixed */}
+              <div className="p-4 sm:p-5 border-t border-white/[0.08] bg-[#0A0E0C] flex items-center justify-end gap-3 shrink-0">
+                <button
+                  type="button"
+                  onClick={() => setEditingService(null)}
+                  className="px-4 py-2.5 rounded-xl bg-white/[0.05] hover:bg-white/[0.1] text-xs text-[#A8A29E] hover:text-[#F5EFEB] transition-colors cursor-pointer"
                 >
-                  <option value="haircuts">Haircuts &amp; Styling</option>
-                  <option value="beard">Beard &amp; Grooming</option>
-                  <option value="facial">Facial &amp; Skincare</option>
-                  <option value="grooming">VIP Packages</option>
-                </select>
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  onClick={() => handleSaveService()}
+                  className="px-6 py-2.5 rounded-xl bg-gradient-to-r from-[#C59B46] to-[#DFC074] text-black font-semibold text-xs tracking-wider uppercase hover:shadow-[0_0_15px_rgba(197,155,70,0.3)] transition-all cursor-pointer"
+                >
+                  Save Service
+                </button>
               </div>
             </form>
-
-            {/* Modal Footer - Fixed */}
-            <div className="p-4 sm:p-5 border-t border-white/[0.08] bg-[#0A0E0C] flex items-center justify-end gap-3 shrink-0">
-              <button
-                type="button"
-                onClick={() => setEditingService(null)}
-                className="px-4 py-2.5 rounded-xl bg-white/[0.05] hover:bg-white/[0.1] text-xs text-[#A8A29E] hover:text-[#F5EFEB] transition-colors cursor-pointer"
-              >
-                Cancel
-              </button>
-              <button
-                type="submit"
-                form="service-edit-form"
-                className="px-6 py-2.5 rounded-xl bg-gradient-to-r from-[#C59B46] to-[#DFC074] text-black font-semibold text-xs tracking-wider uppercase hover:shadow-[0_0_15px_rgba(197,155,70,0.3)] transition-all cursor-pointer"
-              >
-                Save Service
-              </button>
-            </div>
           </div>
         </div>
       )}
