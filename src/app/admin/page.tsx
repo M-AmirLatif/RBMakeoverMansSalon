@@ -776,13 +776,13 @@ export default function AdminDashboardPage() {
                 <div className="space-y-1">
                   <div className="inline-flex items-center gap-2 text-[11px] font-mono tracking-widest uppercase text-[#DFC074] font-bold">
                     <Video className="w-3.5 h-3.5 text-[#C59B46]" />
-                    <span>Hero Section Video (Part 2 Slot)</span>
+                    <span>Front Hero Slot (Centerpiece Video next to Rates Table)</span>
                   </div>
                   <h3 className="text-base sm:text-lg font-serif font-bold text-[#F5EFEB]">
                     Live Hair Salon Showcase Video
                   </h3>
                   <p className="text-xs text-[#A8A193]">
-                    This video continuously plays on the live website in the hero image slot. You can replace it anytime.
+                    This video continuously plays on the live website in the first front hero slot. Admin can update only this key video anytime.
                   </p>
                 </div>
                 <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-emerald-950/40 border border-emerald-500/30 text-emerald-400 text-xs font-mono shrink-0">

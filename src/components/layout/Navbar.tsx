@@ -114,12 +114,21 @@ export function Navbar({ onMenuToggle }: { onMenuToggle?: (isOpen: boolean) => v
 
   const handleNavClick = (href: string) => {
     setMobileMenuOpen(false);
-    setTimeout(() => {
-      const target = document.querySelector(href);
-      if (target) {
-        target.scrollIntoView({ behavior: "smooth" });
-      }
-    }, 50);
+    if (!href.startsWith("#")) return;
+    if (href === "#hero" || href === "#") {
+      window.scrollTo({ top: 0, behavior: "smooth" });
+      return;
+    }
+    const target = document.querySelector(href);
+    if (target) {
+      const navOffset = 76;
+      const elementPosition = target.getBoundingClientRect().top;
+      const offsetPosition = elementPosition + window.pageYOffset - navOffset;
+      window.scrollTo({
+        top: offsetPosition,
+        behavior: "smooth",
+      });
+    }
   };
 
   return (

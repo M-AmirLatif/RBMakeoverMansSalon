@@ -162,6 +162,8 @@ export function PrecisionSection() {
                 src="/images/cutout-precision-taper.webp"
                 alt="Precision razor drop fade haircut model at R.B Makeover"
                 fill
+                unoptimized
+                loading="eager"
                 sizes="(max-width: 1024px) 100vw, 33vw"
                 className="object-contain object-bottom group-hover:scale-105 transition-transform duration-700 ease-out select-none"
               />

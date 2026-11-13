@@ -18,10 +18,10 @@ export function AnimatedReveal({
   children,
   direction = "up",
   delay = 0,
-  duration = 0.35,
+  duration = 0.28,
   className = "",
   amount = 0,
-  margin = "150px 0px 150px 0px",
+  margin = "250px 0px 250px 0px",
 }: AnimatedRevealProps) {
   const shouldReduceMotion = useReducedMotion();
 

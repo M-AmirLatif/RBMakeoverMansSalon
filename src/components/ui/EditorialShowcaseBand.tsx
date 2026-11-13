@@ -78,6 +78,8 @@ export function EditorialShowcaseBand({
                 src={image}
                 alt={imageAltText}
                 fill
+                unoptimized
+                loading="eager"
                 sizes="(max-width: 640px) 96vw, (max-width: 1024px) 80vw, 50vw"
                 className="object-contain object-bottom group-hover:scale-105 transition-transform duration-700 ease-out select-none"
               />
