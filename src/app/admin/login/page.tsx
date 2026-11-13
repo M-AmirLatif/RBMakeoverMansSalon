@@ -3,8 +3,9 @@
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import Image from "next/image";
 import { createClient } from "@/lib/supabase/client";
-import { Lock, Mail, ArrowRight, ShieldCheck, Scissors } from "lucide-react";
+import { Lock, Mail, ArrowRight, ShieldCheck } from "lucide-react";
 
 export default function AdminLoginPage() {
   const router = useRouter();
@@ -49,11 +50,22 @@ export default function AdminLoginPage() {
 
       {/* Brand Header */}
       <div className="relative z-10 w-full max-w-md mx-auto text-center mb-8">
+        <div className="flex justify-center mb-4">
+          <div className="w-16 h-16 rounded-full overflow-hidden border-2 border-[#C59B46] shadow-[0_0_25px_rgba(197,155,70,0.35)]">
+            <Image
+              src="/images/rb-makeover-logo-badge.png"
+              alt="R.B Makeover Logo"
+              width={64}
+              height={64}
+              className="w-full h-full object-cover"
+              priority
+            />
+          </div>
+        </div>
         <Link
           href="/"
-          className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/[0.04] border border-white/[0.08] text-xs font-mono uppercase tracking-widest text-[#C59B46] mb-6 hover:border-[#C59B46]/40 transition-colors"
+          className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/[0.04] border border-white/[0.08] text-xs font-mono uppercase tracking-widest text-[#C59B46] mb-4 hover:border-[#C59B46]/40 transition-colors"
         >
-          <Scissors className="w-3.5 h-3.5 text-[#C59B46]" />
           R.B Makeover Man&apos;s Salon
         </Link>
         <h1 className="text-3xl sm:text-4xl font-serif text-[#F5EFEB] tracking-tight">

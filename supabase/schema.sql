@@ -427,7 +427,10 @@ VALUES
 ('beard-dye', 'Beard Dyeing & Conditioning', 'beard', 'Rs. 900', 900, 'Natural beard tint and argan oil softness', '30 mins', 10),
 ('facial-massage', 'Facial Treatments & Cleansing', 'facial', 'Rs. 1,600', 1600, 'Deep pore steam cleanse and glowing mask', '45 mins', 11),
 ('gold-facial', 'VIP Royal Gold Facial', 'facial', 'Rs. 2,500', 2500, 'Exfoliation, steam, blackhead extraction and massage', '60 mins', 12),
-('vip-grooming', 'VIP Complete Grooming Package', 'grooming', 'Rs. 3,500', 3500, 'Haircut + Beard Styling + Facial Cleanse + Massage', '90 mins', 13)
+('vip-grooming', 'VIP Complete Grooming Package', 'grooming', 'Rs. 3,500', 3500, 'Haircut + Beard Styling + Facial Cleanse + Massage', '90 mins', 13),
+('mani-pedi', 'Mani & Pedicure', 'grooming', 'Rs. 2,500', 2500, 'Complete luxury manicure and pedicure treatment with hand soak, cuticle care, foot scrub, and nail grooming.', '60 min', 14),
+('manicure', 'Manicure', 'grooming', 'Rs. 1,500', 1500, 'Executive men''s hand grooming, cuticle treatment, nail shaping, and relaxing hand massage.', '35 min', 15),
+('pedicure', 'Pedicure', 'grooming', 'Rs. 1,500', 1500, 'Relaxing foot soak, dead skin exfoliation, cuticle care, nail buffing, and rejuvenating foot massage.', '40 min', 16)
 ON CONFLICT (id) DO UPDATE SET
   name = EXCLUDED.name,
   category = EXCLUDED.category,

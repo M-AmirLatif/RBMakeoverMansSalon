@@ -1,5 +1,6 @@
 import React from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { siteConfig } from "@/data/siteConfig";
 
 interface BrandLogoProps {
@@ -17,39 +18,15 @@ export function BrandLogo({ variant = "full", className = "", onClick }: BrandLo
       aria-label={`${siteConfig.name} - Return to top`}
     >
       {/* Brand Emblem */}
-      <div className="relative flex items-center justify-center w-9 h-9 sm:w-11 sm:h-11 rounded-full bg-[#141C18] border border-[#C59B46]/60 shadow-[0_0_15px_rgba(197,155,70,0.15)] group-hover:border-[#C59B46] transition-colors shrink-0">
-        <svg
-          viewBox="0 0 44 44"
-          fill="none"
-          className="w-6 h-6 sm:w-7 sm:h-7 text-[#C59B46]"
-          aria-hidden="true"
-        >
-          {/* Inner hairline ring */}
-          <circle cx="22" cy="22" r="19" stroke="currentColor" strokeWidth="0.8" strokeDasharray="1.5 2" opacity="0.6" />
-          <circle cx="22" cy="22" r="16.5" stroke="currentColor" strokeWidth="0.6" opacity="0.8" />
-          {/* Crossed Shears */}
-          <path
-            d="M15 30 C15 26 19 23 22 20 L29 13 M29 30 C29 26 25 23 22 20 L15 13"
-            stroke="#F5EFEB"
-            strokeWidth="1.6"
-            strokeLinecap="round"
-          />
-          <circle cx="14" cy="31" r="2.2" stroke="currentColor" strokeWidth="1.2" fill="#0B0F0D" />
-          <circle cx="30" cy="31" r="2.2" stroke="currentColor" strokeWidth="1.2" fill="#0B0F0D" />
-          {/* Monogram letters */}
-          <text
-            x="22"
-            y="11"
-            fontFamily="'Bebas Neue', sans-serif"
-            fontSize="7"
-            fontWeight="bold"
-            fill="#C59B46"
-            textAnchor="middle"
-            letterSpacing="0.5"
-          >
-            R.B
-          </text>
-        </svg>
+      <div className="relative flex items-center justify-center w-10 h-10 sm:w-12 sm:h-12 rounded-full overflow-hidden shadow-[0_0_20px_rgba(197,155,70,0.25)] group-hover:scale-105 transition-transform shrink-0 border border-[#C59B46]/60">
+        <Image
+          src="/images/rb-makeover-logo-badge.png"
+          alt="R.B Makeover Man's Salon Official Emblem"
+          width={48}
+          height={48}
+          className="w-full h-full object-cover"
+          priority
+        />
       </div>
 
       {variant !== "mark" && (

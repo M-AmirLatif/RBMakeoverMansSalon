@@ -3,6 +3,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import Image from "next/image";
 import { createClient } from "@/lib/supabase/client";
 import {
   Scissors,
@@ -37,7 +38,7 @@ export default function AdminDashboardPage() {
   const [authChecking, setAuthChecking] = useState(true);
 
   // Active Tab
-  const [activeTab, setActiveTab] = useState<"barbers" | "gallery" | "services" | "siteImages">("barbers");
+  const [activeTab, setActiveTab] = useState<"barbers" | "gallery" | "services">("barbers");
 
   // Notifications
   const [toast, setToast] = useState<{ message: string; type: "success" | "error" } | null>(null);
@@ -448,10 +449,15 @@ export default function AdminDashboardPage() {
         <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 h-14 sm:h-18 flex items-center justify-between gap-2">
           {/* Brand */}
           <div className="flex items-center gap-2 sm:gap-3 min-w-0">
-            <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-xl bg-gradient-to-br from-[#C59B46] to-[#DFC074] p-0.5 flex-shrink-0 flex items-center justify-center">
-              <div className="w-full h-full bg-[#0E1411] rounded-[9px] sm:rounded-[10px] flex items-center justify-center text-[#C59B46]">
-                <Scissors className="w-4 h-4 sm:w-5 sm:h-5" />
-              </div>
+            <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full overflow-hidden border border-[#C59B46]/60 shadow-[0_0_15px_rgba(197,155,70,0.3)] shrink-0 flex items-center justify-center bg-[#0E1411]">
+              <Image
+                src="/images/rb-makeover-logo-badge.png"
+                alt="R.B Makeover Official Logo"
+                width={40}
+                height={40}
+                className="w-full h-full object-cover"
+                priority
+              />
             </div>
             <div className="min-w-0 flex items-center gap-2">
               <span className="font-serif font-bold text-sm sm:text-lg text-[#F5EFEB] whitespace-nowrap">
@@ -521,18 +527,6 @@ export default function AdminDashboardPage() {
           >
             <DollarSign className="w-4 h-4" />
             <span>Services &amp; Pricing ({services.length})</span>
-          </button>
-
-          <button
-            onClick={() => setActiveTab("siteImages")}
-            className={`py-3 sm:py-3.5 px-3 sm:px-4 font-mono text-xs uppercase tracking-wider flex items-center gap-2 border-b-2 transition-all whitespace-nowrap ${
-              activeTab === "siteImages"
-                ? "border-[#C59B46] text-[#DFC074] font-bold"
-                : "border-transparent text-[#7A756B] hover:text-[#F5EFEB]"
-            }`}
-          >
-            <Layers className="w-4 h-4" />
-            <span>Website Key Photos</span>
           </button>
         </div>
       </header>
@@ -963,154 +957,6 @@ export default function AdminDashboardPage() {
                     ))}
                   </tbody>
                 </table>
-              </div>
-            </div>
-          </div>
-        )}
-
-        {/* ========================================================= */}
-        {/* TAB 4: WEBSITE KEY PHOTOS                                 */}
-        {/* ========================================================= */}
-        {activeTab === "siteImages" && (
-          <div>
-            <div className="mb-6">
-              <h2 className="text-xl sm:text-2xl font-serif text-[#F5EFEB]">Website Key Showcase Images</h2>
-              <p className="text-xs text-[#7A756B] mt-1">
-                Fulfilling client requirement: update any photo across the website directly without writing code.
-              </p>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              {/* 1. Hero Master Barber */}
-              <div className="bg-[#0E1411] border border-white/[0.08] hover:border-[#C59B46]/40 rounded-2xl p-5 shadow-lg flex flex-col justify-between">
-                <div>
-                  <div className="aspect-[4/5] rounded-xl overflow-hidden bg-[#141C18] border border-white/[0.08] relative mb-4">
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img
-                      src={siteImages.hero_barber || "/images/hero-barber-craft.webp"}
-                      alt="Hero master barber"
-                      onError={(e) => {
-                        (e.target as HTMLImageElement).src = "/images/hero-barber-craft.webp";
-                      }}
-                      className="w-full h-full object-cover"
-                    />
-                    <div className="absolute top-2 left-2 px-2 py-0.5 rounded bg-black/80 text-[10px] font-mono uppercase text-[#DFC074] border border-[#C59B46]/30">
-                      Hero Cutout
-                    </div>
-                  </div>
-                  <h3 className="font-semibold text-sm text-[#F5EFEB]">Hero Section Barber Cutout</h3>
-                  <p className="text-xs text-[#7A756B] mt-1">
-                    The cutout portrait displayed below the Explore Services button on mobile and on desktop hero.
-                  </p>
-                </div>
-
-                <div className="mt-4 pt-3 border-t border-white/[0.06]">
-                  <label className="cursor-pointer w-full py-2.5 px-4 rounded-xl bg-white/[0.05] hover:bg-[#C59B46]/20 border border-white/[0.08] hover:border-[#C59B46]/40 text-xs text-[#DFC074] flex items-center justify-center gap-2 transition-all">
-                    {uploadingKey === "hero_barber" ? (
-                      <RefreshCw className="w-4 h-4 animate-spin text-[#C59B46]" />
-                    ) : (
-                      <Upload className="w-4 h-4" />
-                    )}
-                    <span>{uploadingKey === "hero_barber" ? "Uploading..." : "Replace Hero Photo"}</span>
-                    <input
-                      type="file"
-                      accept="image/*"
-                      onChange={(e) => {
-                        const f = e.target.files?.[0];
-                        if (f) handleSiteImageUpload("hero_barber", f);
-                      }}
-                      className="hidden"
-                    />
-                  </label>
-                </div>
-              </div>
-
-              {/* 2. About Salon Floor */}
-              <div className="bg-[#0E1411] border border-white/[0.08] hover:border-[#C59B46]/40 rounded-2xl p-5 shadow-lg flex flex-col justify-between">
-                <div>
-                  <div className="aspect-[4/5] rounded-xl overflow-hidden bg-[#141C18] border border-white/[0.08] relative mb-4">
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img
-                      src={siteImages.about_salon || "/images/about-interior-floor.webp"}
-                      alt="About salon floor"
-                      onError={(e) => {
-                        (e.target as HTMLImageElement).src = "/images/about-interior-floor.webp";
-                      }}
-                      className="w-full h-full object-cover"
-                    />
-                    <div className="absolute top-2 left-2 px-2 py-0.5 rounded bg-black/80 text-[10px] font-mono uppercase text-[#DFC074] border border-[#C59B46]/30">
-                      About Story
-                    </div>
-                  </div>
-                  <h3 className="font-semibold text-sm text-[#F5EFEB]">About Section Interior Floor</h3>
-                  <p className="text-xs text-[#7A756B] mt-1">
-                    The large salon floor styling stations photo in the &quot;Story of R.B Makeover&quot; section.
-                  </p>
-                </div>
-
-                <div className="mt-4 pt-3 border-t border-white/[0.06]">
-                  <label className="cursor-pointer w-full py-2.5 px-4 rounded-xl bg-white/[0.05] hover:bg-[#C59B46]/20 border border-white/[0.08] hover:border-[#C59B46]/40 text-xs text-[#DFC074] flex items-center justify-center gap-2 transition-all">
-                    {uploadingKey === "about_salon" ? (
-                      <RefreshCw className="w-4 h-4 animate-spin text-[#C59B46]" />
-                    ) : (
-                      <Upload className="w-4 h-4" />
-                    )}
-                    <span>{uploadingKey === "about_salon" ? "Uploading..." : "Replace About Photo"}</span>
-                    <input
-                      type="file"
-                      accept="image/*"
-                      onChange={(e) => {
-                        const f = e.target.files?.[0];
-                        if (f) handleSiteImageUpload("about_salon", f);
-                      }}
-                      className="hidden"
-                    />
-                  </label>
-                </div>
-              </div>
-
-              {/* 3. Precision Model */}
-              <div className="bg-[#0E1411] border border-white/[0.08] hover:border-[#C59B46]/40 rounded-2xl p-5 shadow-lg flex flex-col justify-between">
-                <div>
-                  <div className="aspect-[4/5] rounded-xl overflow-hidden bg-[#141C18] border border-white/[0.08] relative mb-4">
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img
-                      src={siteImages.precision_center || "/images/cutout-precision-taper.webp"}
-                      alt="Precision section center model"
-                      onError={(e) => {
-                        (e.target as HTMLImageElement).src = "/images/cutout-precision-taper.webp";
-                      }}
-                      className="w-full h-full object-cover"
-                    />
-                    <div className="absolute top-2 left-2 px-2 py-0.5 rounded bg-black/80 text-[10px] font-mono uppercase text-[#DFC074] border border-[#C59B46]/30">
-                      Precision Cutout
-                    </div>
-                  </div>
-                  <h3 className="font-semibold text-sm text-[#F5EFEB]">Precision Craftsmanship Model</h3>
-                  <p className="text-xs text-[#7A756B] mt-1">
-                    The razor drop fade model portrait showcased in the craftsmanship section.
-                  </p>
-                </div>
-
-                <div className="mt-4 pt-3 border-t border-white/[0.06]">
-                  <label className="cursor-pointer w-full py-2.5 px-4 rounded-xl bg-white/[0.05] hover:bg-[#C59B46]/20 border border-white/[0.08] hover:border-[#C59B46]/40 text-xs text-[#DFC074] flex items-center justify-center gap-2 transition-all">
-                    {uploadingKey === "precision_center" ? (
-                      <RefreshCw className="w-4 h-4 animate-spin text-[#C59B46]" />
-                    ) : (
-                      <Upload className="w-4 h-4" />
-                    )}
-                    <span>{uploadingKey === "precision_center" ? "Uploading..." : "Replace Precision Photo"}</span>
-                    <input
-                      type="file"
-                      accept="image/*"
-                      onChange={(e) => {
-                        const f = e.target.files?.[0];
-                        if (f) handleSiteImageUpload("precision_center", f);
-                      }}
-                      className="hidden"
-                    />
-                  </label>
-                </div>
               </div>
             </div>
           </div>

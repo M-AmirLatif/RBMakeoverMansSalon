@@ -1,9 +1,8 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import Image from "next/image";
 import { siteConfig } from "@/data/siteConfig";
-import { fetchSiteImages } from "@/lib/supabase/queries";
+import { fetchServices, SiteService, resolveServicePrice, defaultServices } from "@/lib/supabase/queries";
 import { Button } from "@/components/ui/Button";
 import { WhatsAppIcon, FacebookIcon } from "@/components/ui/Icons";
 import { AnimatedReveal } from "@/components/ui/AnimatedReveal";
@@ -20,31 +19,25 @@ import {
 } from "lucide-react";
 import { buildServiceInquiryWhatsAppUrl } from "@/lib/whatsapp";
 
-interface HeroServiceRow {
-  name: string;
-  category: string;
-  price: string;
-}
-
-const heroServices: HeroServiceRow[] = [
-  { name: "Haircuts & Fades", category: "Haircuts & Styling", price: "Rs. 1,000" },
-  { name: "Beard Trimming & Lineup", category: "Beard & Grooming", price: "Rs. 600" },
-  { name: "Professional Shaving", category: "Beard & Grooming", price: "Rs. 700" },
-  { name: "Hair and Beard Styling", category: "Additional Grooming Services", price: "Rs. 1,500" },
-  { name: "Facial Treatments", category: "Facial & Skincare", price: "Rs. 1,600" },
-  { name: "VIP Grooming Packages", category: "Additional Grooming Services", price: "Rs. 3,500" },
+const heroFeaturedDefinitions = [
+  { name: "Haircuts & Fades", query: "fade-haircuts", fallbackPrice: "Rs. 1,000", category: "Haircuts & Styling" },
+  { name: "Beard Trimming & Lineup", query: "beard-trimming", fallbackPrice: "Rs. 600", category: "Beard & Grooming" },
+  { name: "Professional Shaving", query: "pro-shave", fallbackPrice: "Rs. 700", category: "Beard & Grooming" },
+  { name: "Mani & Pedicure", query: "mani-pedi", fallbackPrice: "Rs. 2,500", category: "Additional Grooming Services" },
+  { name: "Manicure", query: "manicure", fallbackPrice: "Rs. 1,500", category: "Additional Grooming Services" },
+  { name: "Pedicure", query: "pedicure", fallbackPrice: "Rs. 1,500", category: "Additional Grooming Services" },
+  { name: "Facial Treatments", query: "facial-massage", fallbackPrice: "Rs. 1,600", category: "Facial & Skincare" },
+  { name: "VIP Grooming Packages", query: "vip-grooming", fallbackPrice: "Rs. 3,500", category: "Additional Grooming Services" },
 ];
 
 export function HeroSection() {
-  const [siteImages, setSiteImages] = useState<Record<string, string>>({
-    hero_barber: "/images/hero-barber-craft.webp",
-  });
+  const [services, setServices] = useState<SiteService[]>(defaultServices);
 
   useEffect(() => {
     let mounted = true;
-    fetchSiteImages().then((imgs) => {
-      if (mounted && imgs && imgs.hero_barber) {
-        setSiteImages(imgs);
+    fetchServices().then((list) => {
+      if (mounted && list && list.length > 0) {
+        setServices(list);
       }
     });
     return () => {
@@ -87,20 +80,44 @@ export function HeroSection() {
             </div>
           </div>
 
-          {/* Center Split: Transparent Cutout Gentleman Profile (Left) & Rates Table (Right) */}
+          {/* Center Split: Continuous Hair Salon Video Player (Left) & Dynamic Rates Table (Right) */}
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-10 items-center">
             
-            {/* Left Column (5 cols): Transparent Cutout with Seamless Background Integration */}
+            {/* Left Column (5 cols): Continuous Autoplaying Luxury Hair Salon Video */}
             <div className="lg:col-span-5 flex justify-center lg:justify-start">
-              <div className="relative w-full max-w-[340px] sm:max-w-[420px] lg:max-w-[480px]">
-                <Image
-                  src="/images/gentleman-hero-cutout.webp"
-                  alt="R.B Makeover Man's Salon Signature Gentleman"
-                  width={640}
-                  height={640}
-                  priority
-                  className="w-full h-auto object-contain select-none"
-                />
+              <div className="relative w-full max-w-[340px] sm:max-w-[420px] lg:max-w-[480px] aspect-[4/5] rounded-[28px] overflow-hidden border border-[#C59B46]/40 shadow-[0_25px_60px_rgba(0,0,0,0.85)] bg-[#0B0F0D] group">
+                <video
+                  autoPlay
+                  loop
+                  muted
+                  playsInline
+                  preload="auto"
+                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-out"
+                >
+                  <source src="/videos/hero-salon-loop-720p.mp4" type="video/mp4" />
+                  <source src="/videos/hero-salon-loop.mp4" type="video/mp4" />
+                </video>
+
+                {/* Subtle dark gradient scrim */}
+                <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-transparent to-black/35 pointer-events-none" />
+
+                {/* Live Badge */}
+                <div className="absolute top-4 left-4 inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-black/80 backdrop-blur-md border border-[#C59B46]/40 shadow-lg">
+                  <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+                  <span className="text-[10px] font-mono tracking-widest uppercase text-[#DFC074] font-bold">
+                    SALON CRAFT LIVE
+                  </span>
+                </div>
+
+                {/* Bottom Caption Pill */}
+                <div className="absolute bottom-4 left-4 right-4 p-3 rounded-xl bg-black/75 backdrop-blur-md border border-white/10">
+                  <div className="font-['Playfair_Display',Georgia,serif] text-sm text-[#F5EFEB] font-normal">
+                    Master Stylists at Work
+                  </div>
+                  <div className="text-[11px] text-[#A8A193] mt-0.5">
+                    Rose Commercial, Park View City Lahore
+                  </div>
+                </div>
               </div>
             </div>
 
@@ -120,7 +137,8 @@ export function HeroSection() {
                   <span>Rates / Booking</span>
                 </div>
 
-                {heroServices.map((svc) => {
+                {heroFeaturedDefinitions.map((svc) => {
+                  const resolvedPrice = resolveServicePrice(services, svc.query, svc.fallbackPrice);
                   const waUrl = buildServiceInquiryWhatsAppUrl(svc.name, svc.category);
                   return (
                     <div
@@ -136,7 +154,7 @@ export function HeroSection() {
 
                       <div className="flex items-center gap-2 sm:gap-3 shrink-0 ml-auto">
                         <span className="text-[11px] sm:text-xs font-semibold text-[#A8A193] font-mono whitespace-nowrap">
-                          {svc.price}
+                          {resolvedPrice}
                         </span>
 
                         <a
@@ -354,13 +372,17 @@ export function HeroSection() {
                 maskImage: 'radial-gradient(ellipse 92% 92% at 50% 50%, black 60%, transparent 100%)'
               }}
             >
-              <Image
-                src={siteImages.hero_barber || "/images/hero-barber-craft.webp"}
-                alt="Master barber in black uniform styling client hair at R.B Makeover Man's Salon"
-                fill
-                sizes="(max-width: 1440px) 42vw, 560px"
-                className="object-cover object-[50%_35%] group-hover:scale-105 transition-transform duration-1000 ease-out"
-              />
+              <video
+                autoPlay
+                loop
+                muted
+                playsInline
+                preload="auto"
+                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-1000 ease-out"
+              >
+                <source src="/videos/hero-salon-loop-720p.mp4" type="video/mp4" />
+                <source src="/videos/hero-salon-loop.mp4" type="video/mp4" />
+              </video>
 
               {/* Scrim: subtle dark gradient at bottom edge */}
               <div className="absolute inset-0 bg-gradient-to-t from-black via-black/25 to-transparent pointer-events-none" />
@@ -479,7 +501,7 @@ export function HeroSection() {
             </Button>
           </div>
 
-          {/* Master Barber Craft Image Placed Directly Below Explore Services in Mobile View */}
+          {/* Master Barber Craft Video Placed Directly Below Explore Services in Mobile View */}
           <div
             className="relative w-full max-w-[360px] sm:max-w-[420px] mx-auto h-[320px] sm:h-[380px] rounded-3xl overflow-hidden shadow-2xl bg-black mt-4"
             style={{
@@ -487,13 +509,17 @@ export function HeroSection() {
               maskImage: 'radial-gradient(ellipse 92% 92% at 50% 50%, black 58%, transparent 100%)'
             }}
           >
-            <Image
-              src={siteImages.hero_barber || "/images/hero-barber-craft.webp"}
-              alt="Master barber cutting hair at R.B Makeover Man's Salon"
-              fill
-              sizes="(max-width: 640px) 94vw, 420px"
-              className="object-cover object-[50%_35%]"
-            />
+            <video
+              autoPlay
+              loop
+              muted
+              playsInline
+              preload="auto"
+              className="w-full h-full object-cover"
+            >
+              <source src="/videos/hero-salon-loop-720p.mp4" type="video/mp4" />
+              <source src="/videos/hero-salon-loop.mp4" type="video/mp4" />
+            </video>
 
             {/* Gradient scrim */}
             <div className="absolute inset-0 bg-gradient-to-t from-black via-black/25 to-transparent pointer-events-none" />

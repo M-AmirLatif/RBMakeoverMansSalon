@@ -7,6 +7,8 @@ export interface ServiceItem {
   id: string;
   name: string;
   category: ServiceCategoryKey;
+  price?: string;
+  numeric_price?: number;
 }
 
 export type ServiceCategoryKey =
@@ -90,18 +92,20 @@ export const serviceCategories: ServiceCategory[] = [
     key: "grooming",
     title: "Additional Grooming Services",
     shortTitle: "Additional Care",
-    tagline: "Shampoo, styling, manicure, and grooming packages.",
+    tagline: "Shampoo, styling, manicure, pedicure, and grooming packages.",
     image: {
       src: "/images/service-shampoo-station.jpg",
       webp: "/images/service-shampoo-station.webp",
       alt: "Shampoo and washing station at R.B Makeover",
     },
     services: [
-      { id: "hair-and-beard-styling", name: "Hair and Beard Styling", category: "grooming" },
-      { id: "shampoo-conditioning", name: "Shampoo & Conditioning", category: "grooming" },
-      { id: "grooming-packages", name: "Grooming Packages", category: "grooming" },
-      { id: "mens-manicure", name: "Men's Manicure", category: "grooming" },
-      { id: "eyebrow-trimming", name: "Eyebrow Trimming", category: "grooming" },
+      { id: "mani-pedi", name: "Mani & Pedicure", category: "grooming", price: "Rs. 2,500", numeric_price: 2500 },
+      { id: "manicure", name: "Manicure", category: "grooming", price: "Rs. 1,500", numeric_price: 1500 },
+      { id: "pedicure", name: "Pedicure", category: "grooming", price: "Rs. 1,500", numeric_price: 1500 },
+      { id: "hair-and-beard-styling", name: "Hair and Beard Styling", category: "grooming", price: "Rs. 1,500", numeric_price: 1500 },
+      { id: "grooming-packages", name: "VIP Grooming Packages", category: "grooming", price: "Rs. 3,500", numeric_price: 3500 },
+      { id: "shampoo-conditioning", name: "Shampoo & Conditioning", category: "grooming", price: "Rs. 600", numeric_price: 600 },
+      { id: "eyebrow-trimming", name: "Eyebrow Trimming", category: "grooming", price: "Rs. 300", numeric_price: 300 },
     ],
   },
 ];

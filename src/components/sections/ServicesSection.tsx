@@ -1,8 +1,9 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import { serviceCategories, ServiceCategoryKey } from "@/data/services";
+import { fetchServices, SiteService, resolveServicePrice, defaultServices } from "@/lib/supabase/queries";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { AnimatedReveal } from "@/components/ui/AnimatedReveal";
 import { WhatsAppIcon } from "@/components/ui/Icons";
@@ -51,6 +52,19 @@ const featuredMenu: FeaturedMenuItem[] = [
 export function ServicesSection() {
   const [activeCategoryKey, setActiveCategoryKey] =
     useState<ServiceCategoryKey>("haircuts");
+  const [dbServices, setDbServices] = useState<SiteService[]>(defaultServices);
+
+  useEffect(() => {
+    let mounted = true;
+    fetchServices().then((list) => {
+      if (mounted && list && list.length > 0) {
+        setDbServices(list);
+      }
+    });
+    return () => {
+      mounted = false;
+    };
+  }, []);
 
   const currentCategory =
     serviceCategories.find((cat) => cat.key === activeCategoryKey) ||
@@ -77,6 +91,7 @@ export function ServicesSection() {
         {/* 2x2 Grid of Featured Menu Items (Noir & Blade signature layout) */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-5 sm:gap-6 mb-16 sm:mb-20">
           {featuredMenu.map((item, idx) => {
+            const livePrice = resolveServicePrice(dbServices, item.title, item.price);
             const waUrl = buildServiceInquiryWhatsAppUrl(item.title, item.category);
             return (
               <AnimatedReveal
@@ -105,7 +120,7 @@ export function ServicesSection() {
                         {item.title}
                       </h3>
                       <span className="text-[11px] sm:text-xs font-bold text-[#C59B46] font-mono shrink-0 px-2 sm:px-2.5 py-0.5 rounded-full bg-[#C59B46]/10 border border-[#C59B46]/25">
-                        {item.price}
+                        {livePrice}
                       </span>
                     </div>
 
@@ -230,6 +245,7 @@ export function ServicesSection() {
             </div>
 
             {currentCategory.services.map((service) => {
+              const livePrice = resolveServicePrice(dbServices, service.id, service.price || "Rs. 1,000");
               const inquiryUrl = buildServiceInquiryWhatsAppUrl(
                 service.name,
                 currentCategory.title
@@ -238,23 +254,32 @@ export function ServicesSection() {
               return (
                 <div
                   key={service.id}
-                  className="py-3.5 flex items-center justify-between gap-4 group hover:bg-white/[0.02] -mx-2 px-2 rounded-lg transition-colors relative"
+                  className="py-3.5 flex items-center justify-between gap-3 group hover:bg-white/[0.02] -mx-2 px-2 rounded-lg transition-colors relative"
                 >
-                  <h4 className="font-['Playfair_Display',Georgia,serif] text-base sm:text-lg font-medium text-[#F5EFEB] group-hover:text-[#DFC074] transition-colors">
-                    {service.name}
-                  </h4>
+                  <div className="flex items-center gap-2.5 min-w-0 pr-1">
+                    <span className="w-1.5 h-1.5 rounded-full bg-[#C59B46] shrink-0" />
+                    <h4 className="font-['Playfair_Display',Georgia,serif] text-sm sm:text-lg font-medium text-[#F5EFEB] group-hover:text-[#DFC074] transition-colors leading-snug">
+                      {service.name}
+                    </h4>
+                  </div>
 
-                  <a
-                    href={inquiryUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold leading-none text-center text-[#F5EFEB] hover:text-[#C59B46] bg-white/5 hover:bg-white/10 border border-white/10 hover:border-[#C59B46]/50 transition-colors shrink-0 select-none"
-                    aria-label={`Inquire about ${service.name} on WhatsApp`}
-                  >
-                    <WhatsAppIcon className="w-3.5 h-3.5 text-[#25D366] shrink-0" />
-                    <span className="leading-none text-center">Inquire</span>
-                    <ArrowUpRight className="w-3 h-3 text-[#A8A193] shrink-0" />
-                  </a>
+                  <div className="flex items-center gap-2 sm:gap-3 shrink-0 ml-auto">
+                    <span className="font-mono text-xs sm:text-sm text-[#DFC074] font-semibold whitespace-nowrap">
+                      {livePrice}
+                    </span>
+
+                    <a
+                      href={inquiryUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center justify-center gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-full text-xs font-semibold leading-none text-center text-[#F5EFEB] hover:text-[#C59B46] bg-white/5 hover:bg-white/10 border border-white/10 hover:border-[#C59B46]/50 transition-colors shrink-0 select-none"
+                      aria-label={`Inquire about ${service.name} on WhatsApp`}
+                    >
+                      <WhatsAppIcon className="w-3.5 h-3.5 text-[#25D366] shrink-0" />
+                      <span className="hidden sm:inline leading-none text-center">Inquire</span>
+                      <ArrowUpRight className="w-3 h-3 text-[#A8A193] shrink-0" />
+                    </a>
+                  </div>
                 </div>
               );
             })}

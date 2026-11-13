@@ -113,6 +113,65 @@ export async function fetchGalleryItems(): Promise<GalleryMediaItem[]> {
   }
 }
 
+export const defaultServices: SiteService[] = [
+  { id: "mens-haircuts", name: "Men's Haircuts", category: "haircuts", price: "Rs. 1,000", numeric_price: 1000, description: "Precision haircut tailored to hair texture and head shape.", duration: "30 min", display_order: 1 },
+  { id: "kids-haircuts", name: "Kids' Haircuts", category: "haircuts", price: "Rs. 700", numeric_price: 700, description: "Gentle, patient haircut for boys and kids.", duration: "25 min", display_order: 2 },
+  { id: "fade-haircuts", name: "Fade & Taper Haircuts", category: "haircuts", price: "Rs. 1,200", numeric_price: 1200, description: "Skin fades, drop fades, temple tapers with razor edge lineup.", duration: "40 min", display_order: 3 },
+  { id: "scissor-cuts", name: "Scissor Precision Cuts", category: "haircuts", price: "Rs. 1,200", numeric_price: 1200, description: "Classic scissors-only executive haircut with layered texture.", duration: "35 min", display_order: 4 },
+  { id: "curly-styling", name: "Curly Hair Styling", category: "haircuts", price: "Rs. 1,400", numeric_price: 1400, description: "Hydrating definition, curl shaping, and taper finish.", duration: "40 min", display_order: 5 },
+  { id: "hair-coloring", name: "Hair Coloring", category: "haircuts", price: "Rs. 2,000", numeric_price: 2000, description: "Natural gray blending, gloss tints, or custom color tones.", duration: "45 min", display_order: 6 },
+  { id: "hair-straightening", name: "Hair Straightening", category: "haircuts", price: "Rs. 3,500", numeric_price: 3500, description: "Keratin and protein thermal treatment for smooth hair.", duration: "75 min", display_order: 7 },
+  { id: "beard-trimming", name: "Beard Trimming & Lineup", category: "beard", price: "Rs. 600", numeric_price: 600, description: "Clipper trim, razor edge cheek shaping, and neckline cleanup.", duration: "20 min", display_order: 8 },
+  { id: "pro-shave", name: "Professional Shaving", category: "beard", price: "Rs. 700", numeric_price: 700, description: "Hot towel prep, straight razor lather shave, chilled towel finish.", duration: "25 min", display_order: 9 },
+  { id: "beard-dye", name: "Beard Dyeing & Conditioning", category: "beard", price: "Rs. 900", numeric_price: 900, description: "Gray blending, conditioning argan oil treatment.", duration: "25 min", display_order: 10 },
+  { id: "facial-massage", name: "Facial Treatments & Cleansing", category: "facial", price: "Rs. 1,600", numeric_price: 1600, description: "Deep pore cleansing, scrub, steam, gentle blackhead extraction.", duration: "40 min", display_order: 11 },
+  { id: "gold-facial", name: "VIP Royal Gold Facial", category: "facial", price: "Rs. 2,500", numeric_price: 2500, description: "Multi-stage gold revitalizing mask, serum infusion, face massage.", duration: "50 min", display_order: 12 },
+  { id: "vip-grooming", name: "VIP Complete Grooming Package", category: "grooming", price: "Rs. 3,500", numeric_price: 3500, description: "Haircut, beard sculpt, executive facial treatment, hot towel therapy.", duration: "75 min", display_order: 13 },
+  { id: "mani-pedi", name: "Mani & Pedicure", category: "grooming", price: "Rs. 2,500", numeric_price: 2500, description: "Complete luxury manicure and pedicure treatment with hand soak, cuticle care, foot scrub, and nail grooming.", duration: "60 min", display_order: 14 },
+  { id: "manicure", name: "Manicure", category: "grooming", price: "Rs. 1,500", numeric_price: 1500, description: "Executive men's hand grooming, cuticle treatment, nail shaping, and relaxing hand massage.", duration: "35 min", display_order: 15 },
+  { id: "pedicure", name: "Pedicure", category: "grooming", price: "Rs. 1,500", numeric_price: 1500, description: "Relaxing foot soak, dead skin exfoliation, cuticle care, nail buffing, and rejuvenating foot massage.", duration: "40 min", display_order: 16 },
+];
+
+/**
+ * Fetch services from Supabase with fallback.
+ */
+export async function fetchServices(): Promise<SiteService[]> {
+  try {
+    const supabase = createClient();
+    const { data, error } = await supabase
+      .from("services")
+      .select("*")
+      .order("display_order", { ascending: true });
+
+    if (error || !data || data.length === 0) {
+      return defaultServices;
+    }
+    return data as SiteService[];
+  } catch {
+    return defaultServices;
+  }
+}
+
+/**
+ * Helper to get uniform price for any service across the site.
+ */
+export function resolveServicePrice(
+  services: SiteService[],
+  query: string,
+  fallback = "Rs. 1,000"
+): string {
+  if (!services || services.length === 0) return fallback;
+  const q = query.toLowerCase().trim();
+  const found = services.find(
+    (s) =>
+      s.id.toLowerCase() === q ||
+      s.name.toLowerCase() === q ||
+      s.name.toLowerCase().includes(q) ||
+      q.includes(s.name.toLowerCase())
+  );
+  return found?.price || fallback;
+}
+
 /**
  * Fetch site key images with fallback.
  */
