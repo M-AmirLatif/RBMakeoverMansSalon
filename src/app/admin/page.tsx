@@ -127,6 +127,7 @@ export default function AdminDashboardPage() {
             bio: b.bio || "",
             rates: b.rates,
             isPopular: b.is_popular,
+            avatar_url: b.avatar_url || undefined,
           }))
         );
       } else {
@@ -259,6 +260,14 @@ export default function AdminDashboardPage() {
     if (!editingBarber) return;
 
     try {
+      const barberRates = {
+        haircut: Number(editingBarber.rates?.haircut) || 1000,
+        beard: Number(editingBarber.rates?.beard) || 600,
+        hairAndBeard: Number(editingBarber.rates?.hairAndBeard) || 1500,
+        facial: Number(editingBarber.rates?.facial) || 1800,
+        groomingPackage: Number(editingBarber.rates?.groomingPackage) || 3500,
+      };
+
       const payload = {
         id: editingBarber.id,
         name: editingBarber.name,
@@ -268,16 +277,10 @@ export default function AdminDashboardPage() {
         experience: editingBarber.experience,
         rating: Number(editingBarber.rating) || 5.0,
         review_count: Number(editingBarber.reviewCount) || 10,
-        specialties: editingBarber.specialties,
-        bio: editingBarber.bio,
+        specialties: Array.isArray(editingBarber.specialties) ? editingBarber.specialties : ["Fade Haircut", "Beard Trim"],
+        bio: editingBarber.bio || "",
         avatar_url: editingBarber.avatar_url || null,
-        rates: {
-          haircut: Number(editingBarber.rates.haircut) || 0,
-          beard: Number(editingBarber.rates.beard) || 0,
-          hairAndBeard: Number(editingBarber.rates.hairAndBeard) || 0,
-          facial: Number(editingBarber.rates.facial) || 0,
-          groomingPackage: Number(editingBarber.rates.groomingPackage) || 0,
-        },
+        rates: barberRates,
         is_popular: !!editingBarber.isPopular,
         updated_at: new Date().toISOString(),
       };
@@ -285,7 +288,26 @@ export default function AdminDashboardPage() {
       const { error } = await supabase.from("barbers").upsert(payload);
       if (error) throw error;
 
-      showToast(`Barber "${editingBarber.name}" saved successfully!`);
+      // Optimistically update barbers in local state so the photo renders immediately
+      setBarbers((prev) =>
+        prev.map((b) =>
+          b.id === editingBarber.id
+            ? {
+                ...b,
+                name: editingBarber.name,
+                title: editingBarber.title,
+                category: editingBarber.category,
+                avatar_url: editingBarber.avatar_url || undefined,
+                experience: editingBarber.experience,
+                bio: editingBarber.bio || "",
+                isPopular: !!editingBarber.isPopular,
+                rates: barberRates,
+              }
+            : b
+        )
+      );
+
+      showToast(`Barber "${editingBarber.name}" photo and details saved successfully!`);
       setEditingBarber(null);
       loadAllData();
     } catch (err: unknown) {
@@ -1179,226 +1201,228 @@ export default function AdminDashboardPage() {
               </button>
             </div>
 
-            {/* Modal Body - Scrollable */}
-            <form id="barber-edit-form" onSubmit={handleSaveBarber} className="flex-1 overflow-y-auto p-4 sm:p-6 space-y-4">
-              {/* Barber Profile Photo / Avatar Editor */}
-              <div className="p-4 rounded-xl bg-black/40 border border-white/[0.08] flex items-center gap-4">
-                <div className="w-16 h-16 rounded-2xl overflow-hidden bg-[#141C18] border border-[#C59B46]/40 flex items-center justify-center text-[#DFC074] font-serif font-bold text-xl relative shrink-0 shadow-md">
-                  {editingBarber.avatar_url ? (
-                    // eslint-disable-next-line @next/next/no-img-element
-                    <img
-                      src={editingBarber.avatar_url}
-                      alt={editingBarber.name}
-                      className="w-full h-full object-cover"
-                    />
-                  ) : (
-                    editingBarber.initials || editingBarber.name.substring(0, 2).toUpperCase()
-                  )}
-                </div>
-
-                <div className="flex-1 min-w-0 space-y-2">
-                  <div className="text-xs font-semibold text-[#F5EFEB]">Barber Profile Photo</div>
-                  <div className="flex flex-wrap items-center gap-2">
-                    <label className="cursor-pointer py-1.5 px-3 rounded-lg bg-[#C59B46]/20 hover:bg-[#C59B46]/30 border border-[#C59B46]/40 text-xs text-[#DFC074] font-medium flex items-center gap-1.5 transition-colors">
-                      {uploadingBarberImage ? (
-                        <RefreshCw className="w-3.5 h-3.5 animate-spin text-[#C59B46]" />
-                      ) : (
-                        <Upload className="w-3.5 h-3.5" />
-                      )}
-                      <span>{uploadingBarberImage ? "Uploading..." : "Upload Photo"}</span>
-                      <input
-                        type="file"
-                        accept="image/*"
-                        disabled={uploadingBarberImage}
-                        onChange={(e) => {
-                          const f = e.target.files?.[0];
-                          if (f) handleBarberImageUpload(f);
-                        }}
-                        className="hidden"
+            {/* Form wrapping body and footer */}
+            <form onSubmit={handleSaveBarber} className="flex-1 flex flex-col min-h-0 overflow-hidden">
+              {/* Modal Body - Scrollable */}
+              <div className="flex-1 overflow-y-auto p-4 sm:p-6 space-y-4">
+                {/* Barber Profile Photo / Avatar Editor */}
+                <div className="p-4 rounded-xl bg-black/40 border border-white/[0.08] flex items-center gap-4">
+                  <div className="w-16 h-16 rounded-2xl overflow-hidden bg-[#141C18] border border-[#C59B46]/40 flex items-center justify-center text-[#DFC074] font-serif font-bold text-xl relative shrink-0 shadow-md">
+                    {editingBarber.avatar_url ? (
+                      // eslint-disable-next-line @next/next/no-img-element
+                      <img
+                        src={editingBarber.avatar_url}
+                        alt={editingBarber.name}
+                        className="w-full h-full object-cover"
                       />
-                    </label>
-
-                    {editingBarber.avatar_url && (
-                      <button
-                        type="button"
-                        onClick={() => setEditingBarber({ ...editingBarber, avatar_url: undefined })}
-                        className="py-1.5 px-3 rounded-lg bg-red-950/40 hover:bg-red-950/70 border border-red-500/30 text-xs text-red-300 flex items-center gap-1.5 transition-colors cursor-pointer"
-                      >
-                        <Trash2 className="w-3.5 h-3.5" />
-                        <span>Remove Photo</span>
-                      </button>
+                    ) : (
+                      editingBarber.initials || editingBarber.name.substring(0, 2).toUpperCase()
                     )}
                   </div>
-                  <input
-                    type="text"
-                    value={editingBarber.avatar_url || ""}
-                    onChange={(e) => setEditingBarber({ ...editingBarber, avatar_url: e.target.value })}
-                    placeholder="Or enter image URL e.g. /images/barbers/name.jpg"
-                    className="w-full bg-[#141C18] border border-white/[0.08] rounded-lg px-2.5 py-1.5 text-[11px] text-[#A8A193] placeholder-[#7A756B] focus:border-[#C59B46] outline-none"
-                  />
-                </div>
-              </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-xs uppercase font-mono text-[#DFC074] mb-1">
-                    Barber Name *
-                  </label>
-                  <input
-                    type="text"
-                    required
-                    value={editingBarber.name}
-                    onChange={(e) =>
-                      setEditingBarber({
-                        ...editingBarber,
-                        name: e.target.value,
-                        id: isNewBarber
-                          ? e.target.value.toLowerCase().replace(/[^a-z0-9]/g, "-")
-                          : editingBarber.id,
-                      })
-                    }
-                    className="w-full bg-[#141C18] border border-white/[0.1] rounded-xl px-3.5 py-2.5 text-xs text-[#F5EFEB] focus:border-[#C59B46] outline-none"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-xs uppercase font-mono text-[#DFC074] mb-1">
-                    Title *
-                  </label>
-                  <input
-                    type="text"
-                    required
-                    value={editingBarber.title}
-                    onChange={(e) =>
-                      setEditingBarber({ ...editingBarber, title: e.target.value })
-                    }
-                    className="w-full bg-[#141C18] border border-white/[0.1] rounded-xl px-3.5 py-2.5 text-xs text-[#F5EFEB] focus:border-[#C59B46] outline-none"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-xs uppercase font-mono text-[#DFC074] mb-1">
-                    Experience *
-                  </label>
-                  <input
-                    type="text"
-                    required
-                    value={editingBarber.experience}
-                    onChange={(e) =>
-                      setEditingBarber({ ...editingBarber, experience: e.target.value })
-                    }
-                    className="w-full bg-[#141C18] border border-white/[0.1] rounded-xl px-3.5 py-2.5 text-xs text-[#F5EFEB] focus:border-[#C59B46] outline-none"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-xs uppercase font-mono text-[#DFC074] mb-1">
-                    Category
-                  </label>
-                  <select
-                    value={editingBarber.category}
-                    onChange={(e) =>
-                      setEditingBarber({
-                        ...editingBarber,
-                        category: e.target.value as "all" | "senior" | "haircut" | "skincare",
-                      })
-                    }
-                    className="w-full bg-[#141C18] border border-white/[0.1] rounded-xl px-3.5 py-2.5 text-xs text-[#F5EFEB] focus:border-[#C59B46] outline-none"
-                  >
-                    <option value="senior">Senior Barber</option>
-                    <option value="haircut">Hair &amp; Beard Stylist</option>
-                    <option value="skincare">Skincare &amp; Facial</option>
-                  </select>
-                </div>
-              </div>
-
-              <div>
-                <label className="block text-xs uppercase font-mono text-[#DFC074] mb-1">
-                  Bio / Review Highlights
-                </label>
-                <textarea
-                  rows={2}
-                  value={editingBarber.bio}
-                  onChange={(e) =>
-                    setEditingBarber({ ...editingBarber, bio: e.target.value })
-                  }
-                  className="w-full bg-[#141C18] border border-white/[0.1] rounded-xl px-3.5 py-2 text-xs text-[#F5EFEB] focus:border-[#C59B46] outline-none"
-                />
-              </div>
-
-              {/* Service Pricing Matrix */}
-              <div className="pt-2">
-                <div className="flex items-center justify-between mb-2">
-                  <label className="block text-xs uppercase font-mono text-[#DFC074] font-bold">
-                    Individual Barber Rates
-                  </label>
-                  <span className="text-[11px] text-[#7A756B] font-mono">
-                    Amounts in PKR (Rs.)
-                  </span>
-                </div>
-                <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 bg-[#141C18] p-4 rounded-xl border border-white/[0.06]">
-                  {([
-                    { key: "haircut", label: "Haircut" },
-                    { key: "beard", label: "Beard Trim" },
-                    { key: "hairAndBeard", label: "Hair + Beard" },
-                    { key: "facial", label: "Facial" },
-                    { key: "groomingPackage", label: "VIP Package" },
-                  ] as const).map(({ key, label }) => (
-                    <div key={key} className={key === "groomingPackage" ? "col-span-2 sm:col-span-1" : "col-span-1"}>
-                      <label className="block text-[11px] font-mono text-[#A8A29E] mb-1.5 font-medium">
-                        {label}
-                      </label>
-                      <div className="relative flex items-center">
-                        <span className="absolute left-3 text-xs font-mono text-[#7A756B] select-none pointer-events-none">
-                          Rs.
-                        </span>
+                  <div className="flex-1 min-w-0 space-y-2">
+                    <div className="text-xs font-semibold text-[#F5EFEB]">Barber Profile Photo</div>
+                    <div className="flex flex-wrap items-center gap-2">
+                      <label className="cursor-pointer py-1.5 px-3 rounded-lg bg-[#C59B46]/20 hover:bg-[#C59B46]/30 border border-[#C59B46]/40 text-xs text-[#DFC074] font-medium flex items-center gap-1.5 transition-colors">
+                        {uploadingBarberImage ? (
+                          <RefreshCw className="w-3.5 h-3.5 animate-spin text-[#C59B46]" />
+                        ) : (
+                          <Upload className="w-3.5 h-3.5" />
+                        )}
+                        <span>{uploadingBarberImage ? "Uploading..." : "Upload Photo"}</span>
                         <input
-                          type="text"
-                          inputMode="numeric"
-                          pattern="[0-9]*"
-                          value={editingBarber.rates?.[key] !== undefined ? editingBarber.rates[key] : ""}
-                          onChange={(e) => handleRateChange(key, e.target.value)}
-                          placeholder="0"
-                          className="w-full bg-[#0E1411] border border-white/[0.12] focus:border-[#C59B46] rounded-xl pl-9 pr-3 py-2 text-sm text-[#DFC074] font-mono font-medium outline-none transition-colors"
+                          type="file"
+                          accept="image/*"
+                          disabled={uploadingBarberImage}
+                          onChange={(e) => {
+                            const f = e.target.files?.[0];
+                            if (f) handleBarberImageUpload(f);
+                          }}
+                          className="hidden"
                         />
-                      </div>
+                      </label>
+
+                      {editingBarber.avatar_url && (
+                        <button
+                          type="button"
+                          onClick={() => setEditingBarber({ ...editingBarber, avatar_url: undefined })}
+                          className="py-1.5 px-3 rounded-lg bg-red-950/40 hover:bg-red-950/70 border border-red-500/30 text-xs text-red-300 flex items-center gap-1.5 transition-colors cursor-pointer"
+                        >
+                          <Trash2 className="w-3.5 h-3.5" />
+                          <span>Remove Photo</span>
+                        </button>
+                      )}
                     </div>
-                  ))}
+                    <input
+                      type="text"
+                      value={editingBarber.avatar_url || ""}
+                      onChange={(e) => setEditingBarber({ ...editingBarber, avatar_url: e.target.value })}
+                      placeholder="Or enter image URL e.g. /images/barbers/name.jpg"
+                      className="w-full bg-[#141C18] border border-white/[0.08] rounded-lg px-2.5 py-1.5 text-[11px] text-[#A8A193] placeholder-[#7A756B] focus:border-[#C59B46] outline-none"
+                    />
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-xs uppercase font-mono text-[#DFC074] mb-1">
+                      Barber Name *
+                    </label>
+                    <input
+                      type="text"
+                      required
+                      value={editingBarber.name}
+                      onChange={(e) =>
+                        setEditingBarber({
+                          ...editingBarber,
+                          name: e.target.value,
+                          id: isNewBarber
+                            ? e.target.value.toLowerCase().replace(/[^a-z0-9]/g, "-")
+                            : editingBarber.id,
+                        })
+                      }
+                      className="w-full bg-[#141C18] border border-white/[0.1] rounded-xl px-3.5 py-2.5 text-xs text-[#F5EFEB] focus:border-[#C59B46] outline-none"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-xs uppercase font-mono text-[#DFC074] mb-1">
+                      Title *
+                    </label>
+                    <input
+                      type="text"
+                      required
+                      value={editingBarber.title}
+                      onChange={(e) =>
+                        setEditingBarber({ ...editingBarber, title: e.target.value })
+                      }
+                      className="w-full bg-[#141C18] border border-white/[0.1] rounded-xl px-3.5 py-2.5 text-xs text-[#F5EFEB] focus:border-[#C59B46] outline-none"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-xs uppercase font-mono text-[#DFC074] mb-1">
+                      Experience *
+                    </label>
+                    <input
+                      type="text"
+                      required
+                      value={editingBarber.experience}
+                      onChange={(e) =>
+                        setEditingBarber({ ...editingBarber, experience: e.target.value })
+                      }
+                      className="w-full bg-[#141C18] border border-white/[0.1] rounded-xl px-3.5 py-2.5 text-xs text-[#F5EFEB] focus:border-[#C59B46] outline-none"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-xs uppercase font-mono text-[#DFC074] mb-1">
+                      Category
+                    </label>
+                    <select
+                      value={editingBarber.category}
+                      onChange={(e) =>
+                        setEditingBarber({
+                          ...editingBarber,
+                          category: e.target.value as "all" | "senior" | "haircut" | "skincare",
+                        })
+                      }
+                      className="w-full bg-[#141C18] border border-white/[0.1] rounded-xl px-3.5 py-2.5 text-xs text-[#F5EFEB] focus:border-[#C59B46] outline-none"
+                    >
+                      <option value="senior">Senior Barber</option>
+                      <option value="haircut">Hair &amp; Beard Stylist</option>
+                      <option value="skincare">Skincare &amp; Facial</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-xs uppercase font-mono text-[#DFC074] mb-1">
+                    Bio / Review Highlights
+                  </label>
+                  <textarea
+                    rows={2}
+                    value={editingBarber.bio}
+                    onChange={(e) =>
+                      setEditingBarber({ ...editingBarber, bio: e.target.value })
+                    }
+                    className="w-full bg-[#141C18] border border-white/[0.1] rounded-xl px-3.5 py-2 text-xs text-[#F5EFEB] focus:border-[#C59B46] outline-none"
+                  />
+                </div>
+
+                {/* Service Pricing Matrix */}
+                <div className="pt-2">
+                  <div className="flex items-center justify-between mb-2">
+                    <label className="block text-xs uppercase font-mono text-[#DFC074] font-bold">
+                      Individual Barber Rates
+                    </label>
+                    <span className="text-[11px] text-[#7A756B] font-mono">
+                      Amounts in PKR (Rs.)
+                    </span>
+                  </div>
+                  <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 bg-[#141C18] p-4 rounded-xl border border-white/[0.06]">
+                    {([
+                      { key: "haircut", label: "Haircut" },
+                      { key: "beard", label: "Beard Trim" },
+                      { key: "hairAndBeard", label: "Hair + Beard" },
+                      { key: "facial", label: "Facial" },
+                      { key: "groomingPackage", label: "VIP Package" },
+                    ] as const).map(({ key, label }) => (
+                      <div key={key} className={key === "groomingPackage" ? "col-span-2 sm:col-span-1" : "col-span-1"}>
+                        <label className="block text-[11px] font-mono text-[#A8A29E] mb-1.5 font-medium">
+                          {label}
+                        </label>
+                        <div className="relative flex items-center">
+                          <span className="absolute left-3 text-xs font-mono text-[#7A756B] select-none pointer-events-none">
+                            Rs.
+                          </span>
+                          <input
+                            type="text"
+                            inputMode="numeric"
+                            pattern="[0-9]*"
+                            value={editingBarber.rates?.[key] !== undefined ? editingBarber.rates[key] : ""}
+                            onChange={(e) => handleRateChange(key, e.target.value)}
+                            placeholder="0"
+                            className="w-full bg-[#0E1411] border border-white/[0.12] focus:border-[#C59B46] rounded-xl pl-9 pr-3 py-2 text-sm text-[#DFC074] font-mono font-medium outline-none transition-colors"
+                          />
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+
+              {/* Modal Footer - Fixed at bottom */}
+              <div className="p-4 sm:p-5 border-t border-white/[0.08] bg-[#0A0E0C] flex flex-col sm:flex-row sm:items-center justify-between gap-3 shrink-0">
+                <label className="flex items-center gap-2 cursor-pointer text-xs text-[#A8A29E] select-none">
+                  <input
+                    type="checkbox"
+                    checked={editingBarber.isPopular}
+                    onChange={(e) =>
+                      setEditingBarber({ ...editingBarber, isPopular: e.target.checked })
+                    }
+                    className="rounded accent-[#C59B46] w-4 h-4 cursor-pointer"
+                  />
+                  <span>Mark as Most Requested / Popular</span>
+                </label>
+
+                <div className="flex items-center gap-3 w-full sm:w-auto justify-end">
+                  <button
+                    type="button"
+                    onClick={() => setEditingBarber(null)}
+                    className="px-4 py-2.5 rounded-xl bg-white/[0.05] hover:bg-white/[0.1] text-xs text-[#A8A29E] hover:text-[#F5EFEB] transition-colors cursor-pointer"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    type="submit"
+                    className="px-6 py-2.5 rounded-xl bg-gradient-to-r from-[#C59B46] to-[#DFC074] text-black font-semibold text-xs tracking-wider uppercase hover:shadow-[0_0_15px_rgba(197,155,70,0.3)] transition-all cursor-pointer shrink-0"
+                  >
+                    Save Changes
+                  </button>
                 </div>
               </div>
             </form>
-
-            {/* Modal Footer - Fixed at bottom */}
-            <div className="p-4 sm:p-5 border-t border-white/[0.08] bg-[#0A0E0C] flex flex-col sm:flex-row sm:items-center justify-between gap-3 shrink-0">
-              <label className="flex items-center gap-2 cursor-pointer text-xs text-[#A8A29E] select-none">
-                <input
-                  type="checkbox"
-                  checked={editingBarber.isPopular}
-                  onChange={(e) =>
-                    setEditingBarber({ ...editingBarber, isPopular: e.target.checked })
-                  }
-                  className="rounded accent-[#C59B46] w-4 h-4 cursor-pointer"
-                />
-                <span>Mark as Most Requested / Popular</span>
-              </label>
-
-              <div className="flex items-center gap-3 w-full sm:w-auto justify-end">
-                <button
-                  type="button"
-                  onClick={() => setEditingBarber(null)}
-                  className="px-4 py-2.5 rounded-xl bg-white/[0.05] hover:bg-white/[0.1] text-xs text-[#A8A29E] hover:text-[#F5EFEB] transition-colors cursor-pointer"
-                >
-                  Cancel
-                </button>
-                <button
-                  type="submit"
-                  form="barber-edit-form"
-                  className="px-6 py-2.5 rounded-xl bg-gradient-to-r from-[#C59B46] to-[#DFC074] text-black font-semibold text-xs tracking-wider uppercase hover:shadow-[0_0_15px_rgba(197,155,70,0.3)] transition-all cursor-pointer shrink-0"
-                >
-                  Save Changes
-                </button>
-              </div>
-            </div>
           </div>
         </div>
       )}
