@@ -94,11 +94,64 @@ export default function AdminDashboardPage() {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ action, payload }),
     });
-    const data = await res.json();
-    if (!res.ok || data.error) {
-      throw new Error(data.error || "Operation failed");
+    if (!res.ok) {
+      let errMsg = "Operation failed";
+      try {
+        const errJson = await res.json();
+        errMsg = errJson.error || errMsg;
+      } catch {
+        const text = await res.text();
+        errMsg = text.slice(0, 150) || `Server error (${res.status})`;
+      }
+      throw new Error(errMsg);
     }
-    return data;
+    return await res.json();
+  };
+
+  // Resilient direct upload to Supabase Storage via signed URL (bypasses serverless 4.5MB payload limit, supports files up to 50MB)
+  const uploadMediaDirect = async (file: File): Promise<{ url: string; path: string }> => {
+    const MAX_SIZE = 50 * 1024 * 1024; // 50MB
+    if (file.size > MAX_SIZE) {
+      throw new Error(`File size (${(file.size / (1024 * 1024)).toFixed(1)}MB) exceeds 50MB limit`);
+    }
+
+    // Step 1: Request signed upload URL
+    const res = await fetch("/api/admin/upload", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        fileName: file.name,
+        fileType: file.type,
+        fileSize: file.size,
+      }),
+    });
+
+    if (!res.ok) {
+      let errMsg = "Upload initiation failed";
+      try {
+        const errJson = await res.json();
+        errMsg = errJson.error || errMsg;
+      } catch {
+        const text = await res.text();
+        errMsg = text.slice(0, 150) || `Server error (${res.status})`;
+      }
+      throw new Error(errMsg);
+    }
+
+    const { path, token, url } = await res.json();
+
+    // Step 2: Upload directly to Supabase storage with signed token
+    const { error: uploadError } = await supabase.storage
+      .from("salon-media")
+      .uploadToSignedUrl(path, token, file, {
+        contentType: file.type || "application/octet-stream",
+      });
+
+    if (uploadError) {
+      throw new Error(uploadError.message || "Failed to upload file to storage");
+    }
+
+    return { url, path };
   };
 
   // Check auth session
@@ -246,16 +299,7 @@ export default function AdminDashboardPage() {
     if (!editingBarber) return;
     setUploadingBarberImage(true);
     try {
-      const fd = new FormData();
-      fd.append("file", file);
-      const res = await fetch("/api/admin/upload", {
-        method: "POST",
-        body: fd,
-      });
-      const data = await res.json();
-      if (!res.ok || !data.success) {
-        throw new Error(data.error || "Failed to upload image");
-      }
+      const data = await uploadMediaDirect(file);
       setEditingBarber({
         ...editingBarber,
         avatar_url: data.url,
@@ -369,22 +413,15 @@ export default function AdminDashboardPage() {
     if (!file) return;
     setUploadingHeroVideo(true);
     try {
-      const formData = new FormData();
-      formData.append("file", file);
-      const res = await fetch("/api/admin/upload", {
-        method: "POST",
-        body: formData,
-      });
-      const data = await res.json();
-      if (!res.ok || !data.success) {
-        throw new Error(data.error || "Failed to upload video");
-      }
+      const data = await uploadMediaDirect(file);
       await handleUpdateHeroVideo(data.url);
+      showToast("Hero video uploaded and updated successfully!");
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : "Failed to upload video";
       showToast(msg, "error");
     } finally {
       setUploadingHeroVideo(false);
+      if (e.target) e.target.value = "";
     }
   };
 
@@ -397,15 +434,7 @@ export default function AdminDashboardPage() {
 
     setUploadingGallery(true);
     try {
-      const formData = new FormData();
-      formData.append("file", file);
-
-      const res = await fetch("/api/admin/upload", {
-        method: "POST",
-        body: formData,
-      });
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error || "Upload failed");
+      const data = await uploadMediaDirect(file);
 
       const isVideo = file.type.startsWith("video/");
       const mediaItem = {
@@ -431,6 +460,7 @@ export default function AdminDashboardPage() {
       showToast(msg, "error");
     } finally {
       setUploadingGallery(false);
+      if (e.target) e.target.value = "";
     }
   };
 
@@ -511,15 +541,7 @@ export default function AdminDashboardPage() {
   const handleSiteImageUpload = async (key: string, file: File) => {
     setUploadingKey(key);
     try {
-      const formData = new FormData();
-      formData.append("file", file);
-
-      const res = await fetch("/api/admin/upload", {
-        method: "POST",
-        body: formData,
-      });
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error || "Upload failed");
+      const data = await uploadMediaDirect(file);
 
       const { error: dbErr } = await supabase.from("site_images").upsert({
         key,
