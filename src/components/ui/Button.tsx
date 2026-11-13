@@ -10,6 +10,7 @@ interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   iconPosition?: "left" | "right";
   children: React.ReactNode;
   fullWidth?: boolean;
+  onClick?: (e: React.MouseEvent<HTMLElement>) => void;
 }
 
 export function Button({
@@ -73,13 +74,18 @@ export function Button({
           target="_blank"
           rel="noopener noreferrer"
           className={combinedClasses}
+          onClick={props.onClick as unknown as React.MouseEventHandler<HTMLAnchorElement>}
         >
           {content}
         </a>
       );
     }
     return (
-      <Link href={href} className={combinedClasses}>
+      <Link
+        href={href}
+        className={combinedClasses}
+        onClick={props.onClick as unknown as React.MouseEventHandler<HTMLAnchorElement>}
+      >
         {content}
       </Link>
     );

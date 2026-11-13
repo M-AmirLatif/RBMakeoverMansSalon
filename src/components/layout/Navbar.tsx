@@ -76,21 +76,11 @@ export function Navbar({ onMenuToggle }: { onMenuToggle?: (isOpen: boolean) => v
     return () => observer.disconnect();
   }, []);
 
-  // Lock body scroll reliably on mobile and handle keyboard accessibility when mobile menu is open
+  // Lock body scroll cleanly on mobile when mobile menu is open
   useEffect(() => {
     if (mobileMenuOpen) {
-      const scrollY = window.scrollY;
-      const originalBodyPosition = document.body.style.position;
-      const originalBodyTop = document.body.style.top;
-      const originalBodyWidth = document.body.style.width;
-      const originalBodyOverflow = document.body.style.overflow;
-      const originalHtmlOverflow = document.documentElement.style.overflow;
-
-      document.body.style.position = "fixed";
-      document.body.style.top = `-${scrollY}px`;
-      document.body.style.width = "100%";
+      const originalOverflow = document.body.style.overflow;
       document.body.style.overflow = "hidden";
-      document.documentElement.style.overflow = "hidden";
 
       closeButtonRef.current?.focus();
 
@@ -100,35 +90,46 @@ export function Navbar({ onMenuToggle }: { onMenuToggle?: (isOpen: boolean) => v
         }
       };
       window.addEventListener("keydown", handleKeyDown);
+
       return () => {
-        document.body.style.position = originalBodyPosition;
-        document.body.style.top = originalBodyTop;
-        document.body.style.width = originalBodyWidth;
-        document.body.style.overflow = originalBodyOverflow;
-        document.documentElement.style.overflow = originalHtmlOverflow;
-        window.scrollTo(0, scrollY);
+        document.body.style.overflow = originalOverflow;
         window.removeEventListener("keydown", handleKeyDown);
       };
     }
   }, [mobileMenuOpen]);
 
   const handleNavClick = (href: string) => {
+    // 1. Immediately close mobile menu and unlock scroll
     setMobileMenuOpen(false);
+    document.body.style.overflow = "";
+
     if (!href.startsWith("#")) return;
+
     if (href === "#hero" || href === "#") {
       window.scrollTo({ top: 0, behavior: "smooth" });
+      setActiveSection("hero");
       return;
     }
-    const target = document.querySelector(href);
-    if (target) {
-      const navOffset = 76;
-      const elementPosition = target.getBoundingClientRect().top;
-      const offsetPosition = elementPosition + window.pageYOffset - navOffset;
-      window.scrollTo({
-        top: offsetPosition,
-        behavior: "smooth",
-      });
-    }
+
+    const targetId = href.substring(1);
+
+    // 2. Defer scroll slightly to allow the menu unmount to settle layout coordinates
+    setTimeout(() => {
+      const target = document.getElementById(targetId);
+      if (target) {
+        const navOffset = 76;
+        const rect = target.getBoundingClientRect();
+        const absoluteTop = rect.top + window.scrollY;
+        const scrollToY = Math.max(0, absoluteTop - navOffset);
+
+        window.scrollTo({
+          top: scrollToY,
+          behavior: "smooth",
+        });
+
+        setActiveSection(targetId);
+      }
+    }, 40);
   };
 
   return (
@@ -187,6 +188,10 @@ export function Navbar({ onMenuToggle }: { onMenuToggle?: (isOpen: boolean) => v
               variant="gold"
               size="sm"
               icon={<ArrowUpRight className="w-4 h-4" />}
+              onClick={(e) => {
+                e?.preventDefault();
+                handleNavClick("#contact");
+              }}
             >
               Book Now →
             </Button>
@@ -228,7 +233,7 @@ export function Navbar({ onMenuToggle }: { onMenuToggle?: (isOpen: boolean) => v
         >
           {/* Top Bar with Logo and Close */}
           <div className="flex items-center justify-between border-b border-white/10 pb-3 shrink-0">
-            <BrandLogo onClick={() => setMobileMenuOpen(false)} />
+            <BrandLogo onClick={() => handleNavClick("#hero")} />
             <button
               ref={closeButtonRef}
               type="button"
@@ -275,7 +280,10 @@ export function Navbar({ onMenuToggle }: { onMenuToggle?: (isOpen: boolean) => v
               variant="gold"
               size="md"
               fullWidth
-              onClick={() => setMobileMenuOpen(false)}
+              onClick={(e) => {
+                e?.preventDefault();
+                handleNavClick("#contact");
+              }}
             >
               Book an Appointment
             </Button>

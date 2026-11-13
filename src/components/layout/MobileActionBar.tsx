@@ -57,6 +57,18 @@ export function MobileActionBar({ hidden = false }: MobileActionBarProps) {
         {/* Book */}
         <a
           href="#contact"
+          onClick={(e) => {
+            e.preventDefault();
+            const target = document.getElementById("contact");
+            if (target) {
+              const navOffset = 76;
+              const absoluteTop = target.getBoundingClientRect().top + window.scrollY;
+              window.scrollTo({
+                top: Math.max(0, absoluteTop - navOffset),
+                behavior: "smooth",
+              });
+            }
+          }}
           className="flex flex-col items-center justify-center py-1.5 px-1 rounded-xl bg-[#C59B46] active:bg-[#DFC074] text-[#0B0F0D] font-bold shadow-[0_2px_10px_rgba(197,155,70,0.3)] transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-white"
           aria-label="Jump to appointment inquiry form"
         >
