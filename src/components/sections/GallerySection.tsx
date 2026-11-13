@@ -145,13 +145,16 @@ export function GallerySection({
                       className="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-700 ease-out"
                     />
                   ) : (
-                    <Image
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img
                       src={imageSrc}
                       alt={item.alt || item.title}
-                      fill
-                      priority={idx < 4}
-                      sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-                      className="object-cover object-center group-hover:scale-105 transition-transform duration-700 ease-out"
+                      loading={idx < 4 ? "eager" : "lazy"}
+                      decoding="async"
+                      onError={(e) => {
+                        (e.target as HTMLImageElement).src = "/images/salon-wide-stations.webp";
+                      }}
+                      className="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-700 ease-out"
                     />
                   )}
 

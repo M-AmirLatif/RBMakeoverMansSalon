@@ -18,10 +18,10 @@ export function AnimatedReveal({
   children,
   direction = "up",
   delay = 0,
-  duration = 0.4,
+  duration = 0.35,
   className = "",
-  amount = 0.05,
-  margin = "0px 0px 60px 0px",
+  amount = 0,
+  margin = "150px 0px 150px 0px",
 }: AnimatedRevealProps) {
   const shouldReduceMotion = useReducedMotion();
 
@@ -33,27 +33,27 @@ export function AnimatedReveal({
     switch (direction) {
       case "up":
         return {
-          hidden: { opacity: 0, y: 18 },
+          hidden: { opacity: 0, y: 16 },
           visible: { opacity: 1, y: 0 },
         };
       case "down":
         return {
-          hidden: { opacity: 0, y: -18 },
+          hidden: { opacity: 0, y: -16 },
           visible: { opacity: 1, y: 0 },
         };
       case "left":
         return {
-          hidden: { opacity: 0, x: -20 },
+          hidden: { opacity: 0, x: -16 },
           visible: { opacity: 1, x: 0 },
         };
       case "right":
         return {
-          hidden: { opacity: 0, x: 20 },
+          hidden: { opacity: 0, x: 16 },
           visible: { opacity: 1, x: 0 },
         };
       case "scale":
         return {
-          hidden: { opacity: 0, scale: 0.96 },
+          hidden: { opacity: 0, scale: 0.98 },
           visible: { opacity: 1, scale: 1 },
         };
       case "fade":
@@ -74,9 +74,8 @@ export function AnimatedReveal({
       transition={{
         duration,
         delay,
-        ease: [0.22, 1, 0.36, 1], // Buttery smooth spring-like cubic bezier
+        ease: [0.22, 1, 0.36, 1],
       }}
-      style={{ willChange: "opacity, transform" }}
       className={className}
     >
       {children}

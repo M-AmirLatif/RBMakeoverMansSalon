@@ -51,7 +51,11 @@ export default function AdminDashboardPage() {
     hero_barber: "/images/hero-barber-craft.webp",
     about_salon: "/images/about-interior-floor.webp",
     precision_center: "/images/cutout-precision-taper.webp",
+    hero_video: "/videos/hero-salon-loop-720p.mp4",
   });
+  const [heroVideoUrl, setHeroVideoUrl] = useState<string>("/videos/hero-salon-loop-720p.mp4");
+  const [heroVideoInput, setHeroVideoInput] = useState<string>("/videos/hero-salon-loop-720p.mp4");
+  const [uploadingHeroVideo, setUploadingHeroVideo] = useState(false);
   const [loading, setLoading] = useState(false);
 
   // Modals & Editing states
@@ -166,7 +170,7 @@ export default function AdminDashboardPage() {
         setServices(sData as SiteService[]);
       }
 
-      // 4. Site Images
+      // 4. Site Images & Hero Video
       const { data: imgData, error: imgErr } = await supabase
         .from("site_images")
         .select("key, url");
@@ -176,11 +180,16 @@ export default function AdminDashboardPage() {
           hero_barber: "/images/hero-barber-craft.webp",
           about_salon: "/images/about-interior-floor.webp",
           precision_center: "/images/cutout-precision-taper.webp",
+          hero_video: "/videos/hero-salon-loop-720p.mp4",
         };
         imgData.forEach((row) => {
           if (row.key && row.url) map[row.key] = row.url;
         });
         setSiteImages(map);
+        if (map.hero_video) {
+          setHeroVideoUrl(map.hero_video);
+          setHeroVideoInput(map.hero_video);
+        }
       }
     } catch (err) {
       console.error("Error loading data:", err);
@@ -296,6 +305,53 @@ export default function AdminDashboardPage() {
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : "Failed to delete barber";
       showToast(msg, "error");
+    }
+  };
+
+  // -------------------------------------------------------------
+  // HERO SHOWCASE VIDEO (EDIT & UPLOAD)
+  // -------------------------------------------------------------
+  const handleUpdateHeroVideo = async (videoUrl: string) => {
+    if (!videoUrl.trim()) return;
+    try {
+      const { error } = await supabase.from("site_images").upsert({
+        key: "hero_video",
+        label: "Hero Showcase Video",
+        description: "Continuous hair salon loop video in Hero Section Part 2",
+        url: videoUrl.trim(),
+        updated_at: new Date().toISOString(),
+      });
+      if (error) throw error;
+      setHeroVideoUrl(videoUrl.trim());
+      setHeroVideoInput(videoUrl.trim());
+      showToast("Hero showcase video updated successfully!");
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : "Failed to update hero video";
+      showToast(msg, "error");
+    }
+  };
+
+  const handleHeroVideoUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setUploadingHeroVideo(true);
+    try {
+      const formData = new FormData();
+      formData.append("file", file);
+      const res = await fetch("/api/admin/upload", {
+        method: "POST",
+        body: formData,
+      });
+      const data = await res.json();
+      if (!res.ok || !data.success) {
+        throw new Error(data.error || "Failed to upload video");
+      }
+      await handleUpdateHeroVideo(data.url);
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : "Failed to upload video";
+      showToast(msg, "error");
+    } finally {
+      setUploadingHeroVideo(false);
     }
   };
 
@@ -706,12 +762,108 @@ export default function AdminDashboardPage() {
         {/* TAB 2: GALLERY & MEDIA MANAGER                            */}
         {/* ========================================================= */}
         {activeTab === "gallery" && (
-          <div>
-            <div className="mb-6">
-              <h2 className="text-xl sm:text-2xl font-serif text-[#F5EFEB]">Gallery Media (Images &amp; Videos)</h2>
+          <div className="space-y-8">
+            <div className="mb-2">
+              <h2 className="text-xl sm:text-2xl font-serif text-[#F5EFEB]">Gallery &amp; Video Media</h2>
               <p className="text-xs text-[#7A756B] mt-1">
-                Upload new photos or MP4/WebM videos directly into the public salon gallery.
+                Manage the continuous hero showcase video and public salon gallery photographs and clips.
               </p>
+            </div>
+
+            {/* HERO SHOWCASE VIDEO MANAGER */}
+            <div className="bg-[#111714] border border-[#C59B46]/40 rounded-2xl p-5 sm:p-7 shadow-2xl space-y-5">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 border-b border-white/[0.08]">
+                <div className="space-y-1">
+                  <div className="inline-flex items-center gap-2 text-[11px] font-mono tracking-widest uppercase text-[#DFC074] font-bold">
+                    <Video className="w-3.5 h-3.5 text-[#C59B46]" />
+                    <span>Hero Section Video (Part 2 Slot)</span>
+                  </div>
+                  <h3 className="text-base sm:text-lg font-serif font-bold text-[#F5EFEB]">
+                    Live Hair Salon Showcase Video
+                  </h3>
+                  <p className="text-xs text-[#A8A193]">
+                    This video continuously plays on the live website in the hero image slot. You can replace it anytime.
+                  </p>
+                </div>
+                <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-emerald-950/40 border border-emerald-500/30 text-emerald-400 text-xs font-mono shrink-0">
+                  <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+                  <span>Live on Website</span>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 sm:gap-6 items-center">
+                {/* Video Preview Player */}
+                <div className="lg:col-span-5 relative aspect-[16/10] sm:aspect-[4/3] rounded-2xl overflow-hidden bg-black border border-[#C59B46]/30 shadow-xl group">
+                  <video
+                    key={heroVideoUrl}
+                    src={heroVideoUrl}
+                    controls
+                    playsInline
+                    muted
+                    loop
+                    className="w-full h-full object-cover"
+                  />
+                  <div className="absolute top-2 left-2 px-2.5 py-1 rounded-md bg-black/80 backdrop-blur-sm text-[10px] font-mono uppercase text-[#DFC074] border border-[#C59B46]/30 pointer-events-none">
+                    Preview
+                  </div>
+                </div>
+
+                {/* Upload & URL Controls */}
+                <div className="lg:col-span-7 space-y-4">
+                  <div>
+                    <label className="block text-xs uppercase font-mono text-[#DFC074] mb-2 font-semibold">
+                      Option 1: Upload New Video File (MP4 or WebM up to 50MB)
+                    </label>
+                    <label className={`cursor-pointer inline-flex items-center gap-2 px-5 py-3 rounded-xl bg-[#C59B46]/20 hover:bg-[#C59B46]/30 border border-[#C59B46]/40 text-xs font-semibold text-[#DFC074] transition-colors shadow-sm ${uploadingHeroVideo ? "opacity-50 pointer-events-none" : ""}`}>
+                      {uploadingHeroVideo ? (
+                        <RefreshCw className="w-4 h-4 animate-spin text-[#C59B46]" />
+                      ) : (
+                        <Upload className="w-4 h-4" />
+                      )}
+                      <span>{uploadingHeroVideo ? "Uploading Video..." : "Upload New Video to Storage"}</span>
+                      <input
+                        type="file"
+                        accept="video/mp4,video/webm"
+                        disabled={uploadingHeroVideo}
+                        onChange={handleHeroVideoUpload}
+                        className="hidden"
+                      />
+                    </label>
+                  </div>
+
+                  <div>
+                    <label className="block text-xs uppercase font-mono text-[#DFC074] mb-1.5 font-semibold">
+                      Option 2: Direct Video URL or Storage Path
+                    </label>
+                    <div className="flex flex-col sm:flex-row gap-2">
+                      <input
+                        type="text"
+                        value={heroVideoInput}
+                        onChange={(e) => setHeroVideoInput(e.target.value)}
+                        placeholder="e.g. /videos/hero-salon-loop-720p.mp4 or https://..."
+                        className="flex-1 bg-[#141C18] border border-white/[0.1] rounded-xl px-3.5 py-2.5 text-xs text-[#F5EFEB] focus:border-[#C59B46] outline-none"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => handleUpdateHeroVideo(heroVideoInput)}
+                        className="px-5 py-2.5 rounded-xl bg-gradient-to-r from-[#C59B46] to-[#DFC074] text-black font-semibold text-xs tracking-wider uppercase hover:shadow-[0_0_15px_rgba(197,155,70,0.3)] transition-all cursor-pointer whitespace-nowrap"
+                      >
+                        Save Video
+                      </button>
+                    </div>
+                  </div>
+
+                  <div className="pt-1">
+                    <button
+                      type="button"
+                      onClick={() => handleUpdateHeroVideo("/videos/hero-salon-loop-720p.mp4")}
+                      className="text-xs text-[#7A756B] hover:text-[#DFC074] underline transition-colors cursor-pointer"
+                    >
+                      Reset to Default Salon Video Loop
+                    </button>
+                  </div>
+                </div>
+              </div>
             </div>
 
             {/* Upload Box: Clean, stacked & thumb-friendly on mobile */}
@@ -1006,21 +1158,29 @@ export default function AdminDashboardPage() {
       {/* MODAL: EDIT / ADD BARBER                                  */}
       {/* ========================================================= */}
       {editingBarber && (
-        <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 overflow-y-auto">
-          <div className="bg-[#0E1411] border border-white/[0.1] rounded-2xl max-w-2xl w-full p-6 sm:p-8 shadow-2xl relative my-8">
-            <div className="flex items-center justify-between pb-4 border-b border-white/[0.08] mb-6">
-              <h3 className="text-lg font-serif font-bold text-[#F5EFEB]">
-                {isNewBarber ? "Add New Barber" : `Edit ${editingBarber.name}`}
-              </h3>
+        <div className="fixed inset-0 z-50 bg-black/85 backdrop-blur-md flex items-center justify-center p-3 sm:p-6 overflow-hidden">
+          <div className="bg-[#0E1411] border border-white/[0.12] rounded-2xl max-w-2xl w-full max-h-[92vh] flex flex-col shadow-[0_25px_60px_rgba(0,0,0,0.95)] relative overflow-hidden">
+            {/* Modal Header */}
+            <div className="p-4 sm:p-6 pb-4 border-b border-white/[0.08] flex items-center justify-between shrink-0 bg-[#0A0E0C]">
+              <div>
+                <h3 className="text-base sm:text-lg font-serif font-bold text-[#F5EFEB]">
+                  {isNewBarber ? "Add New Barber" : `Edit ${editingBarber.name}`}
+                </h3>
+                <p className="text-[11px] text-[#7A756B] mt-0.5">
+                  Update profile photo, role credentials, and individual service rates.
+                </p>
+              </div>
               <button
+                type="button"
                 onClick={() => setEditingBarber(null)}
-                className="p-1 rounded-lg text-[#7A756B] hover:text-[#F5EFEB] hover:bg-white/[0.05]"
+                className="p-1.5 rounded-lg text-[#7A756B] hover:text-[#F5EFEB] hover:bg-white/[0.05] transition-colors"
               >
                 <X className="w-5 h-5" />
               </button>
             </div>
 
-            <form onSubmit={handleSaveBarber} className="space-y-4">
+            {/* Modal Body - Scrollable */}
+            <form id="barber-edit-form" onSubmit={handleSaveBarber} className="flex-1 overflow-y-auto p-4 sm:p-6 space-y-4">
               {/* Barber Profile Photo / Avatar Editor */}
               <div className="p-4 rounded-xl bg-black/40 border border-white/[0.08] flex items-center gap-4">
                 <div className="w-16 h-16 rounded-2xl overflow-hidden bg-[#141C18] border border-[#C59B46]/40 flex items-center justify-center text-[#DFC074] font-serif font-bold text-xl relative shrink-0 shadow-md">
@@ -1184,7 +1344,7 @@ export default function AdminDashboardPage() {
                     { key: "facial", label: "Facial" },
                     { key: "groomingPackage", label: "VIP Package" },
                   ] as const).map(({ key, label }) => (
-                    <div key={key}>
+                    <div key={key} className={key === "groomingPackage" ? "col-span-2 sm:col-span-1" : "col-span-1"}>
                       <label className="block text-[11px] font-mono text-[#A8A29E] mb-1.5 font-medium">
                         {label}
                       </label>
@@ -1206,37 +1366,39 @@ export default function AdminDashboardPage() {
                   ))}
                 </div>
               </div>
-
-              <div className="flex items-center justify-between pt-4 border-t border-white/[0.08]">
-                <label className="flex items-center gap-2 cursor-pointer text-xs text-[#A8A29E]">
-                  <input
-                    type="checkbox"
-                    checked={editingBarber.isPopular}
-                    onChange={(e) =>
-                      setEditingBarber({ ...editingBarber, isPopular: e.target.checked })
-                    }
-                    className="rounded accent-[#C59B46]"
-                  />
-                  <span>Mark as Most Requested / Popular</span>
-                </label>
-
-                <div className="flex items-center gap-3">
-                  <button
-                    type="button"
-                    onClick={() => setEditingBarber(null)}
-                    className="px-4 py-2 rounded-xl bg-white/[0.05] text-xs text-[#7A756B] hover:text-[#F5EFEB]"
-                  >
-                    Cancel
-                  </button>
-                  <button
-                    type="submit"
-                    className="px-5 py-2 rounded-xl bg-gradient-to-r from-[#C59B46] to-[#DFC074] text-black font-semibold text-xs tracking-wider uppercase hover:shadow-[0_0_15px_rgba(197,155,70,0.3)]"
-                  >
-                    Save Changes
-                  </button>
-                </div>
-              </div>
             </form>
+
+            {/* Modal Footer - Fixed at bottom */}
+            <div className="p-4 sm:p-5 border-t border-white/[0.08] bg-[#0A0E0C] flex flex-col sm:flex-row sm:items-center justify-between gap-3 shrink-0">
+              <label className="flex items-center gap-2 cursor-pointer text-xs text-[#A8A29E] select-none">
+                <input
+                  type="checkbox"
+                  checked={editingBarber.isPopular}
+                  onChange={(e) =>
+                    setEditingBarber({ ...editingBarber, isPopular: e.target.checked })
+                  }
+                  className="rounded accent-[#C59B46] w-4 h-4 cursor-pointer"
+                />
+                <span>Mark as Most Requested / Popular</span>
+              </label>
+
+              <div className="flex items-center gap-3 w-full sm:w-auto justify-end">
+                <button
+                  type="button"
+                  onClick={() => setEditingBarber(null)}
+                  className="px-4 py-2.5 rounded-xl bg-white/[0.05] hover:bg-white/[0.1] text-xs text-[#A8A29E] hover:text-[#F5EFEB] transition-colors cursor-pointer"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  form="barber-edit-form"
+                  className="px-6 py-2.5 rounded-xl bg-gradient-to-r from-[#C59B46] to-[#DFC074] text-black font-semibold text-xs tracking-wider uppercase hover:shadow-[0_0_15px_rgba(197,155,70,0.3)] transition-all cursor-pointer shrink-0"
+                >
+                  Save Changes
+                </button>
+              </div>
+            </div>
           </div>
         </div>
       )}
@@ -1245,21 +1407,29 @@ export default function AdminDashboardPage() {
       {/* MODAL: EDIT / ADD SERVICE                                 */}
       {/* ========================================================= */}
       {editingService && (
-        <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
-          <div className="bg-[#0E1411] border border-white/[0.1] rounded-2xl max-w-lg w-full p-6 shadow-2xl">
-            <div className="flex items-center justify-between pb-4 border-b border-white/[0.08] mb-4">
-              <h3 className="text-lg font-serif font-bold text-[#F5EFEB]">
-                {isNewService ? "Add New Service" : `Edit ${editingService.name}`}
-              </h3>
+        <div className="fixed inset-0 z-50 bg-black/85 backdrop-blur-md flex items-center justify-center p-3 sm:p-6 overflow-hidden">
+          <div className="bg-[#0E1411] border border-white/[0.12] rounded-2xl max-w-lg w-full max-h-[92vh] flex flex-col shadow-[0_25px_60px_rgba(0,0,0,0.95)] relative overflow-hidden">
+            {/* Modal Header */}
+            <div className="p-4 sm:p-6 pb-4 border-b border-white/[0.08] flex items-center justify-between shrink-0 bg-[#0A0E0C]">
+              <div>
+                <h3 className="text-base sm:text-lg font-serif font-bold text-[#F5EFEB]">
+                  {isNewService ? "Add New Service" : `Edit ${editingService.name}`}
+                </h3>
+                <p className="text-[11px] text-[#7A756B] mt-0.5">
+                  Update service rate, duration, and catalog category.
+                </p>
+              </div>
               <button
+                type="button"
                 onClick={() => setEditingService(null)}
-                className="p-1 rounded-lg text-[#7A756B] hover:text-[#F5EFEB]"
+                className="p-1.5 rounded-lg text-[#7A756B] hover:text-[#F5EFEB] hover:bg-white/[0.05] transition-colors"
               >
                 <X className="w-5 h-5" />
               </button>
             </div>
 
-            <form onSubmit={handleSaveService} className="space-y-4">
+            {/* Form Body - Scrollable */}
+            <form id="service-edit-form" onSubmit={handleSaveService} className="flex-1 overflow-y-auto p-4 sm:p-6 space-y-4">
               <div>
                 <label className="block text-xs uppercase font-mono text-[#DFC074] mb-1">
                   Service Name
@@ -1341,23 +1511,25 @@ export default function AdminDashboardPage() {
                   <option value="grooming">VIP Packages</option>
                 </select>
               </div>
-
-              <div className="flex items-center justify-end gap-3 pt-4 border-t border-white/[0.08]">
-                <button
-                  type="button"
-                  onClick={() => setEditingService(null)}
-                  className="px-4 py-2 rounded-xl bg-white/[0.05] text-xs text-[#7A756B]"
-                >
-                  Cancel
-                </button>
-                <button
-                  type="submit"
-                  className="px-5 py-2 rounded-xl bg-gradient-to-r from-[#C59B46] to-[#DFC074] text-black font-semibold text-xs tracking-wider uppercase"
-                >
-                  Save Service
-                </button>
-              </div>
             </form>
+
+            {/* Modal Footer - Fixed */}
+            <div className="p-4 sm:p-5 border-t border-white/[0.08] bg-[#0A0E0C] flex items-center justify-end gap-3 shrink-0">
+              <button
+                type="button"
+                onClick={() => setEditingService(null)}
+                className="px-4 py-2.5 rounded-xl bg-white/[0.05] hover:bg-white/[0.1] text-xs text-[#A8A29E] hover:text-[#F5EFEB] transition-colors cursor-pointer"
+              >
+                Cancel
+              </button>
+              <button
+                type="submit"
+                form="service-edit-form"
+                className="px-6 py-2.5 rounded-xl bg-gradient-to-r from-[#C59B46] to-[#DFC074] text-black font-semibold text-xs tracking-wider uppercase hover:shadow-[0_0_15px_rgba(197,155,70,0.3)] transition-all cursor-pointer"
+              >
+                Save Service
+              </button>
+            </div>
           </div>
         </div>
       )}

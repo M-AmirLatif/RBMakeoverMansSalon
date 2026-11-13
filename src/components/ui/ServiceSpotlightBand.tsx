@@ -81,8 +81,8 @@ export function ServiceSpotlightBand({
           {/* Image Column (6 cols): Large on PC, Zero Cropped Edges, Seamless Background */}
           <AnimatedReveal
             direction={isImageRight ? "right" : "left"}
-            delay={0.05}
-            amount={0.05}
+            delay={0.02}
+            amount={0}
             className={`lg:col-span-6 flex justify-center order-1 ${
               isImageRight ? "lg:order-2" : "lg:order-1"
             }`}

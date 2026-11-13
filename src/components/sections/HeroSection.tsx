@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import { siteConfig } from "@/data/siteConfig";
-import { fetchServices, SiteService, resolveServicePrice, defaultServices } from "@/lib/supabase/queries";
+import { fetchServices, SiteService, resolveServicePrice, defaultServices, fetchHeroVideoUrl } from "@/lib/supabase/queries";
 import { Button } from "@/components/ui/Button";
 import { WhatsAppIcon, FacebookIcon } from "@/components/ui/Icons";
 import { AnimatedReveal } from "@/components/ui/AnimatedReveal";
@@ -33,12 +33,18 @@ const heroFeaturedDefinitions = [
 
 export function HeroSection() {
   const [services, setServices] = useState<SiteService[]>(defaultServices);
+  const [heroVideoUrl, setHeroVideoUrl] = useState<string>("/videos/hero-salon-loop-720p.mp4");
 
   useEffect(() => {
     let mounted = true;
     fetchServices().then((list) => {
       if (mounted && list && list.length > 0) {
         setServices(list);
+      }
+    });
+    fetchHeroVideoUrl().then((url) => {
+      if (mounted && url) {
+        setHeroVideoUrl(url);
       }
     });
     return () => {
@@ -340,8 +346,8 @@ export function HeroSection() {
             </div>
           </AnimatedReveal>
 
-          {/* Right Column: Master Barber Image + Circular Badge + Socials */}
-          <AnimatedReveal direction="right" delay={0.15} amount={0.05} className="col-span-5 relative">
+          {/* Right Column: Master Barber Video + Circular Badge + Socials */}
+          <AnimatedReveal direction="right" delay={0.05} amount={0} className="col-span-5 relative">
             <div
               className="relative w-full h-[min(75svh,580px)] rounded-[32px] overflow-hidden shadow-[0_30px_70px_rgba(0,0,0,0.9)] bg-black group"
               style={{
@@ -350,6 +356,7 @@ export function HeroSection() {
               }}
             >
               <video
+                key={heroVideoUrl}
                 autoPlay
                 loop
                 muted
@@ -357,8 +364,8 @@ export function HeroSection() {
                 preload="auto"
                 className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-1000 ease-out"
               >
+                <source src={heroVideoUrl} type="video/mp4" />
                 <source src="/videos/hero-salon-loop-720p.mp4" type="video/mp4" />
-                <source src="/videos/hero-salon-loop.mp4" type="video/mp4" />
               </video>
 
               {/* Scrim: subtle dark gradient at bottom edge */}
@@ -487,6 +494,7 @@ export function HeroSection() {
             }}
           >
             <video
+              key={heroVideoUrl}
               autoPlay
               loop
               muted
@@ -494,8 +502,8 @@ export function HeroSection() {
               preload="auto"
               className="w-full h-full object-cover"
             >
+              <source src={heroVideoUrl} type="video/mp4" />
               <source src="/videos/hero-salon-loop-720p.mp4" type="video/mp4" />
-              <source src="/videos/hero-salon-loop.mp4" type="video/mp4" />
             </video>
 
             {/* Gradient scrim */}

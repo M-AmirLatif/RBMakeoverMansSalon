@@ -67,8 +67,8 @@ export function EditorialShowcaseBand({
           {/* Image Column (6 cols): Large on PC & BIG on Mobile (h-[420px]), 100% transparent background */}
           <AnimatedReveal
             direction={isRight ? "right" : "left"}
-            delay={0.05}
-            amount={0.05}
+            delay={0.02}
+            amount={0}
             className={`lg:col-span-6 flex justify-center order-1 ${
               isRight ? "lg:order-2" : "lg:order-1"
             }`}

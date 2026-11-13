@@ -223,6 +223,7 @@ export async function fetchSiteImages(): Promise<Record<string, string>> {
     hero_barber: "/images/hero-barber-craft.webp",
     about_salon: "/images/about-interior-floor.webp",
     precision_center: "/images/cutout-precision-taper.webp",
+    hero_video: "/videos/hero-salon-loop-720p.mp4",
   };
 
   try {
@@ -240,5 +241,27 @@ export async function fetchSiteImages(): Promise<Record<string, string>> {
     return map;
   } catch {
     return defaults;
+  }
+}
+
+/**
+ * Fetch hero video URL specifically for the hero image slot.
+ */
+export async function fetchHeroVideoUrl(): Promise<string> {
+  const fallback = "/videos/hero-salon-loop-720p.mp4";
+  try {
+    const supabase = createClient();
+    const { data, error } = await supabase
+      .from("site_images")
+      .select("url")
+      .eq("key", "hero_video")
+      .maybeSingle();
+
+    if (error || !data || !data.url) {
+      return fallback;
+    }
+    return data.url;
+  } catch {
+    return fallback;
   }
 }
