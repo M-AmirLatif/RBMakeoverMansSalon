@@ -8,14 +8,14 @@ import { SectionHeading } from "@/components/ui/SectionHeading";
 import { AnimatedReveal } from "@/components/ui/AnimatedReveal";
 import { WhatsAppIcon } from "@/components/ui/Icons";
 import { buildServiceInquiryWhatsAppUrl } from "@/lib/whatsapp";
-import { ArrowUpRight, ArrowRight, Sparkles, Calendar, Scissors } from "lucide-react";
+import { ArrowUpRight, ArrowRight, Sparkles, Calendar, Scissors, Layers } from "lucide-react";
 
 export interface SignatureStyleItem {
   id: string;
   badge: string;
   title: string;
   highlightText: string;
-  category: string;
+  category: "haircuts" | "beard" | "facial" | "grooming";
   serviceQuery: string;
   fallbackPrice: string;
   description: string;
@@ -25,25 +25,27 @@ export interface SignatureStyleItem {
 }
 
 export const signatureGroomingStyles: SignatureStyleItem[] = [
+  // 1. Quiff Taper (Editorial 1)
   {
     id: "style-quiff-taper",
     badge: "Signature Style Spotlight",
     title: "The Textured Quiff",
     highlightText: "Precision Skin Taper",
-    category: "Haircuts & Styling",
+    category: "haircuts",
     serviceQuery: "fade-haircuts",
     fallbackPrice: "Rs. 400",
-    description: "Hand-sheared crown volume paired with surgical zero-gap temple transitions and textured styling finish.",
+    description: "Hand-sheared crown layers paired with surgical zero-gap temple transitions and textured styling finish.",
     features: ["Skin Taper Fade", "Textured Crown Lift", "Matte Pomade Finish", "Razor Clean Temple"],
     image: "/images/cutout-quiff-taper.webp",
     imageAlt: "The Textured Quiff Precision Skin Taper haircut at R.B Makeover",
   },
+  // 2. Executive Comb-Over (Editorial 2)
   {
     id: "style-combover-razor",
     badge: "Executive Precision",
     title: "Executive Comb-Over",
     highlightText: "Razor Part Symmetry",
-    category: "Haircuts & Styling",
+    category: "haircuts",
     serviceQuery: "scissor-cuts",
     fallbackPrice: "Rs. 500",
     description: "Surgical razor parting line paired with seamless drop gradient and high-gloss tonic for timeless boardroom presence.",
@@ -51,12 +53,13 @@ export const signatureGroomingStyles: SignatureStyleItem[] = [
     image: "/images/cutout-combover-razor.webp",
     imageAlt: "Executive Comb-Over Razor Part Symmetry at R.B Makeover",
   },
+  // 3. Textured Executive Crop (Spotlight 1)
   {
     id: "style-executive-crop",
     badge: "Modern European Styling",
     title: "Textured Executive Crop",
     highlightText: "Point-Cut Volume & Micro-Taper",
-    category: "Haircuts & Styling",
+    category: "haircuts",
     serviceQuery: "mens-haircuts",
     fallbackPrice: "Rs. 350",
     description: "Modern European crop featuring high micro-fade temples and point-cut scissor volume for sharp everyday presence.",
@@ -64,12 +67,13 @@ export const signatureGroomingStyles: SignatureStyleItem[] = [
     image: "/images/cutout-executive-crop.webp",
     imageAlt: "Textured Executive Crop haircut at R.B Makeover",
   },
+  // 4. Precision Razor Line-Up & Drop Fade (Editorial 3)
   {
     id: "style-razor-dropfade",
     badge: "Contour Detailing",
     title: "Precision Razor Line-Up",
     highlightText: "High Skin Drop Fade",
-    category: "Haircuts & Styling",
+    category: "haircuts",
     serviceQuery: "fade-haircuts",
     fallbackPrice: "Rs. 400",
     description: "Geometric razor edges sculpted with disposable feather blades, steep drop taper, and natural skin blend.",
@@ -77,12 +81,27 @@ export const signatureGroomingStyles: SignatureStyleItem[] = [
     image: "/images/cutout-razor-dropfade.webp",
     imageAlt: "Precision Razor Line-Up and High Skin Drop Fade at R.B Makeover",
   },
+  // 5. Low-Drop Skin Fade (Spotlight 2)
+  {
+    id: "style-skin-fade",
+    badge: "Master Cut Spotlight",
+    title: "The Low-Drop Skin Fade",
+    highlightText: "Precision Scissor Texture",
+    category: "haircuts",
+    serviceQuery: "fade-haircuts",
+    fallbackPrice: "Rs. 400",
+    description: "Zero-gap clipper taper smoothly transitioning into hand-sculpted crown layers and razor-clean nape lines.",
+    features: ["Zero-Gap Clippers", "Scissor-Over-Comb", "Razor Clean Nape", "Matte Texture Paste"],
+    image: "/images/cutout-skin-fade.webp",
+    imageAlt: "Low-drop skin fade with precision scissor texture at R.B Makeover",
+  },
+  // 6. Royal Beard & Pompadour (Editorial 4)
   {
     id: "style-beard-pompadour",
     badge: "Royal Facial Craft",
     title: "Royal Beard & Pompadour",
     highlightText: "Hot Towel Steam Therapy",
-    category: "Additional Grooming Services",
+    category: "grooming",
     serviceQuery: "hair-and-beard-styling",
     fallbackPrice: "Rs. 1,500",
     description: "Full haircut and beard transformation featuring hot towel steam, argan hydration, and cheekbone contouring.",
@@ -90,12 +109,55 @@ export const signatureGroomingStyles: SignatureStyleItem[] = [
     image: "/images/cutout-pompadour-sculpt.webp",
     imageAlt: "Royal Beard & Pompadour Hot Towel Steam Therapy at R.B Makeover",
   },
+  // 7. Royal Beard Architecture (Spotlight 3)
+  {
+    id: "style-royal-beard",
+    badge: "Beard Architecture",
+    title: "Royal Beard Architecture",
+    highlightText: "Hot Towel Steam & Argan Therapy",
+    category: "beard",
+    serviceQuery: "beard-trimming",
+    fallbackPrice: "Rs. 250",
+    description: "Sculpted with straight-razor precision, eucalyptus hot steam towels, and organic argan beard oil nourishment.",
+    features: ["Hot Towel Steam", "Feather-Edge Razor", "Mustache Contouring", "Organic Argan Oil"],
+    image: "/images/cutout-beard-sculpt.webp",
+    imageAlt: "Royal Beard Architecture at R.B Makeover",
+  },
+  // 8. Textured Curly Crop (Editorial 5)
+  {
+    id: "style-curly-taper",
+    badge: "Bespoke Modern Styling",
+    title: "Textured Curly Crop",
+    highlightText: "Low-Fade Temple Definition",
+    category: "haircuts",
+    serviceQuery: "curly-styling",
+    fallbackPrice: "Rs. 300",
+    description: "Tailored specifically for natural curl movement. Weightless debulking through crown spirals with micro-tapers.",
+    features: ["Natural Curl Definition", "Weightless Debulking", "Low Temple Fade", "Moisture Seal Tonic"],
+    image: "/images/cutout-curly-taper.webp",
+    imageAlt: "Textured Curly Crop haircut at R.B Makeover",
+  },
+  // 9. Royal Hot Towel Shave (Spotlight 4)
+  {
+    id: "style-royal-shave",
+    badge: "Heritage Shaving",
+    title: "The Royal Hot Towel Shave",
+    highlightText: "Straight Razor Mastery",
+    category: "beard",
+    serviceQuery: "pro-shave",
+    fallbackPrice: "Rs. 250",
+    description: "Traditional multi-step straight razor shave. Warm lather, dual hot towels, ice-chilled towel, and soothing aloe balm.",
+    features: ["Dual Hot Towels", "Pre-Shave Oil", "Single-Use Blades", "Soothing Balm Finish"],
+    image: "/images/cutout-royal-shave.webp",
+    imageAlt: "Traditional hot towel straight razor shaving at R.B Makeover",
+  },
+  // 10. Senior Stylist Discipline (Editorial 6)
   {
     id: "style-senior-discipline",
     badge: "14+ Years Master Heritage",
     title: "Senior Stylist Discipline",
     highlightText: "Handcrafted Scissor Precision",
-    category: "Haircuts & Styling",
+    category: "haircuts",
     serviceQuery: "scissor-cuts",
     fallbackPrice: "Rs. 500",
     description: "Led by salon owner Imtiaz Ahmad. Classic scissor craft, tailored beard sculpting, and calm luxury consultation.",
@@ -103,9 +165,122 @@ export const signatureGroomingStyles: SignatureStyleItem[] = [
     image: "/images/cutout-mature-classic.webp",
     imageAlt: "Senior Stylist Discipline Handcrafted Scissor Precision at R.B Makeover",
   },
+  // 11. Hair & Beard Coordination (Spotlight 5)
+  {
+    id: "style-hair-beard",
+    badge: "Executive Transformation",
+    title: "Hair & Beard Coordination",
+    highlightText: "Tailored to Your Bone Structure",
+    category: "grooming",
+    serviceQuery: "hair-and-beard-styling",
+    fallbackPrice: "Rs. 1,500",
+    description: "Harmonizing haircut with beard contouring to complement facial bone structure and temple tapers.",
+    features: ["Facial Proportions", "Temple Transition", "Long-Lasting Hold", "Beard Sculpting"],
+    image: "/images/cutout-hair-beard.webp",
+    imageAlt: "Hair and Beard Coordination at R.B Makeover",
+  },
+  // 12. Hydra & Charcoal Skincare (Spotlight 6)
+  {
+    id: "style-facial",
+    badge: "Skincare & Rejuvenation",
+    title: "Hydra & Charcoal Skincare",
+    highlightText: "Deep Pore Cleansing & Glow",
+    category: "facial",
+    serviceQuery: "facial-massage",
+    fallbackPrice: "Rs. 2,100",
+    description: "Deep pore cleansing, ultrasonic blackhead extraction, botanical steam, and revitalizing charcoal mask.",
+    features: ["Deep Cleansing", "Charcoal Mask", "Facial Acupressure", "Hydrating Mist"],
+    image: "/images/cutout-facial-skincare.webp",
+    imageAlt: "Hydra and Charcoal Skincare at R.B Makeover",
+  },
+  // 13. Invigorating Scalp Massage (Spotlight 7)
+  {
+    id: "style-scalp",
+    badge: "Therapeutic Wash",
+    title: "Invigorating Scalp Massage",
+    highlightText: "Menthol Acupressure & Follicle Therapy",
+    category: "grooming",
+    serviceQuery: "shampoo-conditioning",
+    fallbackPrice: "Rs. 600",
+    description: "Scalp acupressure massage using tea tree and peppermint botanicals, relieving tension and promoting healthy roots.",
+    features: ["Botanical Steam", "Tea-Tree Menthol", "Acupressure Massage", "Cold Rinse Seal"],
+    image: "/images/cutout-scalp-therapy.webp",
+    imageAlt: "Invigorating scalp acupressure massage at R.B Makeover",
+  },
+  // 14. Classic Scissor Haircut (Spotlight 8)
+  {
+    id: "style-classic-cut",
+    badge: "Timeless Barbering",
+    title: "Classic Scissor Haircut",
+    highlightText: "Handcrafted Scissor Discipline",
+    category: "haircuts",
+    serviceQuery: "scissor-cuts",
+    fallbackPrice: "Rs. 500",
+    description: "Soft natural tapers and razor-clean necklines for gentlemen who appreciate timeless scissor styling.",
+    features: ["Pure Scissor Work", "Gentle Neckline Lineup", "Natural Parting", "Light Styling Tonic"],
+    image: "/images/cutout-classic-cut.webp",
+    imageAlt: "Classic scissor haircut at R.B Makeover",
+  },
+  // 15. Keratin Silk Smoothing (Spotlight 9)
+  {
+    id: "style-keratin",
+    badge: "Structural Hair Care",
+    title: "Keratin Silk Smoothing",
+    highlightText: "Glossy Silk Finish & Frizz Control",
+    category: "haircuts",
+    serviceQuery: "hair-treatments",
+    fallbackPrice: "Rs. 3,000",
+    description: "Deep protein rebuilding that eliminates coarse frizz and locks in mirror shine for manageable styling.",
+    features: ["Formaldehyde-Free", "Heat Activated Seal", "12-Week Durability", "Silky Manageability"],
+    image: "/images/cutout-keratin-silk.webp",
+    imageAlt: "Keratin silk smoothing transformation at R.B Makeover",
+  },
+  // 16. The Executive VIP Package (Spotlight 10)
+  {
+    id: "style-vip",
+    badge: "Signature All-Inclusive",
+    title: "The Executive VIP Package",
+    highlightText: "Complete Head-to-Toe Distinction",
+    category: "grooming",
+    serviceQuery: "vip-grooming",
+    fallbackPrice: "Rs. 3,500",
+    description: "Master haircut, beard sculpting, charcoal facial massage, deep scalp wash, and hot towel aromatherapies.",
+    features: ["Full Service Hair & Beard", "Hydra Facial Cleansing", "Scalp Steam Massage", "Signature Styling"],
+    image: "/images/cutout-vip-grooming.webp",
+    imageAlt: "The Executive VIP Grooming Package at R.B Makeover",
+  },
+  // 17. Razor Lineup & Temple Edge (Spotlight 11)
+  {
+    id: "style-razor-lineup",
+    badge: "Precision Detailing",
+    title: "Razor Lineup & Temple Edge",
+    highlightText: "Zero-Tolerance Contour Geometry",
+    category: "beard",
+    serviceQuery: "beard-trimming",
+    fallbackPrice: "Rs. 250",
+    description: "Laser-focused edge work using disposable feather blades to carve crisp cheek curves and neckline definition.",
+    features: ["Feather Razor Blades", "Hot Aloe Prep", "Geometric Symmetry", "Post-Shave Ice Towel"],
+    image: "/images/cutout-razor-lineup.webp",
+    imageAlt: "Razor Lineup and Temple Edge at R.B Makeover",
+  },
+  // 18. The Executive Finish & Aura (Spotlight 12)
+  {
+    id: "style-executive-finish",
+    badge: "The Grand Standard",
+    title: "The Executive Finish & Aura",
+    highlightText: "Signature Confidence for Every Occasion",
+    category: "grooming",
+    serviceQuery: "hair-and-beard-styling",
+    fallbackPrice: "Rs. 1,500",
+    description: "Signature hot towel finish, collar brush-down, and premium styling tonic for boardroom prominence.",
+    features: ["Hot Towel Finish", "Collar Brush-Down", "Matte Pomade Styling", "VIP Walkout Confidence"],
+    image: "/images/cutout-master-finish.webp",
+    imageAlt: "The Executive Finish and Signature Aura at R.B Makeover",
+  },
 ];
 
 export function ServicesSection() {
+  const [styleFilter, setStyleFilter] = useState<"all" | "haircuts" | "beard" | "facial" | "grooming">("all");
   const [activeCategoryKey, setActiveCategoryKey] =
     useState<ServiceCategoryKey>("haircuts");
   const [dbServices, setDbServices] = useState<SiteService[]>(defaultServices);
@@ -171,6 +346,11 @@ export function ServicesSection() {
 
   const dynamicCategoryServices = getCategoryServices(activeCategoryKey);
 
+  const filteredStyles =
+    styleFilter === "all"
+      ? signatureGroomingStyles
+      : signatureGroomingStyles.filter((s) => s.category === styleFilter);
+
   return (
     <section
       id="services"
@@ -185,30 +365,57 @@ export function ServicesSection() {
             eyebrow="The Grooming Menu"
             titleCream="The Grooming"
             titleGold="Menu"
-            description="Precision haircuts, skin fades, beard sculpting, and skincare treatments crafted for gentlemen in Park View City, Lahore. All prices are verified and updated in real-time."
+            description="Explore all signature handcrafted looks and complete salon services. Every price is synchronized directly with our admin matrix for 100% pricing uniformity."
           />
         </AnimatedReveal>
 
         {/* ============================================================ */}
-        {/* PART 1: SIGNATURE STYLES SPOTLIGHT CARDS                     */}
+        {/* PART 1: ALL 16+ SIGNATURE STYLE SHOWCASE CARDS               */}
         {/* Exact same images, titles & 4 bullet features as the feed,   */}
-        {/* now showing verified pricing and direct WhatsApp booking     */}
+        {/* now showing verified live pricing and direct WhatsApp booking */}
         {/* ============================================================ */}
         <div className="mb-16 sm:mb-20">
-          <div className="flex items-center justify-between mb-6 pb-3 border-b border-white/[0.08]">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6 pb-4 border-b border-white/[0.08]">
             <div className="flex items-center gap-2.5">
-              <span className="w-2 h-2 rounded-full bg-[#C59B46] animate-pulse" />
-              <h3 className="text-xs sm:text-sm font-bold uppercase tracking-[0.2em] text-[#DFC074]">
-                Featured Signature Styles &amp; Rates
-              </h3>
+              <span className="w-2.5 h-2.5 rounded-full bg-[#C59B46] animate-pulse" />
+              <div>
+                <h3 className="text-sm sm:text-base font-bold uppercase tracking-[0.2em] text-[#DFC074]">
+                  All {signatureGroomingStyles.length} Signature Styles &amp; Verified Rates
+                </h3>
+                <p className="text-xs text-[#A8A193] mt-0.5">
+                  Clicking &quot;Book&quot; on any style above jumps directly to its card below.
+                </p>
+              </div>
             </div>
-            <span className="text-[11px] font-mono text-[#A8A193] hidden sm:inline">
-              Single Source of Truth Pricing
-            </span>
+
+            {/* Sub-Filter Tabs for Signature Styles */}
+            <div className="inline-flex p-1 rounded-full bg-[#141C18] border border-white/10 self-start sm:self-auto overflow-x-auto no-scrollbar max-w-full">
+              {[
+                { key: "all", label: `All (${signatureGroomingStyles.length})` },
+                { key: "haircuts", label: "Haircuts & Fades" },
+                { key: "beard", label: "Beard & Shaving" },
+                { key: "facial", label: "Skincare" },
+                { key: "grooming", label: "VIP & Combos" },
+              ].map(({ key, label }) => (
+                <button
+                  key={key}
+                  type="button"
+                  onClick={() => setStyleFilter(key as typeof styleFilter)}
+                  className={`px-3 py-1.5 rounded-full text-[11px] font-semibold tracking-wide transition-colors whitespace-nowrap cursor-pointer ${
+                    styleFilter === key
+                      ? "bg-[#C59B46] text-[#0B0F0D] font-bold shadow-sm"
+                      : "text-[#A8A193] hover:text-[#F5EFEB]"
+                  }`}
+                >
+                  {label}
+                </button>
+              ))}
+            </div>
           </div>
 
+          {/* 16+ Signature Styles Responsive Grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {signatureGroomingStyles.map((item, idx) => {
+            {filteredStyles.map((item, idx) => {
               const livePrice = resolveServicePrice(dbServices, item.serviceQuery, item.fallbackPrice);
               const waUrl = `https://wa.me/923269326566?text=${encodeURIComponent(
                 `Hello! I would like to book *${item.title} - ${item.highlightText}* (${item.features.join(", ")}) at R.B Makeover Salon for ${livePrice}. Please share available slots.`
@@ -218,12 +425,12 @@ export function ServicesSection() {
                 <AnimatedReveal
                   key={item.id}
                   direction="up"
-                  delay={idx * 0.06}
+                  delay={(idx % 6) * 0.05}
                   className="h-full"
                 >
                   <div
                     id={item.id}
-                    className="h-full group rounded-2xl bg-[#121815] border border-white/[0.08] hover:border-[#C59B46]/60 transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_20px_45px_rgba(0,0,0,0.85)] flex flex-col justify-between overflow-hidden relative"
+                    className="scroll-mt-28 h-full group rounded-2xl bg-[#121815] border border-white/[0.08] hover:border-[#C59B46]/60 transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_20px_45px_rgba(0,0,0,0.85)] flex flex-col justify-between overflow-hidden relative"
                   >
                     {/* Top Scrim & Badge */}
                     <div className="p-5 sm:p-6 pb-2 relative z-10">
@@ -308,7 +515,7 @@ export function ServicesSection() {
         </div>
 
         {/* ============================================================ */}
-        {/* PART 2: COMPLETE 23+ SERVICES CATALOG                         */}
+        {/* PART 2: COMPLETE 26 SERVICES CATALOG                         */}
         {/* Dynamic categories, live DB pricing, search & WhatsApp inquiry */}
         {/* ============================================================ */}
         <AnimatedReveal direction="up" delay={0.05} amount={0.05} className="border-t border-white/[0.08] pt-10 sm:pt-14 mb-6 sm:mb-8 text-center">

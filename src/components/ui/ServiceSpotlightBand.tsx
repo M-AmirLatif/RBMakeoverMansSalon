@@ -156,10 +156,10 @@ export function ServiceSpotlightBand({
               ))}
             </div>
 
-            {/* Action Button: Direct to Grooming Menu #services */}
+            {/* Action Button: Direct to matching Grooming Menu style anchor */}
             <div className="pt-2">
               <a
-                href="#services"
+                href={`#style-${id.replace(/^spotlight-/, "")}`}
                 className="w-full sm:w-auto inline-flex items-center justify-center gap-2.5 px-7 sm:px-9 py-3.5 sm:py-4 rounded-full bg-[#C59B46] hover:bg-[#DFC074] active:bg-[#9A752B] text-[#0B0F0D] font-bold text-sm sm:text-base tracking-wide uppercase transition-all shadow-[0_10px_25px_rgba(197,155,70,0.3)] hover:shadow-[0_14px_35px_rgba(197,155,70,0.45)] group cursor-pointer whitespace-nowrap leading-none select-none"
               >
                 <span className="leading-none text-center">Book</span>
