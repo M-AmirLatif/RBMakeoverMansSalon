@@ -29,6 +29,13 @@ import { staffBarbers, BarberStaff } from "@/data/team";
 import { galleryImages } from "@/data/images";
 import { SiteService, GalleryMediaItem } from "@/lib/supabase/queries";
 
+function formatNumberWithCommas(value: string | number | undefined | null): string {
+  if (value === undefined || value === null || value === "") return "";
+  const cleaned = String(value).replace(/[^0-9]/g, "");
+  if (!cleaned) return "";
+  return Number(cleaned).toLocaleString("en-US");
+}
+
 export default function AdminDashboardPage() {
   const router = useRouter();
   const supabase = createClient();
@@ -292,15 +299,16 @@ export default function AdminDashboardPage() {
     key: "haircut" | "beard" | "hairAndBeard" | "facial" | "groomingPackage",
     val: string
   ) => {
-    // Keep only digits so user can freely type, clear, or backspace
+    // Keep only digits and automatically format with commas (e.g. 6000 -> 6,000, 35000 -> 35,000)
     const cleaned = val.replace(/[^0-9]/g, "");
+    const formatted = cleaned ? Number(cleaned).toLocaleString("en-US") : "";
     setEditingBarber((prev) => {
       if (!prev) return null;
       return {
         ...prev,
         rates: {
           ...prev.rates,
-          [key]: cleaned,
+          [key]: formatted,
         },
       };
     });
@@ -332,11 +340,11 @@ export default function AdminDashboardPage() {
 
     try {
       const barberRates = {
-        haircut: Number(editingBarber.rates?.haircut) || 1000,
-        beard: Number(editingBarber.rates?.beard) || 600,
-        hairAndBeard: Number(editingBarber.rates?.hairAndBeard) || 1500,
-        facial: Number(editingBarber.rates?.facial) || 1800,
-        groomingPackage: Number(editingBarber.rates?.groomingPackage) || 3500,
+        haircut: Number(String(editingBarber.rates?.haircut).replace(/[^0-9]/g, "")) || 1000,
+        beard: Number(String(editingBarber.rates?.beard).replace(/[^0-9]/g, "")) || 600,
+        hairAndBeard: Number(String(editingBarber.rates?.hairAndBeard).replace(/[^0-9]/g, "")) || 1500,
+        facial: Number(String(editingBarber.rates?.facial).replace(/[^0-9]/g, "")) || 1800,
+        groomingPackage: Number(String(editingBarber.rates?.groomingPackage).replace(/[^0-9]/g, "")) || 3500,
       };
 
       const payload = {
@@ -500,15 +508,14 @@ export default function AdminDashboardPage() {
 
     try {
       const num = Number(String(editingService.price).replace(/[^0-9]/g, "")) || 0;
-      const displayPrice = String(editingService.price).includes("Rs.")
-        ? editingService.price
-        : `Rs. ${num.toLocaleString()}`;
+      const formattedWithComma = num > 0 ? num.toLocaleString("en-US") : "0";
+      const displayPrice = `Rs. ${formattedWithComma}`;
 
       const payload = {
         id: editingService.id,
         name: editingService.name,
         category: editingService.category,
-        price: displayPrice || "Rs. 1,000",
+        price: displayPrice,
         numeric_price: num,
         description: editingService.description || "",
         duration: editingService.duration || "30 mins",
@@ -1671,10 +1678,9 @@ export default function AdminDashboardPage() {
                           <input
                             type="text"
                             inputMode="numeric"
-                            pattern="[0-9]*"
-                            value={editingBarber.rates?.[key] !== undefined ? editingBarber.rates[key] : ""}
+                            value={formatNumberWithCommas(editingBarber.rates?.[key] !== undefined ? editingBarber.rates[key] : "")}
                             onChange={(e) => handleRateChange(key, e.target.value)}
-                            placeholder="0"
+                            placeholder="1,000"
                             className="w-full bg-[#0E1411] border border-white/[0.12] focus:border-[#C59B46] rounded-xl pl-9 pr-3 py-2 text-sm text-[#DFC074] font-mono font-medium outline-none transition-colors"
                           />
                         </div>
@@ -1783,16 +1789,17 @@ export default function AdminDashboardPage() {
                         type="text"
                         inputMode="numeric"
                         required
-                        value={String(editingService.price || "").replace(/[^0-9]/g, "")}
+                        value={formatNumberWithCommas(editingService.price || "")}
                         onChange={(e) => {
-                          const val = e.target.value.replace(/[^0-9]/g, "");
+                          const rawDigits = e.target.value.replace(/[^0-9]/g, "");
+                          const formatted = rawDigits ? Number(rawDigits).toLocaleString("en-US") : "";
                           setEditingService({
                             ...editingService,
-                            price: val ? `Rs. ${val}` : "",
-                            numeric_price: Number(val) || 0,
+                            price: formatted ? `Rs. ${formatted}` : "",
+                            numeric_price: Number(rawDigits) || 0,
                           });
                         }}
-                        placeholder="1000"
+                        placeholder="1,000"
                         className="w-full bg-[#141C18] border border-white/[0.12] focus:border-[#C59B46] rounded-xl pl-9 pr-3.5 py-2.5 text-xs text-[#DFC074] font-mono outline-none"
                       />
                     </div>
