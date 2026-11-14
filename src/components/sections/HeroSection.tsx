@@ -20,17 +20,6 @@ import {
 } from "lucide-react";
 import { buildServiceInquiryWhatsAppUrl } from "@/lib/whatsapp";
 
-const heroFeaturedDefinitions = [
-  { name: "Haircuts & Fades", query: "fade-haircuts", fallbackPrice: "Rs. 1,000", category: "Haircuts & Styling" },
-  { name: "Beard Trimming & Lineup", query: "beard-trimming", fallbackPrice: "Rs. 600", category: "Beard & Grooming" },
-  { name: "Professional Shaving", query: "pro-shave", fallbackPrice: "Rs. 700", category: "Beard & Grooming" },
-  { name: "Mani & Pedicure", query: "mani-pedi", fallbackPrice: "Rs. 2,500", category: "Additional Grooming Services" },
-  { name: "Manicure", query: "manicure", fallbackPrice: "Rs. 1,500", category: "Additional Grooming Services" },
-  { name: "Pedicure", query: "pedicure", fallbackPrice: "Rs. 1,500", category: "Additional Grooming Services" },
-  { name: "Facial Treatments", query: "facial-massage", fallbackPrice: "Rs. 1,600", category: "Facial & Skincare" },
-  { name: "VIP Grooming Packages", query: "vip-grooming", fallbackPrice: "Rs. 3,500", category: "Additional Grooming Services" },
-];
-
 export function HeroSection() {
   const [services, setServices] = useState<SiteService[]>(defaultServices);
   const [heroVideoUrl, setHeroVideoUrl] = useState<string>("/videos/hero-salon-loop-720p.mp4");
@@ -129,66 +118,74 @@ export function HeroSection() {
               </div>
             </div>
 
-            {/* Right Column (7 cols): Rates & Appointments Rail */}
-            <div className="lg:col-span-7 flex flex-col justify-center space-y-4 sm:space-y-5 lg:pl-2">
+            {/* Right Column (7 cols): Brand Storytelling & Navigation Hub */}
+            <div className="lg:col-span-7 flex flex-col justify-center space-y-5 sm:space-y-6 lg:pl-4">
               
-              {/* Desktop Eyebrow */}
-              <div className="hidden lg:flex items-center gap-3 text-xs font-bold tracking-[0.25em] uppercase text-[#C59B46] pb-0.5">
+              {/* Eyebrow */}
+              <div className="flex items-center gap-3 text-xs font-bold tracking-[0.25em] uppercase text-[#C59B46]">
                 <span className="w-8 h-[2px] bg-[#C59B46]" />
-                <span>Featured Services &amp; Direct Booking</span>
+                <span>Park View City Lahore • Bespoke Men&apos;s Sanctuary</span>
               </div>
 
-              {/* Service List with Rates & BOOK buttons from Reference A */}
-              <div className="bg-[#111614]/90 rounded-2xl border border-white/[0.08] backdrop-blur-md p-3.5 sm:p-5 divide-y divide-white/[0.08] shadow-[0_20px_50px_rgba(0,0,0,0.8)]">
-                <div className="pb-2.5 px-2 sm:px-3 flex items-center justify-between text-[10px] sm:text-[11px] font-semibold uppercase tracking-wider text-[#7A756B]">
-                  <span>Featured Services</span>
-                  <span>Rates / Booking</span>
+              {/* Headline */}
+              <h2 className="font-['Playfair_Display',Georgia,serif] text-2xl sm:text-3xl lg:text-4xl text-[#F5EFEB] font-normal leading-tight">
+                Architectural Haircuts, Razor Fades &amp;{" "}
+                <span className="italic text-[#C59B46]">Royal Beard Therapy</span>
+              </h2>
+
+              {/* Subtext */}
+              <p className="text-sm sm:text-base text-[#B8B0A2] leading-relaxed max-w-xl">
+                Led by Imtiaz Ahmad with 10 master barbers delivering tailored scissor discipline, razor-sharp contouring, and hot-towel steam relaxation in a luxury lounge environment.
+              </p>
+
+              {/* Quick Actions Row (Grooming Menu, Online Reservation, WhatsApp) */}
+              <div className="flex flex-wrap items-center gap-3 pt-1">
+                <a
+                  href="#services"
+                  className="inline-flex items-center gap-2 px-6 sm:px-7 py-3 sm:py-3.5 rounded-full bg-[#C59B46] hover:bg-[#DFC074] active:bg-[#9A752B] text-[#0B0F0D] font-bold text-xs sm:text-sm tracking-wider uppercase transition-all shadow-[0_10px_25px_rgba(197,155,70,0.3)] hover:shadow-[0_14px_35px_rgba(197,155,70,0.45)] group cursor-pointer"
+                >
+                  <span>Explore Grooming Menu</span>
+                  <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                </a>
+
+                <a
+                  href="#contact"
+                  className="inline-flex items-center gap-2 px-5 sm:px-6 py-3 sm:py-3.5 rounded-full bg-white/5 hover:bg-white/10 border border-white/10 hover:border-[#C59B46]/50 text-[#F5EFEB] hover:text-[#DFC074] font-semibold text-xs sm:text-sm tracking-wider uppercase transition-colors group cursor-pointer"
+                >
+                  <Calendar className="w-4 h-4 text-[#C59B46]" />
+                  <span>Book Appointment</span>
+                </a>
+
+                <a
+                  href="https://wa.me/923269326566"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-2 px-4 py-3 sm:py-3.5 rounded-full bg-emerald-500/10 hover:bg-emerald-500/20 border border-emerald-500/20 hover:border-emerald-500/40 text-emerald-400 font-semibold text-xs sm:text-sm tracking-wider transition-colors select-none"
+                  aria-label="Chat on WhatsApp"
+                >
+                  <WhatsAppIcon className="w-4 h-4 text-emerald-400 shrink-0" />
+                  <span className="hidden sm:inline">WhatsApp</span>
+                </a>
+              </div>
+
+              {/* 4 Feature Badges */}
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 pt-2 border-t border-white/[0.08]">
+                <div className="p-2.5 rounded-xl bg-[#111614] border border-white/[0.06] text-center">
+                  <div className="font-['Bebas_Neue',sans-serif] text-lg text-[#C59B46]">10 Masters</div>
+                  <div className="text-[10px] text-[#A8A193] uppercase tracking-wider">Barbers On Deck</div>
                 </div>
-
-                {heroFeaturedDefinitions.map((def) => {
-                  const q = def.query.toLowerCase();
-                  const matched = services.find(
-                    (s) =>
-                      s.id.toLowerCase() === q ||
-                      s.name.toLowerCase().includes(q) ||
-                      def.name.toLowerCase().includes(s.name.toLowerCase()) ||
-                      s.name.toLowerCase().includes(def.name.toLowerCase())
-                  );
-                  const displayName = matched ? matched.name : def.name;
-                  const resolvedPrice = matched?.price || resolveServicePrice(services, def.query, def.fallbackPrice);
-                  const category = matched?.category || def.category;
-                  const waUrl = buildServiceInquiryWhatsAppUrl(displayName, category);
-                  return (
-                    <div
-                      key={def.name}
-                      className="py-2.5 sm:py-3 px-2 sm:px-3 flex items-center justify-between gap-2 sm:gap-4 group hover:bg-white/[0.02] rounded-lg transition-colors"
-                    >
-                      <div className="flex items-center gap-2 sm:gap-2.5 min-w-0 pr-1">
-                        <span className="w-1.5 h-1.5 rounded-full bg-[#C59B46] shrink-0" />
-                        <span className="font-['Playfair_Display',Georgia,serif] text-xs sm:text-base font-normal text-[#F5EFEB] group-hover:text-[#DFC074] transition-colors leading-snug">
-                          {displayName}
-                        </span>
-                      </div>
-
-                      <div className="flex items-center gap-2 sm:gap-3 shrink-0 ml-auto">
-                        <span className="text-[11px] sm:text-xs font-semibold text-[#A8A193] font-mono whitespace-nowrap">
-                          {resolvedPrice}
-                        </span>
-
-                        <a
-                          href={waUrl}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="px-2.5 sm:px-3.5 py-1 sm:py-1.5 rounded-full text-[10px] sm:text-xs font-bold tracking-wider uppercase bg-[#C58A3E] hover:bg-[#DFA04E] text-[#0B0F0D] shadow-md transition-all inline-flex items-center justify-center gap-1 shrink-0 leading-none text-center select-none"
-                          aria-label={`Book ${displayName} on WhatsApp`}
-                        >
-                          <span>BOOK</span>
-                          <ArrowRight className="w-2.5 h-2.5 sm:w-3 sm:h-3 shrink-0" />
-                        </a>
-                      </div>
-                    </div>
-                  );
-                })}
+                <div className="p-2.5 rounded-xl bg-[#111614] border border-white/[0.06] text-center">
+                  <div className="font-['Bebas_Neue',sans-serif] text-lg text-[#DFC074]">4.9 ★ Rating</div>
+                  <div className="text-[10px] text-[#A8A193] uppercase tracking-wider">36 Google Reviews</div>
+                </div>
+                <div className="p-2.5 rounded-xl bg-[#111614] border border-white/[0.06] text-center">
+                  <div className="font-['Bebas_Neue',sans-serif] text-lg text-[#C59B46]">Park View</div>
+                  <div className="text-[10px] text-[#A8A193] uppercase tracking-wider">Rose Commercial</div>
+                </div>
+                <div className="p-2.5 rounded-xl bg-[#111614] border border-white/[0.06] text-center">
+                  <div className="font-['Bebas_Neue',sans-serif] text-lg text-[#DFC074]">Walk-Ins</div>
+                  <div className="text-[10px] text-[#A8A193] uppercase tracking-wider">&amp; Reservations</div>
+                </div>
               </div>
 
             </div>

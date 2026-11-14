@@ -35,8 +35,8 @@ export function EditorialShowcaseBand({
   highlightText,
   description,
   features,
-  ctaText = "Book via WhatsApp",
-  ctaUrl = "https://wa.me/923269326566",
+  ctaText = "Book",
+  ctaUrl = "#services",
   captionTag = "PRECISION CRAFT",
   captionTitle = "Bespoke Grooming",
   isImageRight = false,
@@ -144,17 +144,15 @@ export function EditorialShowcaseBand({
               ))}
             </div>
 
-            {/* Booking CTA Button */}
+            {/* Booking CTA Button (Links to Grooming Menu #services) */}
             <div className="pt-2">
               <a
                 href={ctaUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="w-full sm:w-auto inline-flex items-center justify-center gap-2.5 px-6 sm:px-8 py-3.5 sm:py-4 rounded-full bg-[#C59B46] hover:bg-[#DFC074] active:bg-[#9A752B] text-[#0B0F0D] font-bold text-sm sm:text-base tracking-wide transition-all shadow-[0_10px_25px_rgba(197,155,70,0.3)] hover:shadow-[0_14px_35px_rgba(197,155,70,0.45)] group cursor-pointer whitespace-nowrap leading-none select-none"
+                {...(!ctaUrl.startsWith("#") ? { target: "_blank", rel: "noopener noreferrer" } : {})}
+                className="w-full sm:w-auto inline-flex items-center justify-center gap-2.5 px-7 sm:px-9 py-3.5 sm:py-4 rounded-full bg-[#C59B46] hover:bg-[#DFC074] active:bg-[#9A752B] text-[#0B0F0D] font-bold text-sm sm:text-base tracking-wide transition-all shadow-[0_10px_25px_rgba(197,155,70,0.3)] hover:shadow-[0_14px_35px_rgba(197,155,70,0.45)] group cursor-pointer whitespace-nowrap leading-none select-none"
               >
-                <WhatsAppIcon className="w-4 h-4 text-[#0B0F0D] shrink-0" />
-                <span className="leading-none text-center">{ctaText}</span>
-                <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform shrink-0" />
+                <span className="leading-none text-center uppercase tracking-wider">{ctaText}</span>
+                <ArrowRight className="w-4 h-4 group-hover:translate-x-1.5 transition-transform shrink-0" />
               </a>
             </div>
           </AnimatedReveal>

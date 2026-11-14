@@ -156,17 +156,15 @@ export function ServiceSpotlightBand({
               ))}
             </div>
 
-            {/* Action Button: Direct to WhatsApp booking for that service */}
+            {/* Action Button: Direct to Grooming Menu #services */}
             <div className="pt-2">
-              <Button
-                href={waUrl}
-                variant="gold"
-                size="md"
-                icon={<ArrowRight className="w-4 h-4" />}
-                className="w-full sm:w-auto"
+              <a
+                href="#services"
+                className="w-full sm:w-auto inline-flex items-center justify-center gap-2.5 px-7 sm:px-9 py-3.5 sm:py-4 rounded-full bg-[#C59B46] hover:bg-[#DFC074] active:bg-[#9A752B] text-[#0B0F0D] font-bold text-sm sm:text-base tracking-wide uppercase transition-all shadow-[0_10px_25px_rgba(197,155,70,0.3)] hover:shadow-[0_14px_35px_rgba(197,155,70,0.45)] group cursor-pointer whitespace-nowrap leading-none select-none"
               >
-                Book via WhatsApp
-              </Button>
+                <span className="leading-none text-center">Book</span>
+                <ArrowRight className="w-4 h-4 group-hover:translate-x-1.5 transition-transform shrink-0" />
+              </a>
             </div>
           </AnimatedReveal>
 
