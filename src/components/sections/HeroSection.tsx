@@ -67,7 +67,7 @@ export function HeroSection() {
         {/* ============================================================ */}
         {/* PART 1: THE GENTLEMAN'S CLUB MASTER CENTERPIECE (FRONT HERO)  */}
         {/* ============================================================ */}
-        <AnimatedReveal direction="fade" delay={0.05} amount={0} margin="0px" className="w-full">
+        <div className="w-full">
           
           {/* Headline: Desktop centered in ONE LINE across the top, Mobile in clean bold stack */}
           <div className="w-full mb-3 sm:mb-6 select-none text-center">
@@ -185,7 +185,7 @@ export function HeroSection() {
 
           </div>
 
-        </AnimatedReveal>
+        </div>
 
         {/* ============================================================ */}
         {/* FULL-WIDTH SCROLLING STRAP (EDGE-TO-EDGE, NOT ROUNDED)       */}
