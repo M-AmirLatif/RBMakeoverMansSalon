@@ -71,9 +71,8 @@ export async function POST(req: NextRequest) {
         }
 
         const num = Number(String(payload.price).replace(/[^0-9]/g, "")) || 0;
-        const displayPrice = String(payload.price).includes("Rs.")
-          ? payload.price
-          : `Rs. ${num.toLocaleString()}`;
+        const formattedComma = num > 0 ? num.toLocaleString("en-US") : "0";
+        const displayPrice = `Rs. ${formattedComma}`;
 
         const serviceData = {
           id: payload.id,
