@@ -15,22 +15,22 @@ interface NavItem {
 const navItems: NavItem[] = [
   { label: "Home", href: "#hero" },
   { label: "Services", href: "#services" },
-  { label: "About", href: "#about" },
   { label: "Barbers (10)", href: "#team" },
   { label: "Reviews", href: "#reviews" },
   { label: "Gallery", href: "#gallery" },
   { label: "Location", href: "#location" },
   { label: "Contact", href: "#contact" },
+  { label: "About", href: "#about" },
 ];
 
-export function Navbar({ onMenuToggle }: { onMenuToggle?: (isOpen: boolean) => void }) {
+export function Navbar({ onMenuToggle }: { onMenuToggle?: (isOpen: boolean) => void } = {}) {
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [activeSection, setActiveSection] = useState("hero");
   const menuRef = useRef<HTMLDivElement>(null);
   const closeButtonRef = useRef<HTMLButtonElement>(null);
 
-  // Sync mobile menu state with parent (e.g. for hiding bottom action bar)
+  // Sync mobile menu state if parent provided a listener
   useEffect(() => {
     if (onMenuToggle) {
       onMenuToggle(mobileMenuOpen);
@@ -64,7 +64,7 @@ export function Navbar({ onMenuToggle }: { onMenuToggle?: (isOpen: boolean) => v
     };
 
     const observer = new IntersectionObserver(observerCallback, {
-      rootMargin: "-20% 0px -65% 0px",
+      rootMargin: "-10% 0px -40% 0px",
       threshold: 0,
     });
 
@@ -76,12 +76,9 @@ export function Navbar({ onMenuToggle }: { onMenuToggle?: (isOpen: boolean) => v
     return () => observer.disconnect();
   }, []);
 
-  // Lock body scroll cleanly on mobile when mobile menu is open
+  // Handle escape key accessibility when mobile menu is open
   useEffect(() => {
     if (mobileMenuOpen) {
-      const originalOverflow = document.body.style.overflow;
-      document.body.style.overflow = "hidden";
-
       closeButtonRef.current?.focus();
 
       const handleKeyDown = (e: KeyboardEvent) => {
@@ -92,44 +89,39 @@ export function Navbar({ onMenuToggle }: { onMenuToggle?: (isOpen: boolean) => v
       window.addEventListener("keydown", handleKeyDown);
 
       return () => {
-        document.body.style.overflow = originalOverflow;
         window.removeEventListener("keydown", handleKeyDown);
       };
     }
   }, [mobileMenuOpen]);
 
   const handleNavClick = (href: string) => {
-    // 1. Immediately close mobile menu and unlock scroll
     setMobileMenuOpen(false);
-    document.body.style.overflow = "";
 
     if (!href.startsWith("#")) return;
 
-    if (href === "#hero" || href === "#") {
+    const targetId = href.substring(1);
+
+    if (targetId === "hero" || targetId === "") {
       window.scrollTo({ top: 0, behavior: "smooth" });
       setActiveSection("hero");
       return;
     }
 
-    const targetId = href.substring(1);
+    const target = document.getElementById(targetId);
+    if (!target) return;
 
-    // 2. Defer scroll slightly to allow the menu unmount to settle layout coordinates
-    setTimeout(() => {
-      const target = document.getElementById(targetId);
-      if (target) {
+    setActiveSection(targetId);
+
+    // Native smooth scroll using scrollIntoView with CSS scroll-padding-top
+    requestAnimationFrame(() => {
+      try {
+        target.scrollIntoView({ behavior: "smooth", block: "start" });
+      } catch {
         const navOffset = 76;
-        const rect = target.getBoundingClientRect();
-        const absoluteTop = rect.top + window.scrollY;
-        const scrollToY = Math.max(0, absoluteTop - navOffset);
-
-        window.scrollTo({
-          top: scrollToY,
-          behavior: "smooth",
-        });
-
-        setActiveSection(targetId);
+        const top = target.getBoundingClientRect().top + window.scrollY - navOffset;
+        window.scrollTo({ top: Math.max(0, top), behavior: "smooth" });
       }
-    }, 40);
+    });
   };
 
   return (
@@ -210,7 +202,7 @@ export function Navbar({ onMenuToggle }: { onMenuToggle?: (isOpen: boolean) => v
             <button
               type="button"
               onClick={() => setMobileMenuOpen(true)}
-              className="p-2.5 rounded-full bg-[#121815] text-[#F5EFEB] border border-white/10 hover:border-[#C59B46]/50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C59B46]"
+              className="p-2.5 rounded-full bg-[#121815] text-[#F5EFEB] border border-white/10 hover:border-[#C59B46]/50 active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C59B46] touch-manipulation cursor-pointer"
               aria-label="Open navigation menu"
               aria-expanded={mobileMenuOpen}
               aria-controls="mobile-navigation-menu"
@@ -238,15 +230,15 @@ export function Navbar({ onMenuToggle }: { onMenuToggle?: (isOpen: boolean) => v
               ref={closeButtonRef}
               type="button"
               onClick={() => setMobileMenuOpen(false)}
-              className="p-2.5 rounded-full bg-white/5 text-[#F5EFEB] hover:bg-white/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C59B46]"
+              className="p-2.5 rounded-full bg-white/5 text-[#F5EFEB] hover:bg-white/10 active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C59B46] touch-manipulation cursor-pointer"
               aria-label="Close navigation menu"
             >
               <X className="w-5 h-5" />
             </button>
           </div>
 
-          {/* Navigation Links */}
-          <nav className="flex flex-col gap-1 py-3 my-auto shrink-0">
+          {/* Navigation Links (Enhanced touch targets and zero 300ms tap delay) */}
+          <nav className="flex flex-col gap-1 py-2 my-auto shrink-0">
             {navItems.map((item, idx) => {
               const isActive = activeSection === item.href.substring(1);
               return (
@@ -257,17 +249,19 @@ export function Navbar({ onMenuToggle }: { onMenuToggle?: (isOpen: boolean) => v
                     e.preventDefault();
                     handleNavClick(item.href);
                   }}
-                  className={`group flex items-center justify-between text-xl sm:text-2xl font-['Bebas_Neue',sans-serif] tracking-wider py-1.5 transition-colors ${
-                    isActive ? "text-[#C59B46]" : "text-[#F5EFEB] hover:text-[#DFC074]"
+                  className={`group flex items-center justify-between text-xl sm:text-2xl font-['Bebas_Neue',sans-serif] tracking-wider py-2.5 px-3 rounded-xl touch-manipulation cursor-pointer active:bg-white/10 active:scale-[0.98] transition-all select-none ${
+                    isActive ? "text-[#C59B46] bg-white/[0.04]" : "text-[#F5EFEB] hover:text-[#DFC074]"
                   }`}
                 >
                   <span className="flex items-center gap-3">
-                    <span className="text-xs font-mono font-normal text-[#C59B46]/60 tracking-normal font-sans">
+                    <span className="text-xs font-mono font-normal text-[#C59B46]/70 tracking-normal font-sans">
                       0{idx + 1}
                     </span>
                     {item.label}
                   </span>
-                  <ArrowUpRight className="w-4 h-4 opacity-40 group-hover:opacity-100 group-hover:translate-x-1 group-hover:-translate-y-1 transition-all" />
+                  <ArrowUpRight className={`w-4 h-4 transition-all ${
+                    isActive ? "text-[#C59B46] opacity-100" : "opacity-40 group-hover:opacity-100 group-hover:translate-x-1 group-hover:-translate-y-1"
+                  }`} />
                 </a>
               );
             })}

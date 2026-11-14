@@ -165,7 +165,7 @@ export function ServiceSpotlightBand({
                 icon={<ArrowRight className="w-4 h-4" />}
                 className="w-full sm:w-auto"
               >
-                Book via WhatsApp • {livePrice}
+                Book via WhatsApp
               </Button>
             </div>
           </AnimatedReveal>

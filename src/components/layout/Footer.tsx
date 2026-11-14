@@ -18,14 +18,15 @@ export function Footer() {
   };
 
   const footerLinks = [
-    { label: "About", href: "#about" },
     { label: "Services", href: "#services" },
+    { label: "Barbers (10)", href: "#team" },
     { label: "Why Choose Us", href: "#why-us" },
     { label: "Gallery", href: "#gallery" },
     { label: "Reviews", href: "#reviews" },
-    { label: "Team", href: "#team" },
     { label: "Facilities", href: "#facilities" },
+    { label: "Location", href: "#location" },
     { label: "Contact", href: "#contact" },
+    { label: "About", href: "#about" },
   ];
 
   return (

@@ -35,7 +35,7 @@ export function EditorialShowcaseBand({
   highlightText,
   description,
   features,
-  ctaText = "Book on WhatsApp",
+  ctaText = "Book via WhatsApp",
   ctaUrl = "https://wa.me/923269326566",
   captionTag = "PRECISION CRAFT",
   captionTitle = "Bespoke Grooming",

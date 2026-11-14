@@ -24,15 +24,14 @@ import { serviceSpotlights } from "@/data/serviceSpotlights";
 import { newEditorialShowcases } from "@/data/newEditorialShowcases";
 
 export default function Home() {
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [lightboxOpen, setLightboxOpen] = useState(false);
   const [selectedBarberId, setSelectedBarberId] = useState<string | null>(null);
 
-  const hideMobileBar = mobileMenuOpen || lightboxOpen;
+  const hideMobileBar = lightboxOpen;
 
   return (
     <>
-      <Navbar onMenuToggle={setMobileMenuOpen} />
+      <Navbar />
 
       <main id="main-content" className="flex-1 focus:outline-none">
         {/* 1. Hero: Noir & Blade + The Gentleman's Club synthesis */}
@@ -81,16 +80,13 @@ export default function Home() {
         {/* Service Spotlight 2: Royal Beard Architecture & Steam */}
         <ServiceSpotlightBand {...serviceSpotlights.royalBeard} />
 
-        {/* 4. About Us: Arched window salon photo, owner quote & hours */}
-        <AboutSection />
-
-        {/* Editorial Showcase 5 (matching user screenshot 5: below about section) */}
+        {/* Editorial Showcase 5: Textured European Crop & Taper */}
         <EditorialShowcaseBand {...newEditorialShowcases.aboutCurlyTaper} />
 
         {/* Service Spotlight 3: The Royal Hot Towel Shave */}
         <ServiceSpotlightBand {...serviceSpotlights.royalShave} />
 
-        {/* 5. The Hands Behind The Craft: 10 barbers roster with rate switcher */}
+        {/* 4. The Hands Behind The Craft: 10 barbers roster with rate switcher */}
         <TeamSection onSelectBarber={setSelectedBarberId} />
 
         {/* Editorial Showcase 6 (matching user screenshot 6: below team section) */}
@@ -174,6 +170,9 @@ export default function Home() {
 
         {/* Service Spotlight 12: The Grand Executive Finish & Signature Presence */}
         <ServiceSpotlightBand {...serviceSpotlights.executiveFinish} />
+
+        {/* 13. About Us: The Heritage, Owner Statement & Operating Hours */}
+        <AboutSection />
       </main>
 
       <Footer />

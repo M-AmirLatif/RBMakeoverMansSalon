@@ -265,3 +265,51 @@ export async function fetchHeroVideoUrl(): Promise<string> {
     return fallback;
   }
 }
+
+export interface ShopTimingConfig {
+  weekday: string;
+  saturday: string;
+  sunday: string;
+  note: string;
+}
+
+/**
+ * Fetch editable shop timing configuration from Supabase.
+ */
+export async function fetchShopTiming(): Promise<ShopTimingConfig> {
+  const fallback: ShopTimingConfig = {
+    weekday: "10:00 AM - 11:00 PM",
+    saturday: "10:00 AM - 11:00 PM",
+    sunday: "Off-Day",
+    note: "OPEN MON - SAT 10:00 AM - 11:00 PM • SUNDAY OFF-DAY",
+  };
+
+  try {
+    const supabase = createClient();
+    const { data, error } = await supabase
+      .from("site_images")
+      .select("key, url")
+      .in("key", [
+        "shop_timing_weekday",
+        "shop_timing_saturday",
+        "shop_timing_sunday",
+        "shop_timing_note",
+      ]);
+
+    if (error || !data || data.length === 0) {
+      return fallback;
+    }
+
+    const result = { ...fallback };
+    data.forEach((row) => {
+      if (row.key === "shop_timing_weekday" && row.url) result.weekday = row.url;
+      if (row.key === "shop_timing_saturday" && row.url) result.saturday = row.url;
+      if (row.key === "shop_timing_sunday" && row.url) result.sunday = row.url;
+      if (row.key === "shop_timing_note" && row.url) result.note = row.url;
+    });
+
+    return result;
+  } catch {
+    return fallback;
+  }
+}

@@ -174,6 +174,53 @@ export async function POST(req: NextRequest) {
         return NextResponse.json({ success: true });
       }
 
+      // -------------------------------------------------------------
+      // 5. SHOP TIMINGS & BUSINESS HOURS
+      // -------------------------------------------------------------
+      case "save_shop_timing": {
+        const { weekday, saturday, sunday, note } = payload || {};
+        const entries = [
+          {
+            key: "shop_timing_weekday",
+            label: "Monday - Friday Timing",
+            description: "Operating hours for Monday through Friday",
+            url: (weekday || "10:00 AM - 11:00 PM").trim(),
+            updated_at: new Date().toISOString(),
+          },
+          {
+            key: "shop_timing_saturday",
+            label: "Saturday Timing",
+            description: "Operating hours for Saturday",
+            url: (saturday || "10:00 AM - 11:00 PM").trim(),
+            updated_at: new Date().toISOString(),
+          },
+          {
+            key: "shop_timing_sunday",
+            label: "Sunday Timing",
+            description: "Operating hours for Sunday",
+            url: (sunday || "Off-Day").trim(),
+            updated_at: new Date().toISOString(),
+          },
+          {
+            key: "shop_timing_note",
+            label: "Ticker Schedule Text",
+            description: "Announcement text for marquee tickers",
+            url: (note || "OPEN MON - SAT 10:00 AM - 11:00 PM • SUNDAY OFF-DAY").trim(),
+            updated_at: new Date().toISOString(),
+          },
+        ];
+
+        for (const item of entries) {
+          const { error } = await supabase.from("site_images").upsert(item);
+          if (error) {
+            console.error("Error saving timing item:", error);
+            return NextResponse.json({ error: error.message }, { status: 500 });
+          }
+        }
+
+        return NextResponse.json({ success: true });
+      }
+
       default:
         return NextResponse.json({ error: `Unknown action: ${action}` }, { status: 400 });
     }

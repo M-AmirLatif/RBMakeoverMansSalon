@@ -38,7 +38,14 @@ export default function AdminDashboardPage() {
   const [authChecking, setAuthChecking] = useState(true);
 
   // Active Tab
-  const [activeTab, setActiveTab] = useState<"barbers" | "gallery" | "services">("barbers");
+  const [activeTab, setActiveTab] = useState<"barbers" | "gallery" | "services" | "timing">("barbers");
+
+  // Shop Timing states
+  const [timingWeekday, setTimingWeekday] = useState("10:00 AM - 11:00 PM");
+  const [timingSaturday, setTimingSaturday] = useState("10:00 AM - 11:00 PM");
+  const [timingSunday, setTimingSunday] = useState("Off-Day");
+  const [timingNote, setTimingNote] = useState("OPEN MON - SAT 10:00 AM - 11:00 PM • SUNDAY OFF-DAY");
+  const [savingTiming, setSavingTiming] = useState(false);
 
   // Notifications
   const [toast, setToast] = useState<{ message: string; type: "success" | "error" } | null>(null);
@@ -251,7 +258,13 @@ export default function AdminDashboardPage() {
           hero_video: "/videos/hero-salon-loop-720p.mp4",
         };
         imgData.forEach((row) => {
-          if (row.key && row.url) map[row.key] = row.url;
+          if (row.key && row.url) {
+            map[row.key] = row.url;
+            if (row.key === "shop_timing_weekday") setTimingWeekday(row.url);
+            if (row.key === "shop_timing_saturday") setTimingSaturday(row.url);
+            if (row.key === "shop_timing_sunday") setTimingSunday(row.url);
+            if (row.key === "shop_timing_note") setTimingNote(row.url);
+          }
         });
         setSiteImages(map);
         if (map.hero_video) {
@@ -561,6 +574,29 @@ export default function AdminDashboardPage() {
     }
   };
 
+  // -------------------------------------------------------------
+  // SHOP TIMING UPDATE
+  // -------------------------------------------------------------
+  const handleSaveShopTiming = async (e?: React.FormEvent) => {
+    if (e && typeof e.preventDefault === "function") e.preventDefault();
+    setSavingTiming(true);
+    try {
+      await callAdminApi("save_shop_timing", {
+        weekday: timingWeekday,
+        saturday: timingSaturday,
+        sunday: timingSunday,
+        note: timingNote,
+      });
+      showToast("Shop timings updated successfully! Changes are live on the website.");
+      loadAllData();
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : "Failed to update shop timing";
+      showToast(msg, "error");
+    } finally {
+      setSavingTiming(false);
+    }
+  };
+
   if (authChecking) {
     return (
       <div className="min-h-screen bg-[#070A08] text-[#DFC074] flex flex-col items-center justify-center">
@@ -673,6 +709,18 @@ export default function AdminDashboardPage() {
           >
             <DollarSign className="w-4 h-4" />
             <span>Services &amp; Pricing ({services.length})</span>
+          </button>
+
+          <button
+            onClick={() => setActiveTab("timing")}
+            className={`py-3 sm:py-3.5 px-3 sm:px-4 font-mono text-xs uppercase tracking-wider flex items-center gap-2 border-b-2 transition-all whitespace-nowrap ${
+              activeTab === "timing"
+                ? "border-[#C59B46] text-[#DFC074] font-bold"
+                : "border-transparent text-[#7A756B] hover:text-[#F5EFEB]"
+            }`}
+          >
+            <Clock className="w-4 h-4" />
+            <span>Shop Timing &amp; Hours</span>
           </button>
         </div>
       </header>
@@ -1210,6 +1258,212 @@ export default function AdminDashboardPage() {
                 </table>
               </div>
             </div>
+          </div>
+        )}
+
+        {/* ========================================================= */}
+        {/* TAB 4: SHOP TIMING & BUSINESS HOURS                       */}
+        {/* ========================================================= */}
+        {activeTab === "timing" && (
+          <div className="space-y-8 max-w-4xl">
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+              <div>
+                <h2 className="text-xl sm:text-2xl font-serif text-[#F5EFEB]">Shop Timing &amp; Business Hours</h2>
+                <p className="text-xs text-[#7A756B] mt-1">
+                  Change salon timings anytime. Updates reflect immediately on the live website (About section, schedule strip, and appointment info).
+                </p>
+              </div>
+
+              <button
+                type="button"
+                onClick={() => handleSaveShopTiming()}
+                disabled={savingTiming}
+                className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl bg-gradient-to-r from-[#C59B46] to-[#DFC074] text-black font-semibold text-xs tracking-wider uppercase hover:shadow-[0_0_20px_rgba(197,155,70,0.35)] transition-all disabled:opacity-50 cursor-pointer"
+              >
+                {savingTiming ? (
+                  <RefreshCw className="w-4 h-4 animate-spin" />
+                ) : (
+                  <Clock className="w-4 h-4" />
+                )}
+                <span>{savingTiming ? "Saving..." : "Save Timings"}</span>
+              </button>
+            </div>
+
+            {/* Live Website Preview Card */}
+            <div className="rounded-2xl bg-[#141C18] border border-[#C59B46]/30 p-6 space-y-4">
+              <div className="flex items-center justify-between">
+                <span className="text-[10px] font-mono tracking-widest uppercase text-[#C59B46] font-bold">
+                  ✦ LIVE WEBSITE PREVIEW
+                </span>
+                <span className="inline-flex items-center gap-1.5 text-[11px] text-[#25D366] font-medium">
+                  <span className="w-2 h-2 rounded-full bg-[#25D366] animate-pulse" />
+                  Active on Website
+                </span>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                <div className="p-4 rounded-xl bg-[#0E1411] border border-white/[0.08] space-y-1">
+                  <div className="text-[11px] text-[#C59B46] font-semibold flex items-center gap-1.5">
+                    <Clock className="w-3.5 h-3.5" />
+                    <span>Mon - Fri</span>
+                  </div>
+                  <div className="text-base font-bold text-[#F5EFEB]">{timingWeekday}</div>
+                  <div className="text-[10px] text-[#7A756B]">Weekdays</div>
+                </div>
+
+                <div className="p-4 rounded-xl bg-[#0E1411] border border-white/[0.08] space-y-1">
+                  <div className="text-[11px] text-[#C59B46] font-semibold flex items-center gap-1.5">
+                    <Clock className="w-3.5 h-3.5" />
+                    <span>Saturday</span>
+                  </div>
+                  <div className="text-base font-bold text-[#F5EFEB]">{timingSaturday}</div>
+                  <div className="text-[10px] text-[#7A756B]">Weekend Grooming</div>
+                </div>
+
+                <div className="p-4 rounded-xl bg-[#0E1411] border border-white/[0.08] space-y-1">
+                  <div className="text-[11px] text-[#C59B46] font-semibold flex items-center gap-1.5">
+                    <Clock className="w-3.5 h-3.5" />
+                    <span>Sunday</span>
+                  </div>
+                  <div className="text-base font-bold text-[#F5EFEB]">{timingSunday}</div>
+                  <div className="text-[10px] text-[#7A756B]">Off-Day / Schedule</div>
+                </div>
+              </div>
+
+              <div className="p-3.5 rounded-xl bg-[#0E1411] border border-white/[0.08] text-xs flex items-center gap-2.5">
+                <span className="text-[#C59B46] font-mono font-bold uppercase text-[10px] shrink-0">Ticker Note:</span>
+                <span className="text-[#F5EFEB] font-mono truncate">{timingNote}</span>
+              </div>
+            </div>
+
+            {/* Editable Form Card */}
+            <form onSubmit={handleSaveShopTiming} className="rounded-2xl bg-[#111614] border border-white/[0.08] p-6 space-y-6">
+              <h3 className="text-sm font-semibold uppercase tracking-wider text-[#F5EFEB]">Edit Operating Hours</h3>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                <div>
+                  <label className="block text-xs font-semibold text-[#F5EFEB] mb-1.5">
+                    Monday – Friday Hours
+                  </label>
+                  <input
+                    type="text"
+                    value={timingWeekday}
+                    onChange={(e) => setTimingWeekday(e.target.value)}
+                    placeholder="e.g. 10:00 AM - 11:00 PM"
+                    className="w-full px-4 py-3 rounded-xl bg-[#141C18] border border-white/[0.12] text-sm text-[#F5EFEB] focus:outline-none focus:border-[#C59B46]"
+                    required
+                  />
+                  <p className="text-[11px] text-[#7A756B] mt-1">Normal weekday working hours</p>
+                </div>
+
+                <div>
+                  <label className="block text-xs font-semibold text-[#F5EFEB] mb-1.5">
+                    Saturday Hours
+                  </label>
+                  <input
+                    type="text"
+                    value={timingSaturday}
+                    onChange={(e) => setTimingSaturday(e.target.value)}
+                    placeholder="e.g. 10:00 AM - 11:00 PM"
+                    className="w-full px-4 py-3 rounded-xl bg-[#141C18] border border-white/[0.12] text-sm text-[#F5EFEB] focus:outline-none focus:border-[#C59B46]"
+                    required
+                  />
+                  <p className="text-[11px] text-[#7A756B] mt-1">Saturday rush hours</p>
+                </div>
+
+                <div>
+                  <label className="block text-xs font-semibold text-[#F5EFEB] mb-1.5">
+                    Sunday Schedule
+                  </label>
+                  <input
+                    type="text"
+                    value={timingSunday}
+                    onChange={(e) => setTimingSunday(e.target.value)}
+                    placeholder="e.g. Off-Day or 12:00 PM - 10:00 PM"
+                    className="w-full px-4 py-3 rounded-xl bg-[#141C18] border border-white/[0.12] text-sm text-[#F5EFEB] focus:outline-none focus:border-[#C59B46]"
+                    required
+                  />
+                  <p className="text-[11px] text-[#7A756B] mt-1">Set to &apos;Off-Day&apos; or custom Sunday hours</p>
+                </div>
+
+                <div>
+                  <label className="block text-xs font-semibold text-[#F5EFEB] mb-1.5">
+                    Ticker Schedule Announcement
+                  </label>
+                  <input
+                    type="text"
+                    value={timingNote}
+                    onChange={(e) => setTimingNote(e.target.value)}
+                    placeholder="e.g. OPEN MON - SAT 10:00 AM - 11:00 PM • SUNDAY OFF-DAY"
+                    className="w-full px-4 py-3 rounded-xl bg-[#141C18] border border-white/[0.12] text-sm text-[#F5EFEB] focus:outline-none focus:border-[#C59B46]"
+                    required
+                  />
+                  <p className="text-[11px] text-[#7A756B] mt-1">Displayed in website header &amp; tickers</p>
+                </div>
+              </div>
+
+              {/* Quick Presets */}
+              <div className="pt-2 border-t border-white/[0.08]">
+                <span className="text-[11px] text-[#7A756B] block mb-2 font-mono uppercase tracking-wider">
+                  Quick One-Click Presets:
+                </span>
+                <div className="flex flex-wrap gap-2">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setTimingWeekday("10:00 AM - 11:00 PM");
+                      setTimingSaturday("10:00 AM - 11:00 PM");
+                      setTimingSunday("Off-Day");
+                      setTimingNote("OPEN MON - SAT 10:00 AM - 11:00 PM • SUNDAY OFF-DAY");
+                    }}
+                    className="px-3 py-1.5 rounded-lg bg-white/5 hover:bg-white/10 text-xs text-[#DFC074] border border-[#C59B46]/20 transition-colors cursor-pointer"
+                  >
+                    Standard Hours (Mon-Sat 10AM-11PM, Sun Off)
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setTimingWeekday("10:00 AM - 11:00 PM");
+                      setTimingSaturday("10:00 AM - 11:00 PM");
+                      setTimingSunday("12:00 PM - 10:00 PM");
+                      setTimingNote("OPEN 7 DAYS A WEEK • 10:00 AM - 11:00 PM");
+                    }}
+                    className="px-3 py-1.5 rounded-lg bg-white/5 hover:bg-white/10 text-xs text-[#B8B0A2] border border-white/10 transition-colors cursor-pointer"
+                  >
+                    Open 7 Days (Including Sunday)
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setTimingWeekday("01:00 PM - 02:00 AM");
+                      setTimingSaturday("01:00 PM - 03:00 AM");
+                      setTimingSunday("02:00 PM - 02:00 AM");
+                      setTimingNote("RAMADAN TIMINGS: 1:00 PM - 3:00 AM DAILY");
+                    }}
+                    className="px-3 py-1.5 rounded-lg bg-white/5 hover:bg-white/10 text-xs text-[#B8B0A2] border border-white/10 transition-colors cursor-pointer"
+                  >
+                    Ramadan Special Hours
+                  </button>
+                </div>
+              </div>
+
+              <div className="pt-4 flex justify-end">
+                <button
+                  type="submit"
+                  disabled={savingTiming}
+                  className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-8 py-3.5 rounded-xl bg-gradient-to-r from-[#C59B46] to-[#DFC074] text-black font-semibold text-xs tracking-wider uppercase hover:shadow-[0_0_20px_rgba(197,155,70,0.35)] transition-all disabled:opacity-50 cursor-pointer"
+                >
+                  {savingTiming ? (
+                    <RefreshCw className="w-4 h-4 animate-spin" />
+                  ) : (
+                    <Clock className="w-4 h-4" />
+                  )}
+                  <span>{savingTiming ? "Saving Changes..." : "Save &amp; Publish Timing"}</span>
+                </button>
+              </div>
+            </form>
           </div>
         )}
       </main>

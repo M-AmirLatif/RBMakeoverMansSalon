@@ -17,7 +17,6 @@ export const amenityCategories: AmenityCategory[] = [
     items: [
       { id: "wifi", name: "Free Wi-Fi", iconName: "Wifi" },
       { id: "restroom", name: "Restroom", iconName: "Bath" },
-      { id: "gender-neutral-restroom", name: "Gender-neutral restroom", iconName: "DoorClosed" },
     ],
   },
   {
@@ -33,17 +32,8 @@ export const amenityCategories: AmenityCategory[] = [
     id: "payments",
     title: "Payments",
     items: [
-      { id: "cards", name: "Credit and debit cards", iconName: "CreditCard" },
-      { id: "nfc", name: "NFC mobile payments", iconName: "Smartphone" },
-    ],
-  },
-  {
-    id: "accessibility",
-    title: "Accessibility",
-    items: [
-      { id: "wheelchair-entrance", name: "Wheelchair-accessible entrance", iconName: "Accessibility" },
-      { id: "wheelchair-parking", name: "Wheelchair-accessible parking", iconName: "Car" },
-      { id: "wheelchair-restroom", name: "Wheelchair-accessible restroom", iconName: "CheckCircle2" },
+      { id: "debit-card-machine", name: "Debit card and machine", iconName: "CreditCard" },
+      { id: "online-cash", name: "Online cash", iconName: "Smartphone" },
     ],
   },
   {

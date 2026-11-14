@@ -1,11 +1,32 @@
-import React from "react";
+"use client";
+
+import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { Button } from "@/components/ui/Button";
 import { AnimatedReveal } from "@/components/ui/AnimatedReveal";
 import { ArrowRight, UserCheck, Star, Clock, MapPin, Sparkles } from "lucide-react";
+import { fetchShopTiming, ShopTimingConfig } from "@/lib/supabase/queries";
 
 export function AboutSection() {
+  const [timing, setTiming] = useState<ShopTimingConfig>({
+    weekday: "10:00 AM - 11:00 PM",
+    saturday: "10:00 AM - 11:00 PM",
+    sunday: "Off-Day",
+    note: "OPEN MON - SAT 10:00 AM - 11:00 PM • SUNDAY OFF-DAY",
+  });
+
+  useEffect(() => {
+    let mounted = true;
+    fetchShopTiming().then((data) => {
+      if (mounted && data) {
+        setTiming(data);
+      }
+    });
+    return () => {
+      mounted = false;
+    };
+  }, []);
   return (
     <section
       id="about"
@@ -83,15 +104,15 @@ export function AboutSection() {
               </p>
             </div>
 
-            {/* Operating Hours & Location Strip (Noir & Blade style 3 cards) */}
+            {/* Operating Hours & Location Strip (Noir & Blade style 3 cards with live timing) */}
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-2">
               <div className="p-4 rounded-xl bg-[#111614] border border-white/[0.07] space-y-1">
                 <div className="flex items-center gap-1.5 text-xs text-[#C59B46] font-semibold">
                   <Clock className="w-3.5 h-3.5" />
                   <span>Mon - Fri</span>
                 </div>
-                <div className="text-sm font-bold text-[#F5EFEB]">10AM - 11PM</div>
-                <div className="text-[10px] text-[#7A756B]">Open 7 Days</div>
+                <div className="text-sm font-bold text-[#F5EFEB]">{timing.weekday}</div>
+                <div className="text-[10px] text-[#7A756B]">Weekdays</div>
               </div>
 
               <div className="p-4 rounded-xl bg-[#111614] border border-white/[0.07] space-y-1">
@@ -99,8 +120,8 @@ export function AboutSection() {
                   <Clock className="w-3.5 h-3.5" />
                   <span>Sat - Sun</span>
                 </div>
-                <div className="text-sm font-bold text-[#F5EFEB]">10AM - 11PM</div>
-                <div className="text-[10px] text-[#7A756B]">Weekend Grooming</div>
+                <div className="text-sm font-bold text-[#F5EFEB] truncate">{timing.saturday}</div>
+                <div className="text-[10px] text-[#7A756B]">Sun: {timing.sunday}</div>
               </div>
 
               <div className="p-4 rounded-xl bg-[#111614] border border-white/[0.07] space-y-1">
