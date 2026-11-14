@@ -1,9 +1,18 @@
 import { siteConfig } from "@/data/siteConfig";
 
+export interface SelectedServiceItem {
+  id?: string;
+  name: string;
+  price?: string;
+  duration?: string;
+}
+
 export interface AppointmentPayload {
   name: string;
   phone: string;
   service: string;
+  selectedServicesList?: SelectedServiceItem[];
+  totalDuration?: string;
   barberName?: string;
   estimatedRate?: string;
   preferredDate: string;
@@ -17,15 +26,31 @@ export function buildAppointmentWhatsAppUrl(payload: AppointmentPayload): string
     ``,
     `👤 *Name:* ${payload.name.trim()}`,
     `📞 *Phone:* ${payload.phone.trim()}`,
-    `✂️ *Desired Service:* ${payload.service}`,
   ];
+
+  if (payload.selectedServicesList && payload.selectedServicesList.length > 0) {
+    lines.push(
+      `✂️ *Desired Services (${payload.selectedServicesList.length}):*`
+    );
+    payload.selectedServicesList.forEach((s) => {
+      const priceText = s.price ? ` (${s.price})` : "";
+      lines.push(`  • ${s.name}${priceText}`);
+    });
+    if (payload.estimatedRate && payload.estimatedRate.trim().length > 0) {
+      lines.push(`💰 *Total Estimated Rate:* ${payload.estimatedRate}`);
+    }
+    if (payload.totalDuration && payload.totalDuration.trim().length > 0) {
+      lines.push(`⏱️ *Total Estimated Duration:* ${payload.totalDuration}`);
+    }
+  } else {
+    lines.push(`✂️ *Desired Service:* ${payload.service}`);
+    if (payload.estimatedRate && payload.estimatedRate.trim().length > 0) {
+      lines.push(`💰 *Estimated Rate:* ${payload.estimatedRate}`);
+    }
+  }
 
   if (payload.barberName && payload.barberName.trim().length > 0) {
     lines.push(`💈 *Preferred Stylist / Barber:* ${payload.barberName}`);
-  }
-
-  if (payload.estimatedRate && payload.estimatedRate.trim().length > 0) {
-    lines.push(`💵 *Estimated Rate:* ${payload.estimatedRate}`);
   }
 
   lines.push(

@@ -145,18 +145,28 @@ export function HeroSection() {
                   <span>Rates / Booking</span>
                 </div>
 
-                {heroFeaturedDefinitions.map((svc) => {
-                  const resolvedPrice = resolveServicePrice(services, svc.query, svc.fallbackPrice);
-                  const waUrl = buildServiceInquiryWhatsAppUrl(svc.name, svc.category);
+                {heroFeaturedDefinitions.map((def) => {
+                  const q = def.query.toLowerCase();
+                  const matched = services.find(
+                    (s) =>
+                      s.id.toLowerCase() === q ||
+                      s.name.toLowerCase().includes(q) ||
+                      def.name.toLowerCase().includes(s.name.toLowerCase()) ||
+                      s.name.toLowerCase().includes(def.name.toLowerCase())
+                  );
+                  const displayName = matched ? matched.name : def.name;
+                  const resolvedPrice = matched?.price || resolveServicePrice(services, def.query, def.fallbackPrice);
+                  const category = matched?.category || def.category;
+                  const waUrl = buildServiceInquiryWhatsAppUrl(displayName, category);
                   return (
                     <div
-                      key={svc.name}
+                      key={def.name}
                       className="py-2.5 sm:py-3 px-2 sm:px-3 flex items-center justify-between gap-2 sm:gap-4 group hover:bg-white/[0.02] rounded-lg transition-colors"
                     >
                       <div className="flex items-center gap-2 sm:gap-2.5 min-w-0 pr-1">
                         <span className="w-1.5 h-1.5 rounded-full bg-[#C59B46] shrink-0" />
                         <span className="font-['Playfair_Display',Georgia,serif] text-xs sm:text-base font-normal text-[#F5EFEB] group-hover:text-[#DFC074] transition-colors leading-snug">
-                          {svc.name}
+                          {displayName}
                         </span>
                       </div>
 
@@ -170,7 +180,7 @@ export function HeroSection() {
                           target="_blank"
                           rel="noopener noreferrer"
                           className="px-2.5 sm:px-3.5 py-1 sm:py-1.5 rounded-full text-[10px] sm:text-xs font-bold tracking-wider uppercase bg-[#C58A3E] hover:bg-[#DFA04E] text-[#0B0F0D] shadow-md transition-all inline-flex items-center justify-center gap-1 shrink-0 leading-none text-center select-none"
-                          aria-label={`Book ${svc.name} on WhatsApp`}
+                          aria-label={`Book ${displayName} on WhatsApp`}
                         >
                           <span>BOOK</span>
                           <ArrowRight className="w-2.5 h-2.5 sm:w-3 sm:h-3 shrink-0" />

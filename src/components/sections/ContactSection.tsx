@@ -1,9 +1,9 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import { siteConfig } from "@/data/siteConfig";
-import { allServices } from "@/data/services";
+import { fetchServices, fetchBarbers, SiteService, defaultServices } from "@/lib/supabase/queries";
 import { staffBarbers, BarberStaff } from "@/data/team";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { Button } from "@/components/ui/Button";
@@ -12,6 +12,7 @@ import { WhatsAppIcon, FacebookIcon } from "@/components/ui/Icons";
 import {
   buildAppointmentWhatsAppUrl,
   AppointmentPayload,
+  SelectedServiceItem,
 } from "@/lib/whatsapp";
 import { validateAppointmentForm, FormErrors } from "@/lib/validation";
 import {
@@ -26,6 +27,8 @@ import {
   UserCheck,
   Tag,
   ChevronDown,
+  Check,
+  Search,
 } from "lucide-react";
 
 function formatUnambiguousDate(isoDate: string): string {
@@ -50,6 +53,12 @@ export function ContactSection({
 }: {
   preselectedBarberId?: string | null;
 }) {
+  const [services, setServices] = useState<SiteService[]>(defaultServices);
+  const [barbers, setBarbers] = useState<BarberStaff[]>(staffBarbers);
+  const [selectedServiceIds, setSelectedServiceIds] = useState<string[]>([]);
+  const [serviceCategoryFilter, setServiceCategoryFilter] = useState<string>("all");
+  const [serviceSearchQuery, setServiceSearchQuery] = useState<string>("" );
+
   const [formData, setFormData] = useState({
     name: "",
     phone: "",
@@ -66,6 +75,24 @@ export function ContactSection({
     useState<AppointmentPayload | null>(null);
   const [copied, setCopied] = useState(false);
 
+  // Fetch dynamic services and barbers from Supabase
+  useEffect(() => {
+    let mounted = true;
+    fetchServices().then((list) => {
+      if (mounted && list && list.length > 0) {
+        setServices(list);
+      }
+    });
+    fetchBarbers().then((list) => {
+      if (mounted && list && list.length > 0) {
+        setBarbers(list);
+      }
+    });
+    return () => {
+      mounted = false;
+    };
+  }, []);
+
   const [prevPreselectedBarberId, setPrevPreselectedBarberId] = useState(preselectedBarberId);
   if (preselectedBarberId !== prevPreselectedBarberId) {
     setPrevPreselectedBarberId(preselectedBarberId);
@@ -80,36 +107,82 @@ export function ContactSection({
     () => ""
   );
 
-  const selectedBarber: BarberStaff | undefined = staffBarbers.find(
+  const selectedBarber: BarberStaff | undefined = barbers.find(
     (b) => b.id === formData.barberId
   );
 
-  // Calculate rate based on service and selected barber
-  const calculateEstimatedRate = (): number | null => {
-    if (!selectedBarber) return null;
-    const s = formData.service.toLowerCase();
-    if (s.includes("beard") && s.includes("hair")) {
-      return selectedBarber.rates.hairAndBeard;
-    }
-    if (s.includes("beard") || s.includes("shav")) {
-      return selectedBarber.rates.beard;
-    }
-    if (s.includes("facial") || s.includes("skin") || s.includes("massage")) {
-      return selectedBarber.rates.facial;
-    }
-    if (s.includes("package") || s.includes("vip")) {
-      return selectedBarber.rates.groomingPackage;
-    }
-    // Default to haircut rate for haircuts & styling
-    return selectedBarber.rates.haircut;
+  // List of actual selected service objects
+  const selectedServicesList: SiteService[] = React.useMemo(() => {
+    return services.filter((s) => selectedServiceIds.includes(s.id));
+  }, [services, selectedServiceIds]);
+
+  // Multiple Service Selection Toggle
+  const toggleService = (svc: SiteService) => {
+    setSelectedServiceIds((prev) => {
+      const exists = prev.includes(svc.id);
+      const updated = exists ? prev.filter((id) => id !== svc.id) : [...prev, svc.id];
+      const chosen = services.filter((s) => updated.includes(s.id));
+      setFormData((f) => ({
+        ...f,
+        service: chosen.map((c) => c.name).join(", "),
+      }));
+      if (errors.service) {
+        setErrors((e) => ({ ...e, service: undefined }));
+      }
+      return updated;
+    });
   };
 
-  const estimatedRateNumber = calculateEstimatedRate();
-  const estimatedRateString = estimatedRateNumber
-    ? `Rs. ${estimatedRateNumber.toLocaleString()}`
+  const handleClearServices = () => {
+    setSelectedServiceIds([]);
+    setFormData((f) => ({ ...f, service: "" }));
+  };
+
+  // Calculate total price and duration
+  const totalEstimatedPrice = React.useMemo(() => {
+    return selectedServicesList.reduce((sum, s) => {
+      const num = s.numeric_price || Number(String(s.price).replace(/[^0-9]/g, "")) || 0;
+      return sum + num;
+    }, 0);
+  }, [selectedServicesList]);
+
+  const totalEstimatedMinutes = React.useMemo(() => {
+    return selectedServicesList.reduce((sum, s) => {
+      const m = Number(String(s.duration || "").replace(/[^0-9]/g, "")) || 30;
+      return sum + m;
+    }, 0);
+  }, [selectedServicesList]);
+
+  const estimatedRateString = totalEstimatedPrice > 0
+    ? `Rs. ${totalEstimatedPrice.toLocaleString()}`
     : selectedBarber
     ? `Starting from Rs. ${selectedBarber.rates.haircut.toLocaleString()}`
     : undefined;
+
+  const estimatedDurationString = totalEstimatedMinutes > 0
+    ? `~${totalEstimatedMinutes} mins`
+    : undefined;
+
+  // Filtered services for picker
+  const filteredServices = React.useMemo(() => {
+    return services.filter((s) => {
+      const cat = (s.category || "").toLowerCase();
+      const matchCategory =
+        serviceCategoryFilter === "all" ||
+        (serviceCategoryFilter === "haircuts" && (cat === "haircuts" || cat.includes("hair") || cat.includes("cut"))) ||
+        (serviceCategoryFilter === "beard" && (cat === "beard" || cat.includes("beard") || cat.includes("shav"))) ||
+        (serviceCategoryFilter === "facial" && (cat === "facial" || cat.includes("facial") || cat.includes("skin"))) ||
+        (serviceCategoryFilter === "grooming" && (cat === "grooming" || cat.includes("groom") || cat.includes("vip") || cat.includes("package") || cat.includes("mani") || cat.includes("pedi")));
+
+      const q = serviceSearchQuery.toLowerCase().trim();
+      const matchSearch =
+        !q ||
+        s.name.toLowerCase().includes(q) ||
+        (s.description && s.description.toLowerCase().includes(q));
+
+      return matchCategory && matchSearch;
+    });
+  }, [services, serviceCategoryFilter, serviceSearchQuery]);
 
   const timeSlots = [
     "10:00 AM",
@@ -142,6 +215,11 @@ export function ContactSection({
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
+    if (selectedServiceIds.length === 0 && (!formData.service || formData.service.trim().length === 0)) {
+      setErrors((prev) => ({ ...prev, service: "Please select at least one service to book." }));
+      return;
+    }
+
     const validation = validateAppointmentForm(formData);
     if (!validation.isValid) {
       setErrors(validation.errors);
@@ -155,7 +233,14 @@ export function ContactSection({
     const payload: AppointmentPayload = {
       name: formData.name,
       phone: formData.phone,
-      service: formData.service,
+      service: formData.service || selectedServicesList.map((s) => s.name).join(", "),
+      selectedServicesList: selectedServicesList.map((s) => ({
+        id: s.id,
+        name: s.name,
+        price: s.price,
+        duration: s.duration,
+      })),
+      totalDuration: estimatedDurationString,
       barberName: selectedBarber
         ? `${selectedBarber.name} (${selectedBarber.title})`
         : "Any Available Stylist",
@@ -183,13 +268,25 @@ export function ContactSection({
       `Appointment Inquiry — ${siteConfig.name}`,
       `Name: ${submittedPayload.name}`,
       `Phone: ${submittedPayload.phone}`,
-      `Service: ${submittedPayload.service}`,
     ];
+
+    if (submittedPayload.selectedServicesList && submittedPayload.selectedServicesList.length > 0) {
+      lines.push(`Services (${submittedPayload.selectedServicesList.length}):`);
+      submittedPayload.selectedServicesList.forEach((s) => {
+        lines.push(`  • ${s.name}${s.price ? ` (${s.price})` : ""}`);
+      });
+    } else {
+      lines.push(`Service: ${submittedPayload.service}`);
+    }
+
     if (submittedPayload.barberName) {
       lines.push(`Stylist / Barber: ${submittedPayload.barberName}`);
     }
     if (submittedPayload.estimatedRate) {
-      lines.push(`Estimated Rate: ${submittedPayload.estimatedRate}`);
+      lines.push(`Estimated Total: ${submittedPayload.estimatedRate}`);
+    }
+    if (submittedPayload.totalDuration) {
+      lines.push(`Estimated Duration: ${submittedPayload.totalDuration}`);
     }
     lines.push(
       `Date: ${submittedPayload.preferredDate}`,
@@ -411,12 +508,31 @@ export function ContactSection({
                   <div className="space-y-1.5 text-xs text-[#B8B0A2] font-mono leading-relaxed">
                     <p><strong className="text-[#F5EFEB]">Name:</strong> {submittedPayload.name}</p>
                     <p><strong className="text-[#F5EFEB]">Phone:</strong> {submittedPayload.phone}</p>
-                    <p><strong className="text-[#F5EFEB]">Service:</strong> {submittedPayload.service}</p>
+                    {submittedPayload.selectedServicesList && submittedPayload.selectedServicesList.length > 0 ? (
+                      <div className="pt-1.5 pb-1">
+                        <strong className="text-[#F5EFEB] block mb-1">
+                          Services ({submittedPayload.selectedServicesList.length}):
+                        </strong>
+                        <ul className="space-y-1 pl-2.5 border-l-2 border-[#C59B46]/40">
+                          {submittedPayload.selectedServicesList.map((s, idx) => (
+                            <li key={idx} className="flex items-center justify-between text-[11px]">
+                              <span className="text-[#F5EFEB]">{s.name}</span>
+                              <span className="text-[#DFC074]">{s.price}</span>
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    ) : (
+                      <p><strong className="text-[#F5EFEB]">Service:</strong> {submittedPayload.service}</p>
+                    )}
                     {submittedPayload.barberName && (
                       <p><strong className="text-[#F5EFEB]">Stylist / Barber:</strong> {submittedPayload.barberName}</p>
                     )}
                     {submittedPayload.estimatedRate && (
-                      <p><strong className="text-[#DFC074]">Rate:</strong> {submittedPayload.estimatedRate}</p>
+                      <p><strong className="text-[#DFC074]">Total Rate:</strong> {submittedPayload.estimatedRate}</p>
+                    )}
+                    {submittedPayload.totalDuration && (
+                      <p><strong className="text-[#DFC074]">Est. Duration:</strong> {submittedPayload.totalDuration}</p>
                     )}
                     <p><strong className="text-[#F5EFEB]">Date:</strong> {submittedPayload.preferredDate}</p>
                     <p><strong className="text-[#F5EFEB]">Time:</strong> {submittedPayload.preferredTime}</p>
@@ -547,7 +663,7 @@ export function ContactSection({
                       <option value="" className="bg-[#0B0F0D] text-[#7A756B]">
                         Any Available Stylist (First Available Slot)
                       </option>
-                      {staffBarbers.map((b) => (
+                      {barbers.map((b) => (
                         <option
                           key={b.id}
                           value={b.id}
@@ -564,73 +680,178 @@ export function ContactSection({
                   </div>
                 </div>
 
-                {/* Service Selection */}
-                <div>
-                  <label
-                    htmlFor="form-service"
-                    className="block text-xs font-semibold uppercase tracking-wider text-[#A8A193] mb-1.5"
-                  >
-                    Service <span className="text-[#C59B46]">*</span>
-                  </label>
-                  <div className="relative group">
-                    <select
-                      id="form-service"
-                      name="service"
-                      required
-                      value={formData.service}
-                      onChange={handleChange}
-                      aria-invalid={!!errors.service}
-                      aria-describedby={errors.service ? "service-error" : undefined}
-                      className={`w-full appearance-none pl-3.5 pr-12 py-3 rounded-xl bg-[#0B0F0D] border text-base sm:text-sm text-[#F5EFEB] transition-all focus:outline-none focus:ring-1 focus:ring-[#C59B46] cursor-pointer ${
-                        errors.service
-                          ? "border-red-500/80"
-                          : "border-white/10 group-hover:border-[#C59B46]/40 focus:border-[#C59B46]"
-                      }`}
-                    >
-                      <option value="" disabled className="bg-[#0B0F0D] text-[#7A756B]">
-                        Select a service...
-                      </option>
-                      {allServices.map((svc) => (
-                        <option
-                          key={svc.id}
-                          value={svc.name}
-                          className="bg-[#0B0F0D] text-[#F5EFEB]"
+                {/* Multiple Services Selection */}
+                <div className="space-y-3 pt-1">
+                  <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1.5">
+                    <label className="block text-xs font-semibold uppercase tracking-wider text-[#A8A193]">
+                      Desired Services <span className="text-[#C59B46]">*</span>
+                      <span className="text-[11px] font-normal text-[#7A756B] lowercase ml-1.5">
+                        (tap multiple to book together)
+                      </span>
+                    </label>
+                    {selectedServiceIds.length > 0 && (
+                      <div className="flex items-center gap-2">
+                        <span className="px-2 py-0.5 rounded-full text-[11px] font-bold bg-[#C59B46]/20 text-[#DFC074] border border-[#C59B46]/30">
+                          {selectedServiceIds.length} Selected
+                        </span>
+                        <button
+                          type="button"
+                          onClick={handleClearServices}
+                          className="text-[11px] text-[#A8A193] hover:text-[#DFC074] underline transition-colors cursor-pointer"
                         >
-                          {svc.name}
-                        </option>
+                          Reset
+                        </button>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Category Filter Pills & Search */}
+                  <div className="flex flex-col sm:flex-row gap-2">
+                    <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar pb-1 -mx-1 px-1">
+                      {[
+                        { key: "all", label: "All" },
+                        { key: "haircuts", label: "Haircuts" },
+                        { key: "beard", label: "Beard" },
+                        { key: "facial", label: "Facial" },
+                        { key: "grooming", label: "VIP / Pedi" },
+                      ].map((tab) => (
+                        <button
+                          key={tab.key}
+                          type="button"
+                          onClick={() => setServiceCategoryFilter(tab.key)}
+                          className={`px-3 py-1.5 rounded-lg text-xs font-medium whitespace-nowrap transition-colors cursor-pointer ${
+                            serviceCategoryFilter === tab.key
+                              ? "bg-[#C59B46] text-[#0B0F0D] font-bold shadow-sm"
+                              : "bg-[#0B0F0D] text-[#A8A193] hover:text-[#F5EFEB] border border-white/10"
+                          }`}
+                        >
+                          {tab.label}
+                        </button>
                       ))}
-                    </select>
-                    {/* Realistic Gold Dropdown Arrow Indicator with ample spacing from the right */}
-                    <div className="absolute right-3.5 sm:right-4 top-1/2 -translate-y-1/2 pointer-events-none flex items-center justify-center w-7 h-7 rounded-lg bg-white/[0.04] border border-white/[0.08] text-[#C59B46] group-hover:text-[#DFC074] group-hover:border-[#C59B46]/40 transition-all shadow-sm">
-                      <ChevronDown className="w-4 h-4 stroke-[2.25]" />
+                    </div>
+
+                    <div className="relative sm:ml-auto w-full sm:w-44">
+                      <input
+                        type="text"
+                        value={serviceSearchQuery}
+                        onChange={(e) => setServiceSearchQuery(e.target.value)}
+                        placeholder="Search service..."
+                        className="w-full bg-[#0B0F0D] border border-white/10 rounded-lg pl-7 pr-3 py-1.5 text-xs text-[#F5EFEB] placeholder-[#7A756B] focus:border-[#C59B46] outline-none"
+                      />
+                      <Search className="w-3.5 h-3.5 text-[#7A756B] absolute left-2 top-1/2 -translate-y-1/2 pointer-events-none" />
                     </div>
                   </div>
+
+                  {/* Multi-Service Cards Grid */}
+                  <div className="max-h-[290px] overflow-y-auto space-y-2 pr-1 custom-scrollbar">
+                    {filteredServices.length === 0 ? (
+                      <div className="p-4 text-center text-xs text-[#7A756B] bg-[#0B0F0D] rounded-xl border border-white/10">
+                        No services found matching your filter.
+                      </div>
+                    ) : (
+                      filteredServices.map((svc) => {
+                        const isSelected = selectedServiceIds.includes(svc.id);
+                        return (
+                          <div
+                            key={svc.id}
+                            onClick={() => toggleService(svc)}
+                            className={`p-3 rounded-xl border transition-all cursor-pointer flex items-center justify-between gap-3 select-none ${
+                              isSelected
+                                ? "bg-[#161F1B] border-[#C59B46] shadow-[0_0_15px_rgba(197,155,70,0.12)]"
+                                : "bg-[#0B0F0D] border-white/10 hover:border-white/25 hover:bg-white/[0.02]"
+                            }`}
+                          >
+                            <div className="flex items-center gap-3 min-w-0">
+                              <div
+                                className={`w-5 h-5 rounded-md flex items-center justify-center border transition-all shrink-0 ${
+                                  isSelected
+                                    ? "bg-[#C59B46] border-[#C59B46] text-[#0B0F0D]"
+                                    : "border-white/20 bg-transparent text-transparent"
+                                }`}
+                              >
+                                <Check className="w-3.5 h-3.5 stroke-[3]" />
+                              </div>
+                              <div className="min-w-0">
+                                <div
+                                  className={`text-xs sm:text-sm leading-snug truncate ${
+                                    isSelected
+                                      ? "text-[#DFC074] font-semibold"
+                                      : "text-[#F5EFEB] font-normal"
+                                  }`}
+                                >
+                                  {svc.name}
+                                </div>
+                                <div className="flex items-center gap-2 mt-0.5 text-[10px] text-[#A8A193]">
+                                  {svc.duration && <span>⏱️ {svc.duration}</span>}
+                                  <span className="capitalize text-[#7A756B]">• {svc.category}</span>
+                                </div>
+                              </div>
+                            </div>
+
+                            <div className="text-right shrink-0">
+                              <span className="font-mono text-xs sm:text-sm font-semibold text-[#DFC074]">
+                                {svc.price}
+                              </span>
+                            </div>
+                          </div>
+                        );
+                      })
+                    )}
+                  </div>
+
                   {errors.service && (
                     <p id="service-error" className="mt-1 text-xs text-red-400">
                       {errors.service}
                     </p>
                   )}
-                </div>
 
-                {/* Dynamic Barber Rate Summary Pill (When barber & service are chosen) */}
-                {selectedBarber && (
-                  <div className="p-3 rounded-xl bg-[#C59B46]/10 border border-[#C59B46]/30 flex items-center justify-between text-xs text-[#F5EFEB]">
-                    <div className="flex items-center gap-2">
-                      <Tag className="w-4 h-4 text-[#C59B46] shrink-0" />
-                      <div>
-                        <span className="font-semibold">{selectedBarber.name}</span>
-                        <span className="text-[#A8A193] text-[11px] block">
-                          {formData.service || "Standard Haircut"}
-                        </span>
+                  {/* Booking Total / Summary Bar when at least 1 service is chosen */}
+                  {selectedServicesList.length > 0 && (
+                    <div className="p-3 sm:p-3.5 rounded-xl bg-gradient-to-r from-[#17211C] to-[#121A16] border border-[#C59B46]/40 shadow-lg space-y-2">
+                      <div className="flex items-center justify-between text-xs">
+                        <div className="flex items-center gap-2">
+                          <Tag className="w-4 h-4 text-[#C59B46] shrink-0" />
+                          <span className="font-semibold text-[#F5EFEB]">
+                            {selectedServicesList.length} Service{selectedServicesList.length > 1 ? "s" : ""} Selected
+                          </span>
+                          {estimatedDurationString && (
+                            <span className="text-[#A8A193] text-[11px] font-mono">
+                              ({estimatedDurationString})
+                            </span>
+                          )}
+                        </div>
+                        <div className="text-right">
+                          <span className="text-[10px] text-[#A8A193] uppercase font-mono block">
+                            Estimated Total
+                          </span>
+                          <span className="font-['Bebas_Neue',sans-serif] text-xl sm:text-2xl text-[#DFC074] leading-tight block">
+                            {estimatedRateString}
+                          </span>
+                        </div>
+                      </div>
+
+                      {/* Removable chips */}
+                      <div className="flex flex-wrap gap-1.5 pt-1.5 border-t border-white/10">
+                        {selectedServicesList.map((s) => (
+                          <span
+                            key={s.id}
+                            className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-md bg-white/[0.06] border border-white/10 text-[11px] text-[#F5EFEB]"
+                          >
+                            <span>{s.name}</span>
+                            <span className="text-[#DFC074] font-mono text-[10px]">{s.price}</span>
+                            <button
+                              type="button"
+                              onClick={() => toggleService(s)}
+                              className="text-[#A8A193] hover:text-red-400 cursor-pointer ml-0.5"
+                            >
+                              ×
+                            </button>
+                          </span>
+                        ))}
                       </div>
                     </div>
-                    <div className="text-right">
-                      <span className="font-['Bebas_Neue',sans-serif] text-xl text-[#DFC074] leading-tight block">
-                        {estimatedRateString}
-                      </span>
-                    </div>
-                  </div>
-                )}
+                  )}
+                </div>
 
                 {/* Date & Time Row */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">

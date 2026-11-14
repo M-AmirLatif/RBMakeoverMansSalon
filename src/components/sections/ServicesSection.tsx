@@ -66,9 +66,54 @@ export function ServicesSection() {
     };
   }, []);
 
+  const isServiceInCategory = (serviceCategory: string, catKey: ServiceCategoryKey): boolean => {
+    const sc = (serviceCategory || "").toLowerCase().trim();
+    if (catKey === "haircuts") {
+      return sc === "haircuts" || sc.includes("hair") || sc.includes("cut") || sc.includes("styling");
+    }
+    if (catKey === "beard") {
+      return sc === "beard" || sc.includes("beard") || sc.includes("shav");
+    }
+    if (catKey === "facial") {
+      return sc === "facial" || sc.includes("facial") || sc.includes("skin") || sc.includes("massage");
+    }
+    if (catKey === "grooming") {
+      return (
+        sc === "grooming" ||
+        sc.includes("groom") ||
+        sc.includes("package") ||
+        sc.includes("vip") ||
+        sc.includes("mani") ||
+        sc.includes("pedi")
+      );
+    }
+    return false;
+  };
+
+  const getCategoryServices = (catKey: ServiceCategoryKey): SiteService[] => {
+    const matched = dbServices.filter((s) => isServiceInCategory(s.category, catKey));
+    if (matched.length > 0) {
+      return matched;
+    }
+    const staticCat = serviceCategories.find((cat) => cat.key === catKey);
+    if (!staticCat) return [];
+    return staticCat.services.map((s, idx) => ({
+      id: s.id,
+      name: s.name,
+      category: catKey,
+      price: s.price || "Rs. 1,000",
+      numeric_price: Number(String(s.price).replace(/[^0-9]/g, "")) || 1000,
+      description: "",
+      duration: "30 min",
+      display_order: idx + 1,
+    }));
+  };
+
   const currentCategory =
     serviceCategories.find((cat) => cat.key === activeCategoryKey) ||
     serviceCategories[0];
+
+  const dynamicCategoryServices = getCategoryServices(activeCategoryKey);
 
   return (
     <section
@@ -157,7 +202,7 @@ export function ServicesSection() {
             <span className="w-4 h-[1px] bg-[#C59B46]" />
           </div>
           <h3 className="font-['Playfair_Display',Georgia,serif] text-2xl sm:text-3xl font-medium text-[#F5EFEB]">
-            Explore All 23 Services by Category
+            Explore All {dbServices.length > 0 ? dbServices.length : 23} Services by Category
           </h3>
         </AnimatedReveal>
 
@@ -166,6 +211,7 @@ export function ServicesSection() {
           <div className="inline-flex p-1.5 rounded-full bg-[#141C18] border border-white/10 shrink-0">
             {serviceCategories.map((category) => {
               const isActive = activeCategoryKey === category.key;
+              const count = getCategoryServices(category.key).length;
               return (
                 <button
                   key={category.key}
@@ -187,7 +233,7 @@ export function ServicesSection() {
                         : "bg-white/10 text-[#B8B0A2]"
                     }`}
                   >
-                    {category.services.length}
+                    {count}
                   </span>
                 </button>
               );
@@ -230,7 +276,7 @@ export function ServicesSection() {
                   {currentCategory.tagline}
                 </p>
                 <div className="mt-3 pt-3 border-t border-white/10 flex items-center justify-between text-xs text-[#7A756B]">
-                  <span>{currentCategory.services.length} Services</span>
+                  <span>{dynamicCategoryServices.length} Services</span>
                   <span>Rose Commercial</span>
                 </div>
               </div>
@@ -244,8 +290,8 @@ export function ServicesSection() {
               <span>Inquire</span>
             </div>
 
-            {currentCategory.services.map((service) => {
-              const livePrice = resolveServicePrice(dbServices, service.id, service.price || "Rs. 1,000");
+            {dynamicCategoryServices.map((service) => {
+              const livePrice = service.price || resolveServicePrice(dbServices, service.id, "Rs. 1,000");
               const inquiryUrl = buildServiceInquiryWhatsAppUrl(
                 service.name,
                 currentCategory.title
@@ -258,9 +304,16 @@ export function ServicesSection() {
                 >
                   <div className="flex items-center gap-2.5 min-w-0 pr-1">
                     <span className="w-1.5 h-1.5 rounded-full bg-[#C59B46] shrink-0" />
-                    <h4 className="font-['Playfair_Display',Georgia,serif] text-sm sm:text-lg font-medium text-[#F5EFEB] group-hover:text-[#DFC074] transition-colors leading-snug">
-                      {service.name}
-                    </h4>
+                    <div>
+                      <h4 className="font-['Playfair_Display',Georgia,serif] text-sm sm:text-lg font-medium text-[#F5EFEB] group-hover:text-[#DFC074] transition-colors leading-snug">
+                        {service.name}
+                      </h4>
+                      {service.duration && (
+                        <span className="text-[11px] text-[#7A756B] font-mono block mt-0.5">
+                          ⏱️ {service.duration}
+                        </span>
+                      )}
+                    </div>
                   </div>
 
                   <div className="flex items-center gap-2 sm:gap-3 shrink-0 ml-auto">

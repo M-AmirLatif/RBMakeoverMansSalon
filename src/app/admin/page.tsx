@@ -1830,6 +1830,21 @@ export default function AdminDashboardPage() {
                     <option value="grooming">VIP Packages</option>
                   </select>
                 </div>
+
+                <div>
+                  <label className="block text-xs uppercase font-mono text-[#DFC074] mb-1">
+                    Description
+                  </label>
+                  <textarea
+                    rows={2}
+                    value={editingService.description || ""}
+                    onChange={(e) =>
+                      setEditingService({ ...editingService, description: e.target.value })
+                    }
+                    placeholder="Short description of the service..."
+                    className="w-full bg-[#141C18] border border-white/[0.1] rounded-xl px-3.5 py-2 text-xs text-[#F5EFEB] focus:border-[#C59B46] outline-none resize-none"
+                  />
+                </div>
               </div>
 
               {/* Modal Footer - Fixed */}
