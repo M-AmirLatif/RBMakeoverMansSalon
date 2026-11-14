@@ -185,19 +185,41 @@ export function ContactSection({
   }, [services, serviceCategoryFilter, serviceSearchQuery]);
 
   const timeSlots = [
+    "09:00 AM",
+    "09:30 AM",
     "10:00 AM",
+    "10:30 AM",
     "11:00 AM",
+    "11:30 AM",
     "12:00 PM",
+    "12:30 PM",
     "01:00 PM",
+    "01:30 PM",
     "02:00 PM",
+    "02:30 PM",
     "03:00 PM",
+    "03:30 PM",
     "04:00 PM",
+    "04:30 PM",
     "05:00 PM",
+    "05:30 PM",
     "06:00 PM",
+    "06:30 PM",
     "07:00 PM",
+    "07:30 PM",
     "08:00 PM",
+    "08:30 PM",
     "09:00 PM",
+    "09:30 PM",
     "10:00 PM",
+    "10:30 PM",
+    "11:00 PM",
+    "11:30 PM",
+    "12:00 AM (Midnight)",
+    "12:30 AM",
+    "01:00 AM",
+    "01:30 AM",
+    "02:00 AM (Late Night)",
   ];
 
   const handleChange = (
@@ -905,9 +927,14 @@ export function ContactSection({
                   <div>
                     <label
                       htmlFor="form-time"
-                      className="block text-xs font-semibold uppercase tracking-wider text-[#A8A193] mb-1.5"
+                      className="flex items-center justify-between text-xs font-semibold uppercase tracking-wider text-[#A8A193] mb-1.5"
                     >
-                      Preferred Time <span className="text-[#C59B46]">*</span>
+                      <span>
+                        Preferred Time <span className="text-[#C59B46]">*</span>
+                      </span>
+                      <span className="text-[11px] text-[#DFC074] font-mono font-normal">
+                        9:00 AM – 2:00 AM
+                      </span>
                     </label>
                     <div className="relative group">
                       <select
