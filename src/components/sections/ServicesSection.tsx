@@ -555,38 +555,40 @@ export function ServicesSection() {
             </p>
           </AnimatedReveal>
 
-          {/* Category Tabs: Smooth horizontal scroll track with zero clipping on mobile */}
-          <div className="w-full overflow-x-auto no-scrollbar py-2 mb-8 sm:mb-10 flex justify-start sm:justify-center">
-            <div className="inline-flex items-center gap-1.5 sm:gap-2 p-1.5 rounded-full bg-[#141C18] border border-white/10 shrink-0">
-              {serviceCategories.map((category) => {
-                const isActive = activeCategoryKey === category.key;
-                const count = getCategoryServices(category.key).length;
-                return (
-                  <button
-                    key={category.key}
-                    type="button"
-                    onClick={() => setActiveCategoryKey(category.key)}
-                    className={`relative px-4 sm:px-6 py-2 sm:py-2.5 rounded-full text-xs sm:text-sm font-semibold tracking-wide transition-all whitespace-nowrap cursor-pointer flex items-center gap-1.5 shrink-0 ${
-                      isActive
-                        ? "bg-[#C59B46] text-[#0B0F0D] shadow-md font-bold"
-                        : "text-[#B8B0A2] hover:text-[#F5EFEB] hover:bg-white/5"
-                    }`}
-                    aria-selected={isActive}
-                    role="tab"
-                  >
-                    <span>{category.title}</span>
-                    <span
-                      className={`text-[10px] px-1.5 py-0.5 rounded-full font-mono ${
+          {/* Category Tabs: Smooth horizontal scroll track with zero clipping on all viewports */}
+          <div className="w-full overflow-x-auto no-scrollbar py-2 mb-8 sm:mb-10">
+            <div className="w-max min-w-full px-4 sm:px-6 flex justify-start xl:justify-center">
+              <div className="inline-flex items-center gap-1.5 sm:gap-2 p-1.5 rounded-full bg-[#141C18] border border-white/10 shrink-0 shadow-lg">
+                {serviceCategories.map((category) => {
+                  const isActive = activeCategoryKey === category.key;
+                  const count = getCategoryServices(category.key).length;
+                  return (
+                    <button
+                      key={category.key}
+                      type="button"
+                      onClick={() => setActiveCategoryKey(category.key)}
+                      className={`relative px-4 sm:px-5 py-2 sm:py-2.5 rounded-full text-xs sm:text-sm font-semibold tracking-wide transition-all whitespace-nowrap cursor-pointer flex items-center gap-1.5 shrink-0 ${
                         isActive
-                          ? "bg-[#0B0F0D]/20 text-[#0B0F0D] font-bold"
-                          : "bg-white/10 text-[#DFC074]"
+                          ? "bg-[#C59B46] text-[#0B0F0D] shadow-md font-bold"
+                          : "text-[#B8B0A2] hover:text-[#F5EFEB] hover:bg-white/5"
                       }`}
+                      aria-selected={isActive}
+                      role="tab"
                     >
-                      {count}
-                    </span>
-                  </button>
-                );
-              })}
+                      <span>{category.title}</span>
+                      <span
+                        className={`text-[10px] px-1.5 py-0.5 rounded-full font-mono ${
+                          isActive
+                            ? "bg-[#0B0F0D]/20 text-[#0B0F0D] font-bold"
+                            : "bg-white/10 text-[#DFC074]"
+                        }`}
+                      >
+                        {count}
+                      </span>
+                    </button>
+                  );
+                })}
+              </div>
             </div>
           </div>
 
