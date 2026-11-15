@@ -379,8 +379,8 @@ export function ServicesSection() {
 
   return (
     <section
-      id="services"
-      aria-label="Services Menu"
+      id="grooming"
+      aria-label="Grooming & Services Menu"
       className="relative py-12 sm:py-20 lg:py-28 bg-[#0B0F0D] border-b border-white/[0.06] overflow-hidden"
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -537,57 +537,58 @@ export function ServicesSection() {
         </div>
 
         {/* ============================================================ */}
-        {/* PART 2: COMPLETE 26 SERVICES CATALOG                         */}
+        {/* PART 2: COMPLETE 31 SERVICES CATALOG (TARGET FOR #services)  */}
         {/* Dynamic categories, live DB pricing, search & WhatsApp inquiry */}
         {/* ============================================================ */}
-        <AnimatedReveal direction="up" delay={0.05} amount={0.05} className="border-t border-white/[0.08] pt-10 sm:pt-14 mb-6 sm:mb-8 text-center">
-          <div className="inline-flex items-center gap-2 mb-2 text-xs font-bold uppercase tracking-[0.25em] text-[#A8A193]">
-            <span className="w-4 h-[1px] bg-[#C59B46]" />
-            <span>Complete Salon Catalog</span>
-            <span className="w-4 h-[1px] bg-[#C59B46]" />
-          </div>
-          <h3 className="font-['Playfair_Display',Georgia,serif] text-2xl sm:text-3xl lg:text-4xl font-medium text-[#F5EFEB]">
-            Explore All {dbServices.length > 0 ? dbServices.length : 26} Services by Category
-          </h3>
-          <p className="text-xs sm:text-sm text-[#A8A193] mt-2 max-w-xl mx-auto">
-            Select any service below to inquire on WhatsApp, or book multiple services at once in our online reservation system.
-          </p>
-        </AnimatedReveal>
+        <div id="services" className="scroll-mt-24 sm:scroll-mt-28">
+          <AnimatedReveal direction="up" delay={0.05} amount={0.05} className="border-t border-white/[0.08] pt-10 sm:pt-14 mb-6 sm:mb-8 text-center">
+            <div className="inline-flex items-center gap-2 mb-2 text-xs font-bold uppercase tracking-[0.25em] text-[#A8A193]">
+              <span className="w-4 h-[1px] bg-[#C59B46]" />
+              <span>Complete Salon Catalog</span>
+              <span className="w-4 h-[1px] bg-[#C59B46]" />
+            </div>
+            <h3 className="font-['Playfair_Display',Georgia,serif] text-2xl sm:text-3xl lg:text-4xl font-medium text-[#F5EFEB]">
+              Explore All {dbServices.length > 0 ? dbServices.length : 31} Services by Category
+            </h3>
+            <p className="text-xs sm:text-sm text-[#A8A193] mt-2 max-w-xl mx-auto">
+              Select any service below to inquire on WhatsApp, or book multiple services at once in our online reservation system.
+            </p>
+          </AnimatedReveal>
 
-        {/* Category Tabs / Segmented Control */}
-        <AnimatedReveal direction="up" delay={0.1} amount={0.05} className="flex items-center justify-start sm:justify-center overflow-x-auto no-scrollbar gap-2 pb-4 mb-8 sm:mb-10 -mx-4 px-4 sm:mx-0 sm:px-0">
-          <div className="inline-flex p-1.5 rounded-full bg-[#141C18] border border-white/10 shrink-0">
-            {serviceCategories.map((category) => {
-              const isActive = activeCategoryKey === category.key;
-              const count = getCategoryServices(category.key).length;
-              return (
-                <button
-                  key={category.key}
-                  type="button"
-                  onClick={() => setActiveCategoryKey(category.key)}
-                  className={`relative px-4 sm:px-6 py-2.5 rounded-full text-xs sm:text-sm font-semibold tracking-wide transition-colors cursor-pointer ${
-                    isActive
-                      ? "bg-[#C59B46] text-[#0B0F0D] shadow-md font-bold"
-                      : "text-[#B8B0A2] hover:text-[#F5EFEB] hover:bg-white/5"
-                  }`}
-                  aria-selected={isActive}
-                  role="tab"
-                >
-                  <span>{category.title}</span>
-                  <span
-                    className={`ml-2 text-[10px] px-1.5 py-0.5 rounded-full ${
+          {/* Category Tabs: Smooth horizontal scroll track with zero clipping on mobile */}
+          <div className="w-full overflow-x-auto no-scrollbar py-2 mb-8 sm:mb-10 flex justify-start sm:justify-center">
+            <div className="inline-flex items-center gap-1.5 sm:gap-2 p-1.5 rounded-full bg-[#141C18] border border-white/10 shrink-0">
+              {serviceCategories.map((category) => {
+                const isActive = activeCategoryKey === category.key;
+                const count = getCategoryServices(category.key).length;
+                return (
+                  <button
+                    key={category.key}
+                    type="button"
+                    onClick={() => setActiveCategoryKey(category.key)}
+                    className={`relative px-4 sm:px-6 py-2 sm:py-2.5 rounded-full text-xs sm:text-sm font-semibold tracking-wide transition-all whitespace-nowrap cursor-pointer flex items-center gap-1.5 shrink-0 ${
                       isActive
-                        ? "bg-[#0B0F0D]/20 text-[#0B0F0D] font-bold"
-                        : "bg-white/10 text-[#B8B0A2]"
+                        ? "bg-[#C59B46] text-[#0B0F0D] shadow-md font-bold"
+                        : "text-[#B8B0A2] hover:text-[#F5EFEB] hover:bg-white/5"
                     }`}
+                    aria-selected={isActive}
+                    role="tab"
                   >
-                    {count}
-                  </span>
-                </button>
-              );
-            })}
+                    <span>{category.title}</span>
+                    <span
+                      className={`text-[10px] px-1.5 py-0.5 rounded-full font-mono ${
+                        isActive
+                          ? "bg-[#0B0F0D]/20 text-[#0B0F0D] font-bold"
+                          : "bg-white/10 text-[#DFC074]"
+                      }`}
+                    >
+                      {count}
+                    </span>
+                  </button>
+                );
+              })}
+            </div>
           </div>
-        </AnimatedReveal>
 
         {/* Two-Column Category Display: Left Real Photo Card (45%), Right Editorial List (55%) */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-10 items-start">
@@ -700,6 +701,7 @@ export function ServicesSection() {
             </div>
           </AnimatedReveal>
 
+        </div>
         </div>
 
         {/* Small reassurance line */}

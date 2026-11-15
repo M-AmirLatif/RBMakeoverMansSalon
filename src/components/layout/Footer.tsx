@@ -19,6 +19,7 @@ export function Footer() {
 
   const footerLinks = [
     { label: "Services", href: "#services" },
+    { label: "Grooming Menu", href: "#grooming" },
     { label: "Barbers (10)", href: "#team" },
     { label: "Why Choose Us", href: "#why-us" },
     { label: "Gallery", href: "#gallery" },
