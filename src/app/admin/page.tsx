@@ -36,6 +36,37 @@ function formatNumberWithCommas(value: string | number | undefined | null): stri
   return Number(cleaned).toLocaleString("en-US");
 }
 
+function normalizeServiceCat(cRaw?: string, nRaw?: string): string {
+  const c = (cRaw || "").toLowerCase().trim();
+  const n = (nRaw || "").toLowerCase().trim();
+
+  // 1. Direct Category Matches (Highest Priority from Admin / DB)
+  if (c === "coloring" || c === "hair-coloring" || c === "color") return "coloring";
+  if (c === "treatment" || c === "treatments" || c === "hair-treatment" || c === "hair-treatments") return "treatment";
+  if (c === "haircuts" || c === "haircut") return "haircuts";
+  if (c === "beard") return "beard";
+  if (c === "facial") return "facial";
+  if (c === "grooming") return "grooming";
+
+  // 2. Fallback Keyword heuristics
+  if (c.includes("color") || c.includes("dye") || c.includes("polish") || c.includes("tint") || n.includes("color") || n.includes("dye") || n.includes("polish")) {
+    return "coloring";
+  }
+  if (c.includes("treatment") || c.includes("straightening") || c.includes("keratin") || c.includes("spa") || n.includes("treatment") || n.includes("straightening") || n.includes("keratin") || n.includes("spa")) {
+    return "treatment";
+  }
+  if (c.includes("facial") || c.includes("skin") || n.includes("facial") || n.includes("cleansing") || n.includes("scrub")) {
+    return "facial";
+  }
+  if (c.includes("beard") || c.includes("shav") || n.includes("beard") || n.includes("shav")) {
+    return "beard";
+  }
+  if (c.includes("groom") || c.includes("vip") || c.includes("package") || c.includes("mani") || c.includes("pedi") || n.includes("mani") || n.includes("pedi") || n.includes("eyebrow")) {
+    return "grooming";
+  }
+  return "haircuts";
+}
+
 export default function AdminDashboardPage() {
   const router = useRouter();
   const supabase = createClient();
@@ -86,6 +117,7 @@ export default function AdminDashboardPage() {
   const [isNewBarber, setIsNewBarber] = useState(false);
   const [editingService, setEditingService] = useState<SiteService | null>(null);
   const [isNewService, setIsNewService] = useState(false);
+  const [adminServiceFilter, setAdminServiceFilter] = useState<string>("all");
   const [editingGroomingStyle, setEditingGroomingStyle] = useState<GroomingStyleItem | null>(null);
   const [isNewGroomingStyle, setIsNewGroomingStyle] = useState(false);
   const [uploadingGroomingCutout, setUploadingGroomingCutout] = useState(false);
@@ -1491,9 +1523,38 @@ export default function AdminDashboardPage() {
               </button>
             </div>
 
+            {/* Category Filter Pills for Admin */}
+            <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar pb-3 mb-4 -mx-1 px-1">
+              {[
+                { key: "all", label: `All (${services.length})` },
+                { key: "haircuts", label: `Haircuts (${services.filter((s) => normalizeServiceCat(s.category, s.name) === "haircuts").length})` },
+                { key: "beard", label: `Beard (${services.filter((s) => normalizeServiceCat(s.category, s.name) === "beard").length})` },
+                { key: "coloring", label: `Coloring (${services.filter((s) => normalizeServiceCat(s.category, s.name) === "coloring").length})` },
+                { key: "treatment", label: `Treatments (${services.filter((s) => normalizeServiceCat(s.category, s.name) === "treatment").length})` },
+                { key: "facial", label: `Facial (${services.filter((s) => normalizeServiceCat(s.category, s.name) === "facial").length})` },
+                { key: "grooming", label: `VIP Grooming (${services.filter((s) => normalizeServiceCat(s.category, s.name) === "grooming").length})` },
+              ].map((tab) => (
+                <button
+                  key={tab.key}
+                  type="button"
+                  onClick={() => setAdminServiceFilter(tab.key)}
+                  className={`px-3 py-1.5 rounded-xl text-xs font-medium whitespace-nowrap transition-colors cursor-pointer ${
+                    adminServiceFilter === tab.key
+                      ? "bg-[#C59B46] text-[#0B0F0D] font-bold shadow-sm"
+                      : "bg-[#0E1411] text-[#A8A193] hover:text-[#F5EFEB] border border-white/10"
+                  }`}
+                >
+                  {tab.label}
+                </button>
+              ))}
+            </div>
+
             {/* Mobile View: Luxury Cards (never cut off, thumb friendly) */}
             <div className="block md:hidden space-y-3.5">
-              {services.map((svc) => (
+              {(adminServiceFilter === "all"
+                ? services
+                : services.filter((s) => normalizeServiceCat(s.category, s.name) === adminServiceFilter)
+              ).map((svc) => (
                 <div
                   key={svc.id}
                   className="bg-[#0E1411] border border-white/[0.08] hover:border-[#C59B46]/40 rounded-2xl p-4 shadow-md space-y-3"
@@ -1563,7 +1624,10 @@ export default function AdminDashboardPage() {
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-white/[0.04]">
-                    {services.map((svc) => (
+                    {(adminServiceFilter === "all"
+                      ? services
+                      : services.filter((s) => normalizeServiceCat(s.category, s.name) === adminServiceFilter)
+                    ).map((svc) => (
                       <tr key={svc.id} className="hover:bg-white/[0.02] transition-colors">
                         <td className="py-3.5 px-4 font-semibold text-[#F5EFEB]">{svc.name}</td>
                         <td className="py-3.5 px-4">
@@ -2469,8 +2533,10 @@ export default function AdminDashboardPage() {
                   >
                     <option value="haircuts">Haircuts &amp; Styling</option>
                     <option value="beard">Beard &amp; Grooming</option>
+                    <option value="coloring">Hair &amp; Beard Coloring</option>
+                    <option value="treatment">Hair Treatments &amp; Spa</option>
                     <option value="facial">Facial &amp; Skincare</option>
-                    <option value="grooming">VIP Packages</option>
+                    <option value="grooming">VIP Grooming &amp; Packages</option>
                   </select>
                 </div>
 

@@ -311,32 +311,44 @@ export function ServicesSection() {
     };
   }, []);
 
-  const isServiceInCategory = (serviceCategory: string, catKey: ServiceCategoryKey): boolean => {
-    const sc = (serviceCategory || "").toLowerCase().trim();
-    if (catKey === "haircuts") {
-      return sc === "haircuts" || sc.includes("hair") || sc.includes("cut") || sc.includes("styling");
+  const getServiceCategoryKey = (category: string, name?: string): ServiceCategoryKey => {
+    const c = (category || "").toLowerCase().trim();
+    const n = (name || "").toLowerCase().trim();
+
+    // 1. Direct Category Matches (Highest Priority from Admin / DB)
+    if (c === "coloring" || c === "hair-coloring" || c === "color") return "coloring";
+    if (c === "treatment" || c === "treatments" || c === "hair-treatment" || c === "hair-treatments") return "treatment";
+    if (c === "haircuts" || c === "haircut") return "haircuts";
+    if (c === "beard") return "beard";
+    if (c === "facial") return "facial";
+    if (c === "grooming") return "grooming";
+
+    // 2. Fallback Keyword heuristics for legacy items
+    if (c.includes("color") || c.includes("dye") || c.includes("polish") || c.includes("tint") || n.includes("color") || n.includes("dye") || n.includes("polish")) {
+      return "coloring";
     }
-    if (catKey === "beard") {
-      return sc === "beard" || sc.includes("beard") || sc.includes("shav");
+    if (c.includes("treatment") || c.includes("straightening") || c.includes("keratin") || c.includes("protein") || c.includes("spa") || n.includes("treatment") || n.includes("straightening") || n.includes("keratin") || n.includes("spa") || n.includes("protein")) {
+      return "treatment";
     }
-    if (catKey === "facial") {
-      return sc === "facial" || sc.includes("facial") || sc.includes("skin") || sc.includes("massage");
+    if (c.includes("facial") || c.includes("skin") || n.includes("facial") || n.includes("cleansing") || n.includes("scrub")) {
+      return "facial";
     }
-    if (catKey === "grooming") {
-      return (
-        sc === "grooming" ||
-        sc.includes("groom") ||
-        sc.includes("package") ||
-        sc.includes("vip") ||
-        sc.includes("mani") ||
-        sc.includes("pedi")
-      );
+    if (c.includes("beard") || c.includes("shav") || n.includes("beard") || n.includes("shav")) {
+      return "beard";
     }
-    return false;
+    if (c.includes("groom") || c.includes("package") || c.includes("vip") || c.includes("mani") || c.includes("pedi") || n.includes("mani") || n.includes("pedi") || n.includes("shampoo") || n.includes("eyebrow")) {
+      return "grooming";
+    }
+
+    return "haircuts";
+  };
+
+  const isServiceInCategory = (service: SiteService, catKey: ServiceCategoryKey): boolean => {
+    return getServiceCategoryKey(service.category, service.name) === catKey;
   };
 
   const getCategoryServices = (catKey: ServiceCategoryKey): SiteService[] => {
-    const matched = dbServices.filter((s) => isServiceInCategory(s.category, catKey));
+    const matched = dbServices.filter((s) => isServiceInCategory(s, catKey));
     if (matched.length > 0) {
       return matched;
     }

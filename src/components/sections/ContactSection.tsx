@@ -163,16 +163,43 @@ export function ContactSection({
     ? `~${totalEstimatedMinutes} mins`
     : undefined;
 
+  // Helper to classify service into exact category
+  const getCategory = (cRaw: string, nRaw: string) => {
+    const c = (cRaw || "").toLowerCase().trim();
+    const n = (nRaw || "").toLowerCase().trim();
+
+    // 1. Direct Category Matches (Highest Priority from Admin / DB)
+    if (c === "coloring" || c === "hair-coloring" || c === "color") return "coloring";
+    if (c === "treatment" || c === "treatments" || c === "hair-treatment" || c === "hair-treatments") return "treatment";
+    if (c === "haircuts" || c === "haircut") return "haircuts";
+    if (c === "beard") return "beard";
+    if (c === "facial") return "facial";
+    if (c === "grooming") return "grooming";
+
+    // 2. Fallback Keyword heuristics
+    if (c.includes("color") || c.includes("dye") || c.includes("polish") || c.includes("tint") || n.includes("color") || n.includes("dye") || n.includes("polish")) {
+      return "coloring";
+    }
+    if (c.includes("treatment") || c.includes("straightening") || c.includes("keratin") || c.includes("spa") || n.includes("treatment") || n.includes("straightening") || n.includes("keratin") || n.includes("spa")) {
+      return "treatment";
+    }
+    if (c.includes("facial") || c.includes("skin") || n.includes("facial") || n.includes("cleansing") || n.includes("scrub")) {
+      return "facial";
+    }
+    if (c.includes("beard") || c.includes("shav") || n.includes("beard") || n.includes("shav")) {
+      return "beard";
+    }
+    if (c.includes("groom") || c.includes("vip") || c.includes("package") || c.includes("mani") || c.includes("pedi") || n.includes("mani") || n.includes("pedi") || n.includes("eyebrow")) {
+      return "grooming";
+    }
+    return "haircuts";
+  };
+
   // Filtered services for picker
   const filteredServices = React.useMemo(() => {
     return services.filter((s) => {
-      const cat = (s.category || "").toLowerCase();
-      const matchCategory =
-        serviceCategoryFilter === "all" ||
-        (serviceCategoryFilter === "haircuts" && (cat === "haircuts" || cat.includes("hair") || cat.includes("cut"))) ||
-        (serviceCategoryFilter === "beard" && (cat === "beard" || cat.includes("beard") || cat.includes("shav"))) ||
-        (serviceCategoryFilter === "facial" && (cat === "facial" || cat.includes("facial") || cat.includes("skin"))) ||
-        (serviceCategoryFilter === "grooming" && (cat === "grooming" || cat.includes("groom") || cat.includes("vip") || cat.includes("package") || cat.includes("mani") || cat.includes("pedi")));
+      const catKey = getCategory(s.category, s.name);
+      const matchCategory = serviceCategoryFilter === "all" || serviceCategoryFilter === catKey;
 
       const q = serviceSearchQuery.toLowerCase().trim();
       const matchSearch =
@@ -734,6 +761,8 @@ export function ContactSection({
                         { key: "all", label: "All" },
                         { key: "haircuts", label: "Haircuts" },
                         { key: "beard", label: "Beard" },
+                        { key: "coloring", label: "Coloring" },
+                        { key: "treatment", label: "Treatments" },
                         { key: "facial", label: "Facial" },
                         { key: "grooming", label: "VIP / Pedi" },
                       ].map((tab) => (
