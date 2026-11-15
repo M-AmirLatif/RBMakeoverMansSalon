@@ -323,3 +323,320 @@ export async function fetchShopTiming(): Promise<ShopTimingConfig> {
     return fallback;
   }
 }
+
+export interface GroomingStyleItem {
+  id: string;
+  badge: string;
+  title: string;
+  highlightText: string;
+  category: "haircuts" | "beard" | "facial" | "grooming";
+  price: string;
+  numeric_price: number;
+  description: string;
+  features: string[];
+  image: string;
+  imageAlt: string;
+  display_order: number;
+  active: boolean;
+}
+
+export const defaultGroomingStyles: GroomingStyleItem[] = [
+  {
+    id: "style-quiff-taper",
+    badge: "Signature Style Spotlight",
+    title: "The Textured Quiff",
+    highlightText: "Precision Skin Taper",
+    category: "haircuts",
+    price: "Rs. 400",
+    numeric_price: 400,
+    description: "Hand-sheared crown layers paired with surgical zero-gap temple transitions and textured styling finish.",
+    features: ["Skin Taper Fade", "Textured Crown Lift", "Matte Pomade Finish", "Razor Clean Temple"],
+    image: "/images/cutout-quiff-taper.webp",
+    imageAlt: "The Textured Quiff Precision Skin Taper haircut at R.B Makeover",
+    display_order: 1,
+    active: true,
+  },
+  {
+    id: "style-combover-razor",
+    badge: "Executive Precision",
+    title: "Executive Comb-Over",
+    highlightText: "Razor Part Symmetry",
+    category: "haircuts",
+    price: "Rs. 500",
+    numeric_price: 500,
+    description: "Surgical razor parting line paired with seamless drop gradient and high-gloss tonic for timeless boardroom presence.",
+    features: ["Hard Razor Part", "Seamless Drop Fade", "Gloss Styling Tonic", "Crisp Ear Lineup"],
+    image: "/images/cutout-combover-razor.webp",
+    imageAlt: "Executive Comb-Over Razor Part Symmetry at R.B Makeover",
+    display_order: 2,
+    active: true,
+  },
+  {
+    id: "style-executive-crop",
+    badge: "Modern European Styling",
+    title: "Textured Executive Crop",
+    highlightText: "Point-Cut Volume & Micro-Taper",
+    category: "haircuts",
+    price: "Rs. 350",
+    numeric_price: 350,
+    description: "Modern European crop featuring high micro-fade temples and point-cut scissor volume for sharp everyday presence.",
+    features: ["Micro Temple Taper", "Point-Cut Crown Texture", "Matte Clay Finish", "Razor Clean Neckline"],
+    image: "/images/cutout-executive-crop.webp",
+    imageAlt: "Textured Executive Crop haircut at R.B Makeover",
+    display_order: 3,
+    active: true,
+  },
+  {
+    id: "style-razor-dropfade",
+    badge: "Contour Detailing",
+    title: "Precision Razor Line-Up",
+    highlightText: "High Skin Drop Fade",
+    category: "haircuts",
+    price: "Rs. 400",
+    numeric_price: 400,
+    description: "Geometric razor edges sculpted with disposable feather blades, steep drop taper, and natural skin blend.",
+    features: ["Geometric Line-Up", "Steep Drop Taper", "Feather-Blade Finish", "Natural Skin Blend"],
+    image: "/images/cutout-razor-dropfade.webp",
+    imageAlt: "Precision Razor Line-Up and High Skin Drop Fade at R.B Makeover",
+    display_order: 4,
+    active: true,
+  },
+  {
+    id: "style-skin-fade",
+    badge: "Master Cut Spotlight",
+    title: "The Low-Drop Skin Fade",
+    highlightText: "Precision Scissor Texture",
+    category: "haircuts",
+    price: "Rs. 400",
+    numeric_price: 400,
+    description: "Zero-gap clipper taper smoothly transitioning into hand-sculpted crown layers and razor-clean nape lines.",
+    features: ["Zero-Gap Clippers", "Scissor-Over-Comb", "Razor Clean Nape", "Matte Texture Paste"],
+    image: "/images/cutout-skin-fade.webp",
+    imageAlt: "Low-drop skin fade with precision scissor texture at R.B Makeover",
+    display_order: 5,
+    active: true,
+  },
+  {
+    id: "style-beard-pompadour",
+    badge: "Royal Facial Craft",
+    title: "Royal Beard & Pompadour",
+    highlightText: "Hot Towel Steam Therapy",
+    category: "grooming",
+    price: "Rs. 1,500",
+    numeric_price: 1500,
+    description: "Full haircut and beard transformation featuring hot towel steam, argan hydration, and cheekbone contouring.",
+    features: ["Argan Beard Steam", "High-Volume Pompadour", "Cheekbone Contours", "Ice Towel Refresh"],
+    image: "/images/cutout-pompadour-sculpt.webp",
+    imageAlt: "Royal Beard & Pompadour Hot Towel Steam Therapy at R.B Makeover",
+    display_order: 6,
+    active: true,
+  },
+  {
+    id: "style-royal-beard",
+    badge: "Beard Architecture",
+    title: "Royal Beard Architecture",
+    highlightText: "Hot Towel Steam & Argan Therapy",
+    category: "beard",
+    price: "Rs. 250",
+    numeric_price: 250,
+    description: "Sculpted with straight-razor precision, eucalyptus hot steam towels, and organic argan beard oil nourishment.",
+    features: ["Hot Towel Steam", "Feather-Edge Razor", "Mustache Contouring", "Organic Argan Oil"],
+    image: "/images/cutout-beard-sculpt.webp",
+    imageAlt: "Royal Beard Architecture at R.B Makeover",
+    display_order: 7,
+    active: true,
+  },
+  {
+    id: "style-curly-taper",
+    badge: "Bespoke Modern Styling",
+    title: "Textured Curly Crop",
+    highlightText: "Low-Fade Temple Definition",
+    category: "haircuts",
+    price: "Rs. 300",
+    numeric_price: 300,
+    description: "Tailored specifically for natural curl movement. Weightless debulking through crown spirals with micro-tapers.",
+    features: ["Natural Curl Definition", "Weightless Debulking", "Low Temple Fade", "Moisture Seal Tonic"],
+    image: "/images/cutout-curly-taper.webp",
+    imageAlt: "Textured Curly Crop haircut at R.B Makeover",
+    display_order: 8,
+    active: true,
+  },
+  {
+    id: "style-royal-shave",
+    badge: "Heritage Shaving",
+    title: "The Royal Hot Towel Shave",
+    highlightText: "Straight Razor Mastery",
+    category: "beard",
+    price: "Rs. 250",
+    numeric_price: 250,
+    description: "Traditional multi-step straight razor shave. Warm lather, dual hot towels, ice-chilled towel, and soothing aloe balm.",
+    features: ["Dual Hot Towels", "Pre-Shave Oil", "Single-Use Blades", "Soothing Balm Finish"],
+    image: "/images/cutout-royal-shave.webp",
+    imageAlt: "Traditional hot towel straight razor shaving at R.B Makeover",
+    display_order: 9,
+    active: true,
+  },
+  {
+    id: "style-senior-discipline",
+    badge: "14+ Years Master Heritage",
+    title: "Senior Stylist Discipline",
+    highlightText: "Handcrafted Scissor Precision",
+    category: "haircuts",
+    price: "Rs. 500",
+    numeric_price: 500,
+    description: "Led by salon owner Imtiaz Ahmad. Classic scissor craft, tailored beard sculpting, and calm luxury consultation.",
+    features: ["Bespoke Scissor Craft", "Full Beard Alignment", "Head Stylist Care", "Dedicated Lounge Time"],
+    image: "/images/cutout-mature-classic.webp",
+    imageAlt: "Senior Stylist Discipline Handcrafted Scissor Precision at R.B Makeover",
+    display_order: 10,
+    active: true,
+  },
+  {
+    id: "style-hair-beard",
+    badge: "Executive Transformation",
+    title: "Hair & Beard Coordination",
+    highlightText: "Tailored to Your Bone Structure",
+    category: "grooming",
+    price: "Rs. 1,500",
+    numeric_price: 1500,
+    description: "Harmonizing haircut with beard contouring to complement facial bone structure and temple tapers.",
+    features: ["Facial Proportions", "Temple Transition", "Long-Lasting Hold", "Beard Sculpting"],
+    image: "/images/cutout-hair-beard.webp",
+    imageAlt: "Hair and Beard Coordination at R.B Makeover",
+    display_order: 11,
+    active: true,
+  },
+  {
+    id: "style-facial",
+    badge: "Skincare & Rejuvenation",
+    title: "Hydra & Charcoal Skincare",
+    highlightText: "Deep Pore Cleansing & Glow",
+    category: "facial",
+    price: "Rs. 2,100",
+    numeric_price: 2100,
+    description: "Deep pore cleansing, ultrasonic blackhead extraction, botanical steam, and revitalizing charcoal mask.",
+    features: ["Deep Cleansing", "Charcoal Mask", "Facial Acupressure", "Hydrating Mist"],
+    image: "/images/cutout-facial-skincare.webp",
+    imageAlt: "Hydra and Charcoal Skincare at R.B Makeover",
+    display_order: 12,
+    active: true,
+  },
+  {
+    id: "style-scalp",
+    badge: "Therapeutic Wash",
+    title: "Invigorating Scalp Massage",
+    highlightText: "Menthol Acupressure & Follicle Therapy",
+    category: "grooming",
+    price: "Rs. 600",
+    numeric_price: 600,
+    description: "Scalp acupressure massage using tea tree and peppermint botanicals, relieving tension and promoting healthy roots.",
+    features: ["Botanical Steam", "Tea-Tree Menthol", "Acupressure Massage", "Cold Rinse Seal"],
+    image: "/images/cutout-scalp-therapy.webp",
+    imageAlt: "Invigorating scalp acupressure massage at R.B Makeover",
+    display_order: 13,
+    active: true,
+  },
+  {
+    id: "style-classic-cut",
+    badge: "Timeless Barbering",
+    title: "Classic Scissor Haircut",
+    highlightText: "Handcrafted Scissor Discipline",
+    category: "haircuts",
+    price: "Rs. 500",
+    numeric_price: 500,
+    description: "Soft natural tapers and razor-clean necklines for gentlemen who appreciate timeless scissor styling.",
+    features: ["Pure Scissor Work", "Gentle Neckline Lineup", "Natural Parting", "Light Styling Tonic"],
+    image: "/images/cutout-classic-cut.webp",
+    imageAlt: "Classic scissor haircut at R.B Makeover",
+    display_order: 14,
+    active: true,
+  },
+  {
+    id: "style-keratin",
+    badge: "Structural Hair Care",
+    title: "Keratin Silk Smoothing",
+    highlightText: "Glossy Silk Finish & Frizz Control",
+    category: "haircuts",
+    price: "Rs. 3,000",
+    numeric_price: 3000,
+    description: "Deep protein rebuilding that eliminates coarse frizz and locks in mirror shine for manageable styling.",
+    features: ["Formaldehyde-Free", "Heat Activated Seal", "12-Week Durability", "Silky Manageability"],
+    image: "/images/cutout-keratin-silk.webp",
+    imageAlt: "Keratin silk smoothing transformation at R.B Makeover",
+    display_order: 15,
+    active: true,
+  },
+  {
+    id: "style-vip",
+    badge: "Signature All-Inclusive",
+    title: "The Executive VIP Package",
+    highlightText: "Complete Head-to-Toe Distinction",
+    category: "grooming",
+    price: "Rs. 3,500",
+    numeric_price: 3500,
+    description: "Master haircut, beard sculpting, charcoal facial massage, deep scalp wash, and hot towel aromatherapies.",
+    features: ["Full Service Hair & Beard", "Hydra Facial Cleansing", "Scalp Steam Massage", "Signature Styling"],
+    image: "/images/cutout-vip-grooming.webp",
+    imageAlt: "The Executive VIP Grooming Package at R.B Makeover",
+    display_order: 16,
+    active: true,
+  },
+  {
+    id: "style-razor-lineup",
+    badge: "Precision Detailing",
+    title: "Razor Lineup & Temple Edge",
+    highlightText: "Zero-Tolerance Contour Geometry",
+    category: "beard",
+    price: "Rs. 250",
+    numeric_price: 250,
+    description: "Laser-focused edge work using disposable feather blades to carve crisp cheek curves and neckline definition.",
+    features: ["Feather Razor Blades", "Hot Aloe Prep", "Geometric Symmetry", "Post-Shave Ice Towel"],
+    image: "/images/cutout-razor-lineup.webp",
+    imageAlt: "Razor Lineup and Temple Edge at R.B Makeover",
+    display_order: 17,
+    active: true,
+  },
+  {
+    id: "style-executive-finish",
+    badge: "The Grand Standard",
+    title: "The Executive Finish & Aura",
+    highlightText: "Signature Confidence for Every Occasion",
+    category: "grooming",
+    price: "Rs. 1,500",
+    numeric_price: 1500,
+    description: "Signature hot towel finish, collar brush-down, and premium styling tonic for boardroom prominence.",
+    features: ["Hot Towel Finish", "Collar Brush-Down", "Matte Pomade Styling", "VIP Walkout Confidence"],
+    image: "/images/cutout-master-finish.webp",
+    imageAlt: "The Executive Finish and Signature Aura at R.B Makeover",
+    display_order: 18,
+    active: true,
+  },
+];
+
+/**
+ * Fetch independent Grooming Styles from Supabase.
+ */
+export async function fetchGroomingStyles(): Promise<GroomingStyleItem[]> {
+  try {
+    const supabase = createClient();
+    const { data, error } = await supabase
+      .from("site_images")
+      .select("url")
+      .eq("key", "grooming_styles_master")
+      .maybeSingle();
+
+    if (error || !data || !data.url) {
+      return defaultGroomingStyles;
+    }
+
+    const parsed = JSON.parse(data.url);
+    if (Array.isArray(parsed) && parsed.length > 0) {
+      return parsed
+        .filter((item: GroomingStyleItem) => item.active !== false)
+        .sort((a: GroomingStyleItem, b: GroomingStyleItem) => (a.display_order || 0) - (b.display_order || 0));
+    }
+    return defaultGroomingStyles;
+  } catch {
+    return defaultGroomingStyles;
+  }
+}

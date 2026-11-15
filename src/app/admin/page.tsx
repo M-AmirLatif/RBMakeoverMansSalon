@@ -27,7 +27,7 @@ import {
 } from "lucide-react";
 import { staffBarbers, BarberStaff } from "@/data/team";
 import { galleryImages } from "@/data/images";
-import { SiteService, GalleryMediaItem } from "@/lib/supabase/queries";
+import { SiteService, GalleryMediaItem, GroomingStyleItem, defaultGroomingStyles } from "@/lib/supabase/queries";
 
 function formatNumberWithCommas(value: string | number | undefined | null): string {
   if (value === undefined || value === null || value === "") return "";
@@ -45,7 +45,7 @@ export default function AdminDashboardPage() {
   const [authChecking, setAuthChecking] = useState(true);
 
   // Active Tab
-  const [activeTab, setActiveTab] = useState<"barbers" | "gallery" | "services" | "timing">("barbers");
+  const [activeTab, setActiveTab] = useState<"grooming" | "services" | "barbers" | "gallery" | "timing">("grooming");
 
   // Shop Timing states
   const [timingWeekday, setTimingWeekday] = useState("10:00 AM - 11:00 PM");
@@ -61,6 +61,7 @@ export default function AdminDashboardPage() {
   const [barbers, setBarbers] = useState<BarberStaff[]>([]);
   const [galleryItems, setGalleryItems] = useState<GalleryMediaItem[]>([]);
   const [services, setServices] = useState<SiteService[]>([]);
+  const [groomingStyles, setGroomingStyles] = useState<GroomingStyleItem[]>([]);
   const [siteImages, setSiteImages] = useState<Record<string, string>>({
     hero_barber: "/images/hero-barber-craft.webp",
     about_salon: "/images/about-interior-floor.webp",
@@ -85,6 +86,10 @@ export default function AdminDashboardPage() {
   const [isNewBarber, setIsNewBarber] = useState(false);
   const [editingService, setEditingService] = useState<SiteService | null>(null);
   const [isNewService, setIsNewService] = useState(false);
+  const [editingGroomingStyle, setEditingGroomingStyle] = useState<GroomingStyleItem | null>(null);
+  const [isNewGroomingStyle, setIsNewGroomingStyle] = useState(false);
+  const [uploadingGroomingCutout, setUploadingGroomingCutout] = useState(false);
+  const groomingCutoutFileInputRef = useRef<HTMLInputElement>(null);
 
   // Gallery upload state
   const [uploadingGallery, setUploadingGallery] = useState(false);
@@ -278,6 +283,30 @@ export default function AdminDashboardPage() {
           setHeroVideoUrl(map.hero_video);
           setHeroVideoInput(map.hero_video);
         }
+      }
+
+      // 5. Grooming Styles (Master list, completely decoupled from services)
+      const { data: gStylesData, error: gStylesErr } = await supabase
+        .from("site_images")
+        .select("url")
+        .eq("key", "grooming_styles_master")
+        .maybeSingle();
+
+      if (!gStylesErr && gStylesData?.url) {
+        try {
+          const parsed = JSON.parse(gStylesData.url);
+          if (Array.isArray(parsed) && parsed.length > 0) {
+            setGroomingStyles(
+              parsed.sort((a: GroomingStyleItem, b: GroomingStyleItem) => (a.display_order || 0) - (b.display_order || 0))
+            );
+          } else {
+            setGroomingStyles(defaultGroomingStyles);
+          }
+        } catch {
+          setGroomingStyles(defaultGroomingStyles);
+        }
+      } else {
+        setGroomingStyles(defaultGroomingStyles);
       }
     } catch (err) {
       console.error("Error loading data:", err);
@@ -556,6 +585,90 @@ export default function AdminDashboardPage() {
   };
 
   // -------------------------------------------------------------
+  // GROOMING STYLES CRUD (100% INDEPENDENT FROM SERVICES)
+  // -------------------------------------------------------------
+  const handleSaveGroomingStyle = async (e?: React.FormEvent) => {
+    if (e && typeof e.preventDefault === "function") e.preventDefault();
+    if (!editingGroomingStyle) return;
+
+    try {
+      const num = Number(String(editingGroomingStyle.price).replace(/[^0-9]/g, "")) || 0;
+      const formattedWithComma = num > 0 ? num.toLocaleString("en-US") : "0";
+      const displayPrice = `Rs. ${formattedWithComma}`;
+
+      const payload = {
+        id: editingGroomingStyle.id,
+        badge: editingGroomingStyle.badge || "Signature Spotlight",
+        title: editingGroomingStyle.title,
+        highlightText: editingGroomingStyle.highlightText || "",
+        category: editingGroomingStyle.category || "haircuts",
+        price: displayPrice,
+        numeric_price: num,
+        description: editingGroomingStyle.description || "",
+        features: Array.isArray(editingGroomingStyle.features)
+          ? editingGroomingStyle.features.filter(Boolean)
+          : ["Precision Craft", "Luxury Finish", "Bespoke Styling", "Master Barber"],
+        image: editingGroomingStyle.image || "/images/cutout-quiff-taper.webp",
+        imageAlt: editingGroomingStyle.imageAlt || `${editingGroomingStyle.title} at R.B Makeover`,
+        display_order: Number(editingGroomingStyle.display_order) || (groomingStyles.length + 1),
+        active: editingGroomingStyle.active !== false,
+      };
+
+      await callAdminApi("save_grooming_style", payload);
+
+      setGroomingStyles((prev) => {
+        const exists = prev.some((s) => s.id === payload.id);
+        if (exists) {
+          return prev.map((s) => (s.id === payload.id ? { ...s, ...payload } : s));
+        }
+        return [...prev, payload as GroomingStyleItem];
+      });
+
+      showToast(`Grooming style "${editingGroomingStyle.title}" saved!`);
+      setEditingGroomingStyle(null);
+      loadAllData();
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : "Failed to save grooming style";
+      showToast(msg, "error");
+    }
+  };
+
+  const handleDeleteGroomingStyle = async (id: string, title: string) => {
+    if (!confirm(`Are you sure you want to delete grooming style "${title}"?`)) return;
+
+    try {
+      await callAdminApi("delete_grooming_style", { id });
+      setGroomingStyles((prev) => prev.filter((s) => s.id !== id));
+      showToast(`Deleted grooming style "${title}".`);
+      loadAllData();
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : "Failed to delete grooming style";
+      showToast(msg, "error");
+    }
+  };
+
+  const handleGroomingCutoutUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file || !editingGroomingStyle) return;
+
+    setUploadingGroomingCutout(true);
+    try {
+      const data = await uploadMediaDirect(file);
+      setEditingGroomingStyle({
+        ...editingGroomingStyle,
+        image: data.url,
+      });
+      showToast("Grooming style cutout uploaded successfully!");
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : "Cutout upload failed";
+      showToast(msg, "error");
+    } finally {
+      setUploadingGroomingCutout(false);
+      if (e.target) e.target.value = "";
+    }
+  };
+
+  // -------------------------------------------------------------
   // SITE KEY IMAGES UPDATE
   // -------------------------------------------------------------
   const handleSiteImageUpload = async (key: string, file: File) => {
@@ -683,8 +796,32 @@ export default function AdminDashboardPage() {
         {/* Tab Navigation: Smooth horizontal scroll on mobile */}
         <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 flex space-x-2 sm:space-x-4 border-t border-white/[0.04] overflow-x-auto scrollbar-none">
           <button
+            onClick={() => setActiveTab("grooming")}
+            className={`py-3 sm:py-3.5 px-3 sm:px-4 font-mono text-xs uppercase tracking-wider flex items-center gap-2 border-b-2 transition-all whitespace-nowrap cursor-pointer ${
+              activeTab === "grooming"
+                ? "border-[#C59B46] text-[#DFC074] font-bold"
+                : "border-transparent text-[#7A756B] hover:text-[#F5EFEB]"
+            }`}
+          >
+            <Sparkles className="w-4 h-4" />
+            <span>Grooming Menu ({groomingStyles.length})</span>
+          </button>
+
+          <button
+            onClick={() => setActiveTab("services")}
+            className={`py-3 sm:py-3.5 px-3 sm:px-4 font-mono text-xs uppercase tracking-wider flex items-center gap-2 border-b-2 transition-all whitespace-nowrap cursor-pointer ${
+              activeTab === "services"
+                ? "border-[#C59B46] text-[#DFC074] font-bold"
+                : "border-transparent text-[#7A756B] hover:text-[#F5EFEB]"
+            }`}
+          >
+            <Scissors className="w-4 h-4" />
+            <span>Services Catalog ({services.length})</span>
+          </button>
+
+          <button
             onClick={() => setActiveTab("barbers")}
-            className={`py-3 sm:py-3.5 px-3 sm:px-4 font-mono text-xs uppercase tracking-wider flex items-center gap-2 border-b-2 transition-all whitespace-nowrap ${
+            className={`py-3 sm:py-3.5 px-3 sm:px-4 font-mono text-xs uppercase tracking-wider flex items-center gap-2 border-b-2 transition-all whitespace-nowrap cursor-pointer ${
               activeTab === "barbers"
                 ? "border-[#C59B46] text-[#DFC074] font-bold"
                 : "border-transparent text-[#7A756B] hover:text-[#F5EFEB]"
@@ -696,7 +833,7 @@ export default function AdminDashboardPage() {
 
           <button
             onClick={() => setActiveTab("gallery")}
-            className={`py-3 sm:py-3.5 px-3 sm:px-4 font-mono text-xs uppercase tracking-wider flex items-center gap-2 border-b-2 transition-all whitespace-nowrap ${
+            className={`py-3 sm:py-3.5 px-3 sm:px-4 font-mono text-xs uppercase tracking-wider flex items-center gap-2 border-b-2 transition-all whitespace-nowrap cursor-pointer ${
               activeTab === "gallery"
                 ? "border-[#C59B46] text-[#DFC074] font-bold"
                 : "border-transparent text-[#7A756B] hover:text-[#F5EFEB]"
@@ -707,20 +844,8 @@ export default function AdminDashboardPage() {
           </button>
 
           <button
-            onClick={() => setActiveTab("services")}
-            className={`py-3 sm:py-3.5 px-3 sm:px-4 font-mono text-xs uppercase tracking-wider flex items-center gap-2 border-b-2 transition-all whitespace-nowrap ${
-              activeTab === "services"
-                ? "border-[#C59B46] text-[#DFC074] font-bold"
-                : "border-transparent text-[#7A756B] hover:text-[#F5EFEB]"
-            }`}
-          >
-            <DollarSign className="w-4 h-4" />
-            <span>Services &amp; Pricing ({services.length})</span>
-          </button>
-
-          <button
             onClick={() => setActiveTab("timing")}
-            className={`py-3 sm:py-3.5 px-3 sm:px-4 font-mono text-xs uppercase tracking-wider flex items-center gap-2 border-b-2 transition-all whitespace-nowrap ${
+            className={`py-3 sm:py-3.5 px-3 sm:px-4 font-mono text-xs uppercase tracking-wider flex items-center gap-2 border-b-2 transition-all whitespace-nowrap cursor-pointer ${
               activeTab === "timing"
                 ? "border-[#C59B46] text-[#DFC074] font-bold"
                 : "border-transparent text-[#7A756B] hover:text-[#F5EFEB]"
@@ -1120,6 +1245,215 @@ export default function AdminDashboardPage() {
                   </div>
                 </div>
               ))}
+            </div>
+          </div>
+        )}
+
+        {/* ========================================================= */}
+        {/* TAB: GROOMING MENU & SIGNATURE STYLES (DECOUPLED)        */}
+        {/* ========================================================= */}
+        {activeTab === "grooming" && (
+          <div>
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
+              <div>
+                <h2 className="text-xl sm:text-2xl font-serif text-[#F5EFEB]">Grooming Menu &amp; Signature Styles</h2>
+                <p className="text-xs text-[#7A756B] mt-1">
+                  Manage the 18 signature grooming styles, cutout models, spotlight badges, rates, and 4 bullet points. Decoupled completely from services catalog.
+                </p>
+              </div>
+              <button
+                onClick={() => {
+                  setEditingGroomingStyle({
+                    id: `style-${Date.now()}`,
+                    badge: "Signature Spotlight",
+                    title: "",
+                    highlightText: "",
+                    category: "haircuts",
+                    price: "Rs. 1,000",
+                    numeric_price: 1000,
+                    description: "",
+                    features: ["", "", "", ""],
+                    image: "/images/cutout-quiff-taper.webp",
+                    imageAlt: "",
+                    display_order: groomingStyles.length + 1,
+                    active: true,
+                  });
+                  setIsNewGroomingStyle(true);
+                }}
+                className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-5 py-3 rounded-xl bg-gradient-to-r from-[#C59B46] to-[#DFC074] text-black font-semibold text-xs tracking-wider uppercase hover:shadow-[0_0_15px_rgba(197,155,70,0.3)] transition-all cursor-pointer"
+              >
+                <Plus className="w-4 h-4" />
+                <span>Add Grooming Style</span>
+              </button>
+            </div>
+
+            {/* Mobile View: Luxury Cards */}
+            <div className="block md:hidden space-y-4">
+              {groomingStyles.map((style) => (
+                <div
+                  key={style.id}
+                  className="bg-[#0E1411] border border-white/[0.08] hover:border-[#C59B46]/40 rounded-2xl p-4 shadow-md space-y-3"
+                >
+                  <div className="flex items-start gap-3">
+                    <div className="w-14 h-14 rounded-xl bg-[#141C18] border border-white/[0.1] relative overflow-hidden shrink-0 flex items-center justify-center">
+                      {style.image ? (
+                        <Image
+                          src={style.image}
+                          alt={style.title}
+                          fill
+                          className="object-contain p-1"
+                        />
+                      ) : (
+                        <Sparkles className="w-6 h-6 text-[#7A756B]" />
+                      )}
+                    </div>
+                    <div className="min-w-0 flex-1">
+                      <div className="flex items-center justify-between gap-1">
+                        <span className="text-[10px] font-mono uppercase text-[#C59B46] font-bold truncate">
+                          ✦ {style.badge}
+                        </span>
+                        <span className="font-mono text-xs font-bold text-[#DFC074] shrink-0">
+                          {style.price}
+                        </span>
+                      </div>
+                      <h4 className="font-semibold text-sm text-[#F5EFEB] mt-0.5 leading-snug">
+                        {style.title}{" "}
+                        <span className="italic text-[#C59B46] font-normal">{style.highlightText}</span>
+                      </h4>
+                      <p className="text-[11px] text-[#7A756B] line-clamp-1 mt-1">
+                        {style.description}
+                      </p>
+                    </div>
+                  </div>
+
+                  {/* 4 Feature Badges */}
+                  <div className="grid grid-cols-2 gap-1.5 pt-1">
+                    {(style.features || []).slice(0, 4).map((f, i) => (
+                      <span
+                        key={i}
+                        className="px-2 py-1 rounded bg-white/[0.04] border border-white/[0.06] text-[10px] text-[#A8A193] truncate flex items-center gap-1"
+                      >
+                        <Sparkles className="w-2.5 h-2.5 text-[#C59B46] shrink-0" />
+                        <span className="truncate">{f}</span>
+                      </span>
+                    ))}
+                  </div>
+
+                  {/* Card Actions */}
+                  <div className="flex items-center gap-2 pt-2 border-t border-white/[0.06]">
+                    <button
+                      onClick={() => {
+                        setEditingGroomingStyle({ ...style });
+                        setIsNewGroomingStyle(false);
+                      }}
+                      className="flex-1 py-2 px-3 rounded-xl bg-white/[0.05] hover:bg-[#C59B46]/20 border border-white/[0.08] text-xs text-[#DFC074] flex items-center justify-center gap-1.5 transition-colors cursor-pointer"
+                    >
+                      <Edit2 className="w-3.5 h-3.5 text-[#C59B46]" />
+                      <span>Edit Style</span>
+                    </button>
+                    <button
+                      onClick={() => handleDeleteGroomingStyle(style.id, style.title)}
+                      className="py-2 px-3 rounded-xl bg-red-950/20 hover:bg-red-950/50 border border-red-500/20 text-xs text-red-400 flex items-center justify-center gap-1.5 transition-colors cursor-pointer"
+                    >
+                      <Trash2 className="w-3.5 h-3.5" />
+                      <span>Delete</span>
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            {/* Desktop View: Full Table */}
+            <div className="hidden md:block bg-[#0E1411] border border-white/[0.08] rounded-2xl overflow-hidden shadow-xl">
+              <div className="overflow-x-auto">
+                <table className="w-full text-left text-xs">
+                  <thead className="bg-[#141C18] border-b border-white/[0.08] text-[#DFC074] font-mono uppercase tracking-wider">
+                    <tr>
+                      <th className="py-3 px-4">Style &amp; Highlight</th>
+                      <th className="py-3 px-4">Badge / Category</th>
+                      <th className="py-3 px-4">Features (4 Bullets)</th>
+                      <th className="py-3 px-4">Rate</th>
+                      <th className="py-3 px-4 text-center">Order</th>
+                      <th className="py-3 px-4 text-right">Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-white/[0.04]">
+                    {groomingStyles.map((style) => (
+                      <tr key={style.id} className="hover:bg-white/[0.02] transition-colors">
+                        <td className="py-3.5 px-4">
+                          <div className="flex items-center gap-3">
+                            <div className="w-10 h-10 rounded-lg bg-[#141C18] border border-white/[0.1] relative overflow-hidden shrink-0 flex items-center justify-center">
+                              {style.image ? (
+                                <Image
+                                  src={style.image}
+                                  alt={style.title}
+                                  fill
+                                  className="object-contain p-0.5"
+                                />
+                              ) : (
+                                <Sparkles className="w-4 h-4 text-[#7A756B]" />
+                              )}
+                            </div>
+                            <div>
+                              <div className="font-semibold text-[#F5EFEB]">
+                                {style.title}
+                              </div>
+                              <div className="text-[11px] italic text-[#C59B46]">
+                                {style.highlightText}
+                              </div>
+                            </div>
+                          </div>
+                        </td>
+                        <td className="py-3.5 px-4 space-y-1">
+                          <div className="text-[10px] font-mono uppercase text-[#C59B46]">
+                            {style.badge}
+                          </div>
+                          <span className="inline-block px-2 py-0.5 rounded bg-white/[0.05] border border-white/[0.08] text-[9px] font-mono uppercase text-[#A8A193]">
+                            {style.category}
+                          </span>
+                        </td>
+                        <td className="py-3.5 px-4 max-w-xs">
+                          <div className="flex flex-wrap gap-1">
+                            {(style.features || []).slice(0, 4).map((f, i) => (
+                              <span
+                                key={i}
+                                className="px-1.5 py-0.5 rounded bg-white/[0.04] border border-white/[0.06] text-[10px] text-[#A8A193]"
+                              >
+                                {f}
+                              </span>
+                            ))}
+                          </div>
+                        </td>
+                        <td className="py-3.5 px-4 font-mono text-[#DFC074] font-bold text-sm">
+                          {style.price}
+                        </td>
+                        <td className="py-3.5 px-4 text-center font-mono text-[#7A756B]">
+                          #{style.display_order}
+                        </td>
+                        <td className="py-3.5 px-4 text-right space-x-2">
+                          <button
+                            onClick={() => {
+                              setEditingGroomingStyle({ ...style });
+                              setIsNewGroomingStyle(false);
+                            }}
+                            className="p-1.5 rounded-lg bg-white/[0.04] hover:bg-[#C59B46]/20 border border-white/[0.08] text-[#C59B46] transition-colors cursor-pointer"
+                            title="Edit Grooming Style"
+                          >
+                            <Edit2 className="w-3.5 h-3.5" />
+                          </button>
+                          <button
+                            onClick={() => handleDeleteGroomingStyle(style.id, style.title)}
+                            className="p-1.5 rounded-lg bg-red-950/20 hover:bg-red-950/50 border border-red-500/20 text-red-400 transition-colors cursor-pointer"
+                            title="Delete Grooming Style"
+                          >
+                            <Trash2 className="w-3.5 h-3.5" />
+                          </button>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
             </div>
           </div>
         )}
@@ -1720,6 +2054,308 @@ export default function AdminDashboardPage() {
                     Save Changes
                   </button>
                 </div>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* ========================================================= */}
+      {/* MODAL: EDIT / ADD GROOMING STYLE (DECOUPLED)              */}
+      {/* ========================================================= */}
+      {editingGroomingStyle && (
+        <div className="fixed inset-0 z-50 bg-black/85 backdrop-blur-md flex items-center justify-center p-3 sm:p-6 overflow-hidden">
+          <div className="bg-[#0E1411] border border-white/[0.12] rounded-2xl max-w-xl w-full max-h-[92vh] flex flex-col shadow-[0_25px_60px_rgba(0,0,0,0.95)] relative overflow-hidden">
+            {/* Modal Header */}
+            <div className="p-4 sm:p-6 pb-4 border-b border-white/[0.08] flex items-center justify-between shrink-0 bg-[#0A0E0C]">
+              <div>
+                <h3 className="text-base sm:text-lg font-serif font-bold text-[#F5EFEB]">
+                  {isNewGroomingStyle ? "Add Grooming Style" : `Edit ${editingGroomingStyle.title}`}
+                </h3>
+                <p className="text-[11px] text-[#7A756B] mt-0.5">
+                  Update model cutout, title, subtitle, badge, 4 bullet features, and rate.
+                </p>
+              </div>
+              <button
+                type="button"
+                onClick={() => setEditingGroomingStyle(null)}
+                className="p-1.5 rounded-lg text-[#7A756B] hover:text-[#F5EFEB] hover:bg-white/[0.05] transition-colors cursor-pointer"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            {/* Form wrapping body and footer */}
+            <form onSubmit={handleSaveGroomingStyle} className="flex-1 flex flex-col min-h-0 overflow-hidden">
+              {/* Form Body - Scrollable */}
+              <div className="flex-1 overflow-y-auto p-4 sm:p-6 space-y-4">
+                {/* Title & Highlight Subtitle */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  <div>
+                    <label className="block text-xs uppercase font-mono text-[#DFC074] mb-1">
+                      Style Title *
+                    </label>
+                    <input
+                      type="text"
+                      required
+                      value={editingGroomingStyle.title}
+                      onChange={(e) =>
+                        setEditingGroomingStyle({
+                          ...editingGroomingStyle,
+                          title: e.target.value,
+                          id: isNewGroomingStyle
+                            ? `style-${e.target.value.toLowerCase().replace(/[^a-z0-9]/g, "-")}`
+                            : editingGroomingStyle.id,
+                        })
+                      }
+                      placeholder="e.g. The Textured Quiff"
+                      className="w-full bg-[#141C18] border border-white/[0.1] rounded-xl px-3.5 py-2 text-xs text-[#F5EFEB] focus:border-[#C59B46] outline-none"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-xs uppercase font-mono text-[#DFC074] mb-1">
+                      Highlight Subtitle (Italic)
+                    </label>
+                    <input
+                      type="text"
+                      value={editingGroomingStyle.highlightText}
+                      onChange={(e) =>
+                        setEditingGroomingStyle({
+                          ...editingGroomingStyle,
+                          highlightText: e.target.value,
+                        })
+                      }
+                      placeholder="e.g. Precision Skin Taper"
+                      className="w-full bg-[#141C18] border border-white/[0.1] rounded-xl px-3.5 py-2 text-xs text-[#F5EFEB] focus:border-[#C59B46] outline-none"
+                    />
+                  </div>
+                </div>
+
+                {/* Badge & Category */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  <div>
+                    <label className="block text-xs uppercase font-mono text-[#DFC074] mb-1">
+                      Badge / Tag
+                    </label>
+                    <input
+                      type="text"
+                      value={editingGroomingStyle.badge}
+                      onChange={(e) =>
+                        setEditingGroomingStyle({
+                          ...editingGroomingStyle,
+                          badge: e.target.value,
+                        })
+                      }
+                      placeholder="e.g. Signature Style Spotlight"
+                      className="w-full bg-[#141C18] border border-white/[0.1] rounded-xl px-3.5 py-2 text-xs text-[#F5EFEB] focus:border-[#C59B46] outline-none"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-xs uppercase font-mono text-[#DFC074] mb-1">
+                      Grooming Category
+                    </label>
+                    <select
+                      value={editingGroomingStyle.category}
+                      onChange={(e) =>
+                        setEditingGroomingStyle({
+                          ...editingGroomingStyle,
+                          category: e.target.value as "haircuts" | "beard" | "facial" | "grooming",
+                        })
+                      }
+                      className="w-full bg-[#141C18] border border-white/[0.1] rounded-xl px-3.5 py-2 text-xs text-[#F5EFEB] focus:border-[#C59B46] outline-none cursor-pointer"
+                    >
+                      <option value="haircuts">Haircuts &amp; Fades</option>
+                      <option value="beard">Beard &amp; Shaving</option>
+                      <option value="facial">Skincare &amp; Facials</option>
+                      <option value="grooming">VIP &amp; Combos</option>
+                    </select>
+                  </div>
+                </div>
+
+                {/* Price (Auto-Comma) & Display Order */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  <div>
+                    <label className="block text-xs uppercase font-mono text-[#DFC074] mb-1">
+                      Price / Rate
+                    </label>
+                    <div className="relative flex items-center">
+                      <span className="absolute left-3 text-xs font-mono text-[#7A756B] select-none pointer-events-none">
+                        Rs.
+                      </span>
+                      <input
+                        type="text"
+                        inputMode="numeric"
+                        required
+                        value={formatNumberWithCommas(editingGroomingStyle.price || "")}
+                        onChange={(e) => {
+                          const rawDigits = e.target.value.replace(/[^0-9]/g, "");
+                          const formatted = rawDigits ? Number(rawDigits).toLocaleString("en-US") : "";
+                          setEditingGroomingStyle({
+                            ...editingGroomingStyle,
+                            price: formatted ? `Rs. ${formatted}` : "",
+                            numeric_price: Number(rawDigits) || 0,
+                          });
+                        }}
+                        placeholder="1,000"
+                        className="w-full bg-[#141C18] border border-white/[0.12] focus:border-[#C59B46] rounded-xl pl-9 pr-3.5 py-2 text-xs text-[#DFC074] font-mono outline-none"
+                      />
+                    </div>
+                  </div>
+                  <div>
+                    <label className="block text-xs uppercase font-mono text-[#DFC074] mb-1">
+                      Display Order #
+                    </label>
+                    <input
+                      type="number"
+                      value={editingGroomingStyle.display_order || 1}
+                      onChange={(e) =>
+                        setEditingGroomingStyle({
+                          ...editingGroomingStyle,
+                          display_order: Number(e.target.value) || 1,
+                        })
+                      }
+                      className="w-full bg-[#141C18] border border-white/[0.1] rounded-xl px-3.5 py-2 text-xs text-[#F5EFEB] focus:border-[#C59B46] outline-none"
+                    />
+                  </div>
+                </div>
+
+                {/* Cutout Model Image */}
+                <div>
+                  <label className="block text-xs uppercase font-mono text-[#DFC074] mb-1">
+                    Transparent Cutout Model Image
+                  </label>
+                  <div className="flex items-center gap-3">
+                    <div className="w-14 h-14 rounded-xl bg-[#141C18] border border-white/[0.1] relative overflow-hidden shrink-0 flex items-center justify-center">
+                      {editingGroomingStyle.image ? (
+                        <Image
+                          src={editingGroomingStyle.image}
+                          alt={editingGroomingStyle.title || "Cutout preview"}
+                          fill
+                          className="object-contain p-1"
+                        />
+                      ) : (
+                        <Sparkles className="w-5 h-5 text-[#7A756B]" />
+                      )}
+                    </div>
+                    <div className="flex-1 space-y-1.5 min-w-0">
+                      <input
+                        type="text"
+                        value={editingGroomingStyle.image}
+                        onChange={(e) =>
+                          setEditingGroomingStyle({
+                            ...editingGroomingStyle,
+                            image: e.target.value,
+                          })
+                        }
+                        placeholder="/images/cutout-quiff-taper.webp or https://..."
+                        className="w-full bg-[#141C18] border border-white/[0.1] rounded-xl px-3 py-1.5 text-xs text-[#F5EFEB] focus:border-[#C59B46] outline-none"
+                      />
+                      <div className="flex items-center gap-2">
+                        <label className="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg bg-white/[0.05] hover:bg-[#C59B46]/20 border border-white/[0.1] hover:border-[#C59B46]/40 text-[10px] text-[#DFC074] cursor-pointer transition-colors">
+                          <Upload className="w-3 h-3 text-[#C59B46]" />
+                          <span>{uploadingGroomingCutout ? "Uploading..." : "Upload Cutout"}</span>
+                          <input
+                            ref={groomingCutoutFileInputRef}
+                            type="file"
+                            accept="image/*"
+                            disabled={uploadingGroomingCutout}
+                            onChange={handleGroomingCutoutUpload}
+                            className="hidden"
+                          />
+                        </label>
+                        <span className="text-[10px] text-[#7A756B]">Upload to salon-media storage</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* 4 Bullet Features */}
+                <div>
+                  <label className="block text-xs uppercase font-mono text-[#DFC074] mb-1">
+                    4 Signature Features / Bullet Points
+                  </label>
+                  <p className="text-[10px] text-[#7A756B] mb-2">
+                    These appear directly as the 4 chips under the style photo.
+                  </p>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                    {[0, 1, 2, 3].map((fIndex) => (
+                      <div key={fIndex} className="relative flex items-center">
+                        <span className="absolute left-2.5 text-[10px] font-mono text-[#C59B46] select-none pointer-events-none">
+                          ✦ #{fIndex + 1}
+                        </span>
+                        <input
+                          type="text"
+                          value={editingGroomingStyle.features?.[fIndex] || ""}
+                          onChange={(e) => {
+                            const nextFeatures = [...(editingGroomingStyle.features || ["", "", "", ""])];
+                            nextFeatures[fIndex] = e.target.value;
+                            setEditingGroomingStyle({
+                              ...editingGroomingStyle,
+                              features: nextFeatures,
+                            });
+                          }}
+                          placeholder={`Feature ${fIndex + 1}`}
+                          className="w-full bg-[#141C18] border border-white/[0.1] focus:border-[#C59B46] rounded-xl pl-12 pr-3 py-1.5 text-xs text-[#F5EFEB] outline-none"
+                        />
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Description */}
+                <div>
+                  <label className="block text-xs uppercase font-mono text-[#DFC074] mb-1">
+                    Styling Description
+                  </label>
+                  <textarea
+                    rows={2}
+                    value={editingGroomingStyle.description || ""}
+                    onChange={(e) =>
+                      setEditingGroomingStyle({
+                        ...editingGroomingStyle,
+                        description: e.target.value,
+                      })
+                    }
+                    placeholder="Short description of the haircut and grooming technique..."
+                    className="w-full bg-[#141C18] border border-white/[0.1] rounded-xl px-3.5 py-2 text-xs text-[#F5EFEB] focus:border-[#C59B46] outline-none resize-none"
+                  />
+                </div>
+
+                {/* Active Checkbox */}
+                <div className="pt-1">
+                  <label className="inline-flex items-center gap-2 text-xs text-[#A8A193] cursor-pointer">
+                    <input
+                      type="checkbox"
+                      checked={editingGroomingStyle.active !== false}
+                      onChange={(e) =>
+                        setEditingGroomingStyle({
+                          ...editingGroomingStyle,
+                          active: e.target.checked,
+                        })
+                      }
+                      className="rounded accent-[#C59B46] w-4 h-4 cursor-pointer"
+                    />
+                    <span>Active and visible in Grooming Menu</span>
+                  </label>
+                </div>
+              </div>
+
+              {/* Modal Footer - Fixed */}
+              <div className="p-4 sm:p-5 border-t border-white/[0.08] bg-[#0A0E0C] flex items-center justify-end gap-3 shrink-0">
+                <button
+                  type="button"
+                  onClick={() => setEditingGroomingStyle(null)}
+                  className="px-4 py-2.5 rounded-xl bg-white/[0.05] hover:bg-white/[0.1] text-xs text-[#A8A29E] hover:text-[#F5EFEB] transition-colors cursor-pointer"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  onClick={() => handleSaveGroomingStyle()}
+                  className="px-6 py-2.5 rounded-xl bg-gradient-to-r from-[#C59B46] to-[#DFC074] text-black font-semibold text-xs tracking-wider uppercase hover:shadow-[0_0_15px_rgba(197,155,70,0.3)] transition-all cursor-pointer"
+                >
+                  Save Grooming Style
+                </button>
               </div>
             </form>
           </div>

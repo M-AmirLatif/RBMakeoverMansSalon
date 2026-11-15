@@ -220,6 +220,124 @@ export async function POST(req: NextRequest) {
         return NextResponse.json({ success: true });
       }
 
+      // -------------------------------------------------------------
+      // 6. GROOMING STYLES CRUD (COMPLETELY DECOUPLED FROM SERVICES)
+      // -------------------------------------------------------------
+      case "save_grooming_style": {
+        if (!payload || !payload.title) {
+          return NextResponse.json({ error: "Missing required grooming style title" }, { status: 400 });
+        }
+
+        const { data: currentEntry } = await supabase
+          .from("site_images")
+          .select("url")
+          .eq("key", "grooming_styles_master")
+          .maybeSingle();
+
+        let stylesList: any[] = [];
+        if (currentEntry?.url) {
+          try {
+            stylesList = JSON.parse(currentEntry.url);
+          } catch {
+            stylesList = [];
+          }
+        }
+
+        const num = Number(String(payload.price).replace(/[^0-9]/g, "")) || 0;
+        const formattedComma = num > 0 ? num.toLocaleString("en-US") : "0";
+        const displayPrice = `Rs. ${formattedComma}`;
+
+        let featuresArr: string[] = [];
+        if (Array.isArray(payload.features)) {
+          featuresArr = payload.features.map((f: any) => String(f).trim()).filter(Boolean);
+        } else if (typeof payload.features === "string") {
+          featuresArr = payload.features.split("\n").map((f: string) => f.trim()).filter(Boolean);
+        }
+        if (featuresArr.length === 0) {
+          featuresArr = ["Precision Craft", "Luxury Finish", "Bespoke Styling", "Master Barber"];
+        }
+
+        const id = payload.id || `style-${Date.now()}`;
+        const newOrUpdatedItem = {
+          id,
+          badge: (payload.badge || "Signature Spotlight").trim(),
+          title: payload.title.trim(),
+          highlightText: (payload.highlightText || "").trim(),
+          category: payload.category || "haircuts",
+          price: displayPrice,
+          numeric_price: num,
+          description: (payload.description || "").trim(),
+          features: featuresArr,
+          image: payload.image || "/images/cutout-quiff-taper.webp",
+          imageAlt: payload.imageAlt || `${payload.title} at R.B Makeover`,
+          display_order: Number(payload.display_order) || (stylesList.length + 1),
+          active: payload.active !== false,
+        };
+
+        const existingIdx = stylesList.findIndex((s) => s.id === id);
+        if (existingIdx >= 0) {
+          stylesList[existingIdx] = newOrUpdatedItem;
+        } else {
+          stylesList.push(newOrUpdatedItem);
+        }
+
+        stylesList.sort((a, b) => (a.display_order || 0) - (b.display_order || 0));
+
+        const { error: upsertErr } = await supabase.from("site_images").upsert({
+          key: "grooming_styles_master",
+          label: "Grooming Styles Master List",
+          description: "Independent Grooming Section Styles",
+          url: JSON.stringify(stylesList),
+          updated_at: new Date().toISOString(),
+        });
+
+        if (upsertErr) {
+          console.error("Error saving grooming style:", upsertErr);
+          return NextResponse.json({ error: upsertErr.message }, { status: 500 });
+        }
+
+        return NextResponse.json({ success: true, data: newOrUpdatedItem });
+      }
+
+      case "delete_grooming_style": {
+        const { id } = payload || {};
+        if (!id) {
+          return NextResponse.json({ error: "Missing grooming style ID" }, { status: 400 });
+        }
+
+        const { data: currentEntry } = await supabase
+          .from("site_images")
+          .select("url")
+          .eq("key", "grooming_styles_master")
+          .maybeSingle();
+
+        let stylesList: any[] = [];
+        if (currentEntry?.url) {
+          try {
+            stylesList = JSON.parse(currentEntry.url);
+          } catch {
+            stylesList = [];
+          }
+        }
+
+        stylesList = stylesList.filter((s) => s.id !== id);
+
+        const { error: upsertErr } = await supabase.from("site_images").upsert({
+          key: "grooming_styles_master",
+          label: "Grooming Styles Master List",
+          description: "Independent Grooming Section Styles",
+          url: JSON.stringify(stylesList),
+          updated_at: new Date().toISOString(),
+        });
+
+        if (upsertErr) {
+          console.error("Error deleting grooming style:", upsertErr);
+          return NextResponse.json({ error: upsertErr.message }, { status: 500 });
+        }
+
+        return NextResponse.json({ success: true });
+      }
+
       default:
         return NextResponse.json({ error: `Unknown action: ${action}` }, { status: 400 });
     }

@@ -3,7 +3,15 @@
 import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import { serviceCategories, ServiceCategoryKey } from "@/data/services";
-import { fetchServices, SiteService, resolveServicePrice, defaultServices } from "@/lib/supabase/queries";
+import {
+  fetchServices,
+  SiteService,
+  resolveServicePrice,
+  defaultServices,
+  fetchGroomingStyles,
+  GroomingStyleItem,
+  defaultGroomingStyles,
+} from "@/lib/supabase/queries";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { AnimatedReveal } from "@/components/ui/AnimatedReveal";
 import { WhatsAppIcon } from "@/components/ui/Icons";
@@ -284,12 +292,18 @@ export function ServicesSection() {
   const [activeCategoryKey, setActiveCategoryKey] =
     useState<ServiceCategoryKey>("haircuts");
   const [dbServices, setDbServices] = useState<SiteService[]>(defaultServices);
+  const [groomingStyles, setGroomingStyles] = useState<GroomingStyleItem[]>(defaultGroomingStyles);
 
   useEffect(() => {
     let mounted = true;
     fetchServices().then((list) => {
       if (mounted && list && list.length > 0) {
         setDbServices(list);
+      }
+    });
+    fetchGroomingStyles().then((styles) => {
+      if (mounted && styles && styles.length > 0) {
+        setGroomingStyles(styles);
       }
     });
     return () => {
@@ -348,8 +362,8 @@ export function ServicesSection() {
 
   const filteredStyles =
     styleFilter === "all"
-      ? signatureGroomingStyles
-      : signatureGroomingStyles.filter((s) => s.category === styleFilter);
+      ? groomingStyles
+      : groomingStyles.filter((s) => s.category === styleFilter);
 
   return (
     <section
@@ -370,9 +384,9 @@ export function ServicesSection() {
         </AnimatedReveal>
 
         {/* ============================================================ */}
-        {/* PART 1: ALL 16+ SIGNATURE STYLE SHOWCASE CARDS               */}
+        {/* PART 1: ALL 18 SIGNATURE STYLE SHOWCASE CARDS (DECOUPLED)     */}
         {/* Exact same images, titles & 4 bullet features as the feed,   */}
-        {/* now showing verified live pricing and direct WhatsApp booking */}
+        {/* with independent rates managed in Admin Grooming Menu tab    */}
         {/* ============================================================ */}
         <div className="mb-16 sm:mb-20">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6 pb-4 border-b border-white/[0.08]">
@@ -380,7 +394,7 @@ export function ServicesSection() {
               <span className="w-2.5 h-2.5 rounded-full bg-[#C59B46] animate-pulse" />
               <div>
                 <h3 className="text-sm sm:text-base font-bold uppercase tracking-[0.2em] text-[#DFC074]">
-                  All {signatureGroomingStyles.length} Signature Styles &amp; Verified Rates
+                  All {groomingStyles.length} Signature Styles &amp; Verified Rates
                 </h3>
                 <p className="text-xs text-[#A8A193] mt-0.5">
                   Clicking &quot;Book&quot; on any style above jumps directly to its card below.
@@ -391,7 +405,7 @@ export function ServicesSection() {
             {/* Sub-Filter Tabs for Signature Styles */}
             <div className="inline-flex p-1 rounded-full bg-[#141C18] border border-white/10 self-start sm:self-auto overflow-x-auto no-scrollbar max-w-full">
               {[
-                { key: "all", label: `All (${signatureGroomingStyles.length})` },
+                { key: "all", label: `All (${groomingStyles.length})` },
                 { key: "haircuts", label: "Haircuts & Fades" },
                 { key: "beard", label: "Beard & Shaving" },
                 { key: "facial", label: "Skincare" },
@@ -413,12 +427,12 @@ export function ServicesSection() {
             </div>
           </div>
 
-          {/* 16+ Signature Styles Responsive Grid */}
+          {/* 18 Signature Styles Responsive Grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {filteredStyles.map((item, idx) => {
-              const livePrice = resolveServicePrice(dbServices, item.serviceQuery, item.fallbackPrice);
+              const itemPrice = item.price || "Rs. 1,000";
               const waUrl = `https://wa.me/923269326566?text=${encodeURIComponent(
-                `Hello! I would like to book *${item.title} - ${item.highlightText}* (${item.features.join(", ")}) at R.B Makeover Salon for ${livePrice}. Please share available slots.`
+                `Hello! I would like to book *${item.title} - ${item.highlightText}* (${(item.features || []).join(", ")}) at R.B Makeover Salon for ${itemPrice}. Please share available slots.`
               )}`;
 
               return (
@@ -439,7 +453,7 @@ export function ServicesSection() {
                           ✦ {item.badge}
                         </span>
                         <span className="text-xs font-mono font-bold text-[#DFC074] px-2.5 py-0.5 rounded-full bg-[#C59B46]/10 border border-[#C59B46]/30 shrink-0">
-                          {livePrice}
+                          {itemPrice}
                         </span>
                       </div>
 
@@ -458,52 +472,48 @@ export function ServicesSection() {
                       <div className="relative w-full h-full">
                         <Image
                           src={item.image}
-                          alt={item.imageAlt}
+                          alt={item.imageAlt || item.title}
                           fill
-                          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                          className="object-contain object-bottom group-hover:scale-105 transition-transform duration-500 select-none"
+                          sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                          className="object-contain object-bottom drop-shadow-[0_15px_25px_rgba(0,0,0,0.85)] group-hover:scale-105 transition-transform duration-500"
                         />
                       </div>
-                      <div className="absolute inset-x-0 bottom-0 h-16 bg-gradient-to-t from-[#121815] to-transparent pointer-events-none" />
                     </div>
 
-                    {/* Features & Booking Buttons */}
-                    <div className="p-5 sm:p-6 pt-2 space-y-3.5 relative z-10 border-t border-white/[0.06] bg-[#0E1411]">
-                      {/* 4 Feature Pills matching the showcase exact bullet points */}
-                      <div className="grid grid-cols-2 gap-2">
-                        {item.features.map((feat) => (
+                    {/* 4 Feature Badges */}
+                    <div className="p-5 sm:p-6 pt-2 relative z-10 flex flex-col justify-end">
+                      <div className="grid grid-cols-2 gap-2 mb-4">
+                        {(item.features || []).map((feat, fIdx) => (
                           <div
-                            key={feat}
-                            className="p-1.5 sm:p-2 rounded-lg bg-black/40 border border-white/[0.06] flex items-center gap-1.5 min-w-0"
+                            key={fIdx}
+                            className="flex items-center gap-1.5 p-2 rounded-lg bg-[#0E1411] border border-white/[0.04]"
                           >
                             <Sparkles className="w-3 h-3 text-[#C59B46] shrink-0" />
-                            <span className="text-[11px] font-medium text-[#E5DFD9] truncate">
+                            <span className="text-[11px] font-medium text-[#F5EFEB]/90 truncate">
                               {feat}
                             </span>
                           </div>
                         ))}
                       </div>
 
-                      {/* Action Buttons */}
-                      <div className="pt-1 flex items-center gap-2">
+                      {/* Card Action Buttons */}
+                      <div className="pt-3 border-t border-white/[0.06] flex items-center gap-2">
                         <a
                           href={waUrl}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="flex-1 inline-flex items-center justify-center gap-2 px-3.5 py-2.5 rounded-xl bg-[#C59B46] hover:bg-[#DFC074] active:bg-[#9A752B] text-[#0B0F0D] font-bold text-xs tracking-wider uppercase transition-all shadow-md group/btn select-none"
+                          className="flex-1 py-2.5 px-3 rounded-xl bg-gradient-to-r from-[#C59B46] to-[#DFC074] text-[#0B0F0D] font-bold text-xs tracking-wider uppercase flex items-center justify-center gap-1.5 hover:shadow-[0_0_20px_rgba(197,155,70,0.35)] transition-all cursor-pointer"
                         >
-                          <WhatsAppIcon className="w-3.5 h-3.5 text-[#0B0F0D] shrink-0" />
-                          <span>Book on WhatsApp</span>
-                          <ArrowRight className="w-3 h-3 group-hover/btn:translate-x-1 transition-transform shrink-0" />
+                          <WhatsAppIcon className="w-3.5 h-3.5 text-[#0B0F0D]" />
+                          <span>Book WhatsApp</span>
                         </a>
 
                         <a
-                          href="#contact"
-                          className="p-2.5 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 hover:border-[#C59B46]/40 text-[#DFC074] transition-colors shrink-0"
-                          title="Select in Multi-Service Online Booking"
-                          aria-label="Select in Multi-Service Online Booking"
+                          href="#booking"
+                          className="py-2.5 px-3 rounded-xl bg-white/[0.04] hover:bg-[#C59B46]/20 border border-white/[0.08] hover:border-[#C59B46]/50 text-xs text-[#DFC074] flex items-center justify-center transition-colors cursor-pointer"
+                          title="View Salon Booking Calendar"
                         >
-                          <Calendar className="w-4 h-4" />
+                          <Calendar className="w-3.5 h-3.5" />
                         </a>
                       </div>
                     </div>
